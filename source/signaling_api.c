@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "signal_api.h"
+#include "signaling_api.h"
 #include "core_json.h"
 
 /* AWS_GETENDPOINT_PROTOCOL_MAX_STRING is ["WSS", "HTTPS", "WEBRTC"] */
@@ -18,22 +18,22 @@
 #define AWS_STRING_SDP_ANSWER "SDP_ANSWER"
 #define AWS_STRING_SDP_ICE_CANDIDATE "ICE_CANDIDATE"
 
-static char * getStringFromMessageType( SignalingMessageType_t messageType )
+static char * getStringFromMessageType( SignalingTypeMessage_t messageType )
 {
     char * ret;
 
     switch(messageType) {
-        case SIGNAL_MESSAGE_TYPE_SDP_OFFER:
+        case SIGNALING_TYPE_MESSAGE_SDP_OFFER:
             ret = AWS_STRING_SDP_OFFER;
             break;
-        case SIGNAL_MESSAGE_TYPE_SDP_ANSWER:
+        case SIGNALING_TYPE_MESSAGE_SDP_ANSWER:
             ret = AWS_STRING_SDP_ANSWER;
             break;
-        case SIGNAL_MESSAGE_TYPE_ICE_CANDIDATE:
+        case SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE:
             ret = AWS_STRING_SDP_ICE_CANDIDATE;
             break;
         default:
-            ret = SIGNAL_STRING_UNKNOWN;
+            ret = SIGNALING_STRING_UNKNOWN;
             break;
     }
 
@@ -42,21 +42,21 @@ static char * getStringFromMessageType( SignalingMessageType_t messageType )
 
 static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength, SignalingIceServerList_t * pIceServerList )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length = 0, i, j;
     char * pCurrentWrite = pBuffer;
     size_t remainingLength = *pBufferLength;
 
     /* pBuffer, pBufferLength, and pIceServerList are guaranteed before calling. */
     if (pIceServerList->iceServerNum > AWS_ICE_SERVER_MAX_NUM) {
-        result = SIGNAL_RESULT_INVALID_ICE_SERVER_COUNT;
+        result = SIGNALING_RESULT_INVALID_ICE_SERVER_COUNT;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         /* Append ice server configs. */
         for (i = 0; i < pIceServerList->iceServerNum; i++) {
             if (pIceServerList->iceServer[i].urisNum > AWS_ICE_SERVER_MAX_URIS) {
-                result = SIGNAL_RESULT_INVALID_ICE_SERVER_URIS_COUNT;
+                result = SIGNALING_RESULT_INVALID_ICE_SERVER_URIS_COUNT;
                 break;
             }
 
@@ -72,11 +72,11 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
             }
 
             if (length < 0) { //LCOV_EXCL_BR_LINE
-                result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+                result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
                 break;
             }
             else if (length >= remainingLength) {
-                result = SIGNAL_RESULT_OUT_OF_MEMORY;
+                result = SIGNALING_RESULT_OUT_OF_MEMORY;
                 break;
             }
             else {
@@ -95,11 +95,11 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
                 }
 
                 if (length < 0) { //LCOV_EXCL_BR_LINE
-                    result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+                    result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
                     break;
                 }
                 else if (length >= remainingLength) {
-                    result = SIGNAL_RESULT_OUT_OF_MEMORY;
+                    result = SIGNALING_RESULT_OUT_OF_MEMORY;
                     break;
                 }
                 else {
@@ -108,7 +108,7 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
                 }
             }
 
-            if (result != SIGNAL_RESULT_OK) {
+            if (result != SIGNALING_RESULT_OK) {
                 break;
             }
             
@@ -117,11 +117,11 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
                               (int) pIceServerList->iceServer[i].userNameLength, pIceServerList->iceServer[i].pUserName);
 
             if (length < 0) { //LCOV_EXCL_BR_LINE
-                result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+                result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
                 break;
             }
             else if (length >= remainingLength) {
-                result = SIGNAL_RESULT_OUT_OF_MEMORY;
+                result = SIGNALING_RESULT_OUT_OF_MEMORY;
                 break;
             }
             else {
@@ -131,14 +131,14 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         length = snprintf(pCurrentWrite, remainingLength, AWS_SIGNALING_SEND_MESSAGE_TEMPLATE_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             remainingLength -= length;
@@ -146,7 +146,7 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
         }
     }
 
-    if (result == SIGNAL_RESULT_OK ) {
+    if (result == SIGNALING_RESULT_OK ) {
         *pBufferLength = *pBufferLength - remainingLength;
     }
 
@@ -155,17 +155,17 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
 
 static SignalingChannelEndpointProtocol_t getProtocolFromString( const char *pProtocolString, size_t protocolStringLength )
 {
-    SignalingChannelEndpointProtocol_t ret = SIGNAL_ENDPOINT_PROTOCOL_NONE;
+    SignalingChannelEndpointProtocol_t ret = SIGNALING_ENDPOINT_PROTOCOL_NONE;
 
     if ( strncmp(pProtocolString, "WSS", 3) == 0 ||
          strncmp(pProtocolString, "wss", 3) == 0 ) {
-        ret = SIGNAL_ENDPOINT_PROTOCOL_WEBSOCKET_SECURE;
+        ret = SIGNALING_ENDPOINT_PROTOCOL_WEBSOCKET_SECURE;
     } else if ( strncmp(pProtocolString, "HTTPS", 5) == 0 ||
          strncmp(pProtocolString, "https", 5) == 0 ) {
-        ret = SIGNAL_ENDPOINT_PROTOCOL_HTTPS;
+        ret = SIGNALING_ENDPOINT_PROTOCOL_HTTPS;
     } else if ( strncmp(pProtocolString, "WEBRTC", 6) == 0 ||
          strncmp(pProtocolString, "webrtc", 6) == 0 ) {
-        ret = SIGNAL_ENDPOINT_PROTOCOL_WEBRTC;
+        ret = SIGNALING_ENDPOINT_PROTOCOL_WEBRTC;
     } else {
         /* Do nothing, coverity happy. */
     }
@@ -192,7 +192,7 @@ static void updateUris(SignalingIceServer_t *pIceServer, const char * pUris, siz
 
 static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, size_t iceServerListBufferLength, SignalingIceServerList_t *pIceServerList)
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult = JSONSuccess;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
@@ -203,10 +203,10 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
 
     /* Input check. */
     if (pIceServerListBuffer == NULL || pIceServerList == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    while (result == SIGNAL_RESULT_OK && pIceServerList->iceServerNum < AWS_ICE_SERVER_MAX_NUM) {
+    while (result == SIGNALING_RESULT_OK && pIceServerList->iceServerNum < AWS_ICE_SERVER_MAX_NUM) {
         jsonResult = JSON_Iterate( pIceServerListBuffer, iceServerListBufferLength, &start, &next, &pair );
 
         if (jsonResult == JSONSuccess) {
@@ -232,7 +232,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
                 } else if (strncmp(pair.key, "Ttl", pair.keyLength) == 0) {
                     if( pair.valueLength >= AWS_MESSAGE_ICE_SERVER_TTL_SECONDS_BUFFER_MAX ) {
                         /* Unexpect TTL value from cloud. */
-                        result = SIGNAL_RESULT_INVALID_TTL;
+                        result = SIGNALING_RESULT_INVALID_TTL;
                         break;
                     }
 
@@ -251,7 +251,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
                     if (pIceServerList->iceServer[pIceServerList->iceServerNum].messageTtlSeconds < AWS_MESSAGE_ICE_SERVER_TTL_SECONDS_MIN ||
                         pIceServerList->iceServer[pIceServerList->iceServerNum].messageTtlSeconds > AWS_MESSAGE_ICE_SERVER_TTL_SECONDS_MAX) {
                         /* Unexpect TTL value from cloud. */
-                        result = SIGNAL_RESULT_INVALID_TTL;
+                        result = SIGNALING_RESULT_INVALID_TTL;
                     }
                 } else if (strncmp(pair.key, "Uris", pair.keyLength) == 0) {
                     if (pIceServerList->iceServer[pIceServerList->iceServerNum].pUris[0] != NULL) {
@@ -295,16 +295,16 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
 
 SignalingResult_t Signaling_createSignaling( SignalingContext_t *pCtx, SignalingCreate_t *pCreate )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length = 0;
 
     /* input check */
     if (pCtx == NULL || pCreate == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
     /* Set region. */
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         memset(pCtx, 0, sizeof(SignalingContext_t));
 
         if (pCreate->pRegion == NULL) {
@@ -319,17 +319,17 @@ SignalingResult_t Signaling_createSignaling( SignalingContext_t *pCtx, Signaling
     }
 
     /* Set control plane. */
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         if (pCreate->pControlPlaneUrl == NULL) {
             length = snprintf(pCtx->controlPlaneUrl, AWS_CONTROL_PLANE_URL_MAX_LENGTH, "%s%s.%s%s",
                               AWS_CONTROL_PLANE_URI_PREFIX, AWS_KINESIS_VIDEO_SERVICE_NAME, 
                               pCtx->region, AWS_CONTROL_PLANE_URI_POSTFIX);
 
             if (length < 0) { //LCOV_EXCL_BR_LINE
-                result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+                result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
             }
             else if ((size_t)length >= AWS_CONTROL_PLANE_URL_MAX_LENGTH) {
-                result = SIGNAL_RESULT_OUT_OF_MEMORY;
+                result = SIGNALING_RESULT_OUT_OF_MEMORY;
             }
             else {
                 pCtx->controlPlaneUrlLength = length;
@@ -346,42 +346,42 @@ SignalingResult_t Signaling_createSignaling( SignalingContext_t *pCtx, Signaling
 
 SignalingResult_t Signaling_constructDescribeSignalingChannelRequest( SignalingContext_t *pCtx, SignalingDescribeSignalingChannelRequest_t * pDescribeSignalingChannelRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
 
     /* input check */
     if (pCtx == NULL || pRequestBuffer == NULL || pDescribeSignalingChannelRequest == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL || pDescribeSignalingChannelRequest->pChannelName == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pCtx->controlPlaneUrlLength, pCtx->controlPlaneUrl,
                           AWS_DESCRIBE_SIGNALING_CHANNEL_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         length = snprintf(pRequestBuffer->pBody, pRequestBuffer->bodyLength, AWS_DESCRIBE_CHANNEL_PARAM_JSON_TEMPLATE,
                           (int) pDescribeSignalingChannelRequest->channelNameLength, pDescribeSignalingChannelRequest->pChannelName);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->bodyLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -393,7 +393,7 @@ SignalingResult_t Signaling_constructDescribeSignalingChannelRequest( SignalingC
 
 SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingContext_t *pCtx, char * pMessage, size_t messageLength, SignalingDescribeSignalingChannelResponse_t *pDescribeSignalingChannelResponse )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
@@ -404,18 +404,18 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
 
     /* input check */
     if (pCtx == NULL || pMessage == NULL || pDescribeSignalingChannelResponse == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Validate(pMessage, messageLength);
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         memset(pDescribeSignalingChannelResponse, 0, sizeof(SignalingDescribeSignalingChannelResponse_t));
 
         /* Check if it's ChannelInfo. */
@@ -426,17 +426,17 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
                 pair.keyLength != strlen("ChannelInfo") || 
                 strncmp(pair.key, "ChannelInfo", pair.keyLength) != 0) {
                 /* Not an ice server list meesage. */
-                result = SIGNAL_RESULT_NOT_EXPECT_RESPONSE;
+                result = SIGNALING_RESULT_NOT_EXPECT_RESPONSE;
             } else {
                 pChannelInfoBuffer = pair.value;
                 channelInfoBufferLength = pair.valueLength;
             }
         } else {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Iterate(pChannelInfoBuffer, channelInfoBufferLength, &channelInfoStart, &channelInfoNext, &pair);
 
         while (jsonResult == JSONSuccess) {
@@ -453,7 +453,7 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
                     memcpy(pCtx->channelName, pDescribeSignalingChannelResponse->pChannelName, pCtx->channelNameLength);
                     pCtx->channelName[pCtx->channelNameLength] = '\0';
                 } else {
-                    result = SIGNAL_RESULT_INVALID_CHANNEL_NAME;
+                    result = SIGNALING_RESULT_INVALID_CHANNEL_NAME;
                 }
             } else if (strncmp(pair.key, "ChannelStatus", pair.keyLength) == 0) {
                 pDescribeSignalingChannelResponse->pChannelStatus = pair.value;
@@ -464,7 +464,7 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
 
                 /* Store channel type in context. */
                 if (strncmp(pDescribeSignalingChannelResponse->pChannelType, "SINGLE_MASTER", pDescribeSignalingChannelResponse->channelTypeLength) != 0) {
-                    result = SIGNAL_RESULT_INVALID_CHANNEL_TYPE;
+                    result = SIGNALING_RESULT_INVALID_CHANNEL_TYPE;
                 }
             } else if (strncmp(pair.key, "CreationTime", pair.keyLength) == 0) {
                 // TODO: In the future parse out the creation time but currently we don't need it
@@ -479,7 +479,7 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
                     if (strncmp(pair.key, "MessageTtlSeconds", pair.keyLength) == 0) {
                         if( pair.valueLength >= AWS_MESSAGE_CHANNEL_TTL_SECONDS_BUFFER_MAX ) {
                             /* Unexpect TTL value from cloud. */
-                            result = SIGNAL_RESULT_INVALID_TTL;
+                            result = SIGNALING_RESULT_INVALID_TTL;
                             break;
                         }
 
@@ -488,15 +488,15 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
 
                         if (pDescribeSignalingChannelResponse->messageTtlSeconds < AWS_MESSAGE_CHANNEL_TTL_SECONDS_MIN || pDescribeSignalingChannelResponse->messageTtlSeconds > AWS_MESSAGE_CHANNEL_TTL_SECONDS_MAX) {
                             /* Unexpect TTL value from cloud. */
-                            result = SIGNAL_RESULT_INVALID_TTL;
+                            result = SIGNALING_RESULT_INVALID_TTL;
                         }
                     } else {
                         // unknown attribute
-                        result = SIGNAL_RESULT_INVALID_JSON;
+                        result = SIGNALING_RESULT_INVALID_JSON;
                     }
                 } else {
                     // invalid single master configuration
-                    result = SIGNAL_RESULT_INVALID_JSON;
+                    result = SIGNALING_RESULT_INVALID_JSON;
                 }
             } else if (strncmp(pair.key, "Version", pair.keyLength) == 0) {
                 pDescribeSignalingChannelResponse->pVersion = pair.value;
@@ -505,7 +505,7 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
                 /* Skip unknown attributes. */
             }
             
-            if (result != SIGNAL_RESULT_OK) {
+            if (result != SIGNALING_RESULT_OK) {
                 break;
             }
 
@@ -518,43 +518,43 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
 
 SignalingResult_t Signaling_constructDescribeMediaStorageConfigRequest( SignalingContext_t *pCtx, SignalingDescribeMediaStorageConfigRequest_t * pDescribeMediaStorageConfigRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
 
     /* input check */
     if (pCtx == NULL || pRequestBuffer == NULL || pDescribeMediaStorageConfigRequest == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL || 
         pDescribeMediaStorageConfigRequest->pChannelArn == NULL ) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pCtx->controlPlaneUrlLength, pCtx->controlPlaneUrl,
                           AWS_DESCRIBE_MEDIA_STORAGE_CONF_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         length = snprintf(pRequestBuffer->pBody, pRequestBuffer->bodyLength, AWS_DESCRIBE_MEDIA_STORAGE_CONF_PARAM_JSON_TEMPLATE,
                           (int) pDescribeMediaStorageConfigRequest->channelArnLength, pDescribeMediaStorageConfigRequest->pChannelArn);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->bodyLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -566,7 +566,7 @@ SignalingResult_t Signaling_constructDescribeMediaStorageConfigRequest( Signalin
 
 SignalingResult_t Signaling_parseDescribeMediaStorageConfigResponse( SignalingContext_t *pCtx, char * pMessage, size_t messageLength, SignalingDescribeMediaStorageConfigResponse_t *pDescribeMediaStorageConfigResponse )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
@@ -576,18 +576,18 @@ SignalingResult_t Signaling_parseDescribeMediaStorageConfigResponse( SignalingCo
 
     /* input check */
     if (pCtx == NULL || pMessage == NULL || pDescribeMediaStorageConfigResponse == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Validate(pMessage, messageLength);
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         memset(pDescribeMediaStorageConfigResponse, 0, sizeof(SignalingDescribeMediaStorageConfigResponse_t));
 
         /* Check if it's MediaStorageConfiguration. */
@@ -598,17 +598,17 @@ SignalingResult_t Signaling_parseDescribeMediaStorageConfigResponse( SignalingCo
                 pair.keyLength != strlen("MediaStorageConfiguration") || 
                 strncmp(pair.key, "MediaStorageConfiguration", pair.keyLength) != 0) {
                 /* Not an ice server list meesage. */
-                result = SIGNAL_RESULT_NOT_EXPECT_RESPONSE;
+                result = SIGNALING_RESULT_NOT_EXPECT_RESPONSE;
             } else {
                 pMediaStorageConfigBuffer = pair.value;
                 mediaStorageConfigBufferLength = pair.valueLength;
             }
         } else {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Iterate(pMediaStorageConfigBuffer, mediaStorageConfigBufferLength, &mediaStorageConfigStart, &mediaStorageConfigNext, &pair);
 
         while (jsonResult == JSONSuccess) {
@@ -631,7 +631,7 @@ SignalingResult_t Signaling_parseDescribeMediaStorageConfigResponse( SignalingCo
 
 SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingContext_t *pCtx, SignalingCreateSignalingChannelRequest_t * pCreateSignalingChannelRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
     char *pCurBody = pRequestBuffer->pBody;
     size_t remainingLength = 0;
@@ -643,40 +643,40 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL || 
         (pCreateSignalingChannelRequest->tagsCount > 0 && pCreateSignalingChannelRequest->pTags == NULL) ||
         pCreateSignalingChannelRequest->channelInfo.channelNameLength >= AWS_MAX_CHANNEL_NAME_LEN) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pCtx->controlPlaneUrlLength, pCtx->controlPlaneUrl,
                           AWS_CREATE_SIGNALING_CHANNEL_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         remainingLength = pRequestBuffer->bodyLength;
 
         length = snprintf(pCurBody, remainingLength, AWS_CREATE_CHANNEL_PARAM_JSON_TEMPLATE_PREFIX,
                           (int) pCreateSignalingChannelRequest->channelInfo.channelNameLength, pCreateSignalingChannelRequest->channelInfo.pChannelName,
-                          pCreateSignalingChannelRequest->channelInfo.channelType == SIGNAL_CHANNEL_TYPE_SINGLE_MASTER? SIGNAL_STRING_SINGLE_MASTER:SIGNAL_STRING_UNKNOWN,
+                          pCreateSignalingChannelRequest->channelInfo.type == SIGNALING_TYPE_CHANNEL_SINGLE_MASTER? SIGNALING_STRING_SINGLE_MASTER:SIGNALING_STRING_UNKNOWN,
                           pCreateSignalingChannelRequest->channelInfo.messageTtlSeconds);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -686,14 +686,14 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
     }
 
     /* Append tags prefix. */
-    if (result == SIGNAL_RESULT_OK && pCreateSignalingChannelRequest->tagsCount > 0) {
+    if (result == SIGNALING_RESULT_OK && pCreateSignalingChannelRequest->tagsCount > 0) {
         length = snprintf(pCurBody, remainingLength, AWS_CREATE_CHANNEL_PARAM_JSON_TAGS_PREFIX);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength += length;
@@ -703,7 +703,7 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
     }
 
     /* Append tags content. */
-    if (result == SIGNAL_RESULT_OK && pCreateSignalingChannelRequest->tagsCount > 0) {
+    if (result == SIGNALING_RESULT_OK && pCreateSignalingChannelRequest->tagsCount > 0) {
         pCurTags = pCreateSignalingChannelRequest->pTags;
 
         for (i = 0; i < pCreateSignalingChannelRequest->tagsCount; i++) {
@@ -718,10 +718,10 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
             }
 
             if (length < 0) { //LCOV_EXCL_BR_LINE
-                result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+                result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
             }
             else if (length >= remainingLength) {
-                result = SIGNAL_RESULT_OUT_OF_MEMORY;
+                result = SIGNALING_RESULT_OUT_OF_MEMORY;
             }
             else {
                 pRequestBuffer->bodyLength += length;
@@ -732,14 +732,14 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
     }
 
     /* Append tags postfix. */
-    if (result == SIGNAL_RESULT_OK && pCreateSignalingChannelRequest->tagsCount > 0) {
+    if (result == SIGNALING_RESULT_OK && pCreateSignalingChannelRequest->tagsCount > 0) {
         length = snprintf(pCurBody, remainingLength, AWS_CREATE_CHANNEL_PARAM_JSON_TAGS_POSTFIX);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength += length;
@@ -748,15 +748,15 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         length = snprintf(pCurBody, remainingLength, AWS_CREATE_CHANNEL_PARAM_JSON_TEMPLATE_POSTFIX);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength += length;
@@ -765,7 +765,7 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         /* Store channel information in context. */
         pCtx->channelNameLength = pCreateSignalingChannelRequest->channelInfo.channelNameLength;
         memcpy(pCtx->channelName, pCreateSignalingChannelRequest->channelInfo.pChannelName, pCtx->channelNameLength);
@@ -777,25 +777,25 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
 
 SignalingResult_t Signaling_parseCreateSignalingChannelResponse( SignalingContext_t *pCtx, char * pMessage, size_t messageLength, SignalingCreateSignalingChannelResponse_t *pCreateSignalingChannelResponse )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
 
     /* input check */
     if (pCtx == NULL || pMessage == NULL || pCreateSignalingChannelResponse == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Validate(pMessage, messageLength);
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         pCreateSignalingChannelResponse->channelInfo.pChannelArn = NULL;
         pCreateSignalingChannelResponse->channelInfo.channelArnLength = 0;
 
@@ -808,7 +808,7 @@ SignalingResult_t Signaling_parseCreateSignalingChannelResponse( SignalingContex
                 pCreateSignalingChannelResponse->channelInfo.channelArnLength = pair.valueLength;
             }
         } else {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
@@ -817,7 +817,7 @@ SignalingResult_t Signaling_parseCreateSignalingChannelResponse( SignalingContex
 
 SignalingResult_t Signaling_constructGetSignalingChannelEndpointRequest( SignalingContext_t *pCtx, SignalingGetSignalingChannelEndpointRequest_t * pGetSignalingChannelEndpointRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
     char protocols[AWS_GETENDPOINT_PROTOCOL_MAX_STRING_LENGTH] = { 0 };
     int protocolIndex = 0;
@@ -827,21 +827,21 @@ SignalingResult_t Signaling_constructGetSignalingChannelEndpointRequest( Signali
     if (pCtx == NULL || pRequestBuffer == NULL || pGetSignalingChannelEndpointRequest == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL || 
         pGetSignalingChannelEndpointRequest->pChannelArn == NULL ||
-        (pGetSignalingChannelEndpointRequest->role != SIGNAL_ROLE_MASTER && pGetSignalingChannelEndpointRequest->role != SIGNAL_ROLE_VIEWER)) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        (pGetSignalingChannelEndpointRequest->role != SIGNALING_ROLE_MASTER && pGetSignalingChannelEndpointRequest->role != SIGNALING_ROLE_VIEWER)) {
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pCtx->controlPlaneUrlLength, pCtx->controlPlaneUrl,
                           AWS_GET_SIGNALING_CHANNEL_ENDPOINT_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
@@ -849,15 +849,15 @@ SignalingResult_t Signaling_constructGetSignalingChannelEndpointRequest( Signali
     }
 
     /* Prepare protocol string. */
-    if (result == SIGNAL_RESULT_OK) {
-        if ((pGetSignalingChannelEndpointRequest->protocolsBitsMap & SIGNAL_ENDPOINT_PROTOCOL_WEBSOCKET_SECURE) != 0) {
+    if (result == SIGNALING_RESULT_OK) {
+        if ((pGetSignalingChannelEndpointRequest->protocolsBitsMap & SIGNALING_ENDPOINT_PROTOCOL_WEBSOCKET_SECURE) != 0) {
             strcpy(protocols, AWS_STRING_QUOTE_WSS);
             protocolIndex += AWS_STRING_LENGTH_QUOTE_WSS;
 
             isFirstProtocol = false;
         }
 
-        if ((pGetSignalingChannelEndpointRequest->protocolsBitsMap & SIGNAL_ENDPOINT_PROTOCOL_HTTPS) != 0) {
+        if ((pGetSignalingChannelEndpointRequest->protocolsBitsMap & SIGNALING_ENDPOINT_PROTOCOL_HTTPS) != 0) {
             if (isFirstProtocol == false) {
                 strcpy(protocols + protocolIndex, ", ");
                 protocolIndex += 2;
@@ -868,7 +868,7 @@ SignalingResult_t Signaling_constructGetSignalingChannelEndpointRequest( Signali
             isFirstProtocol = false;
         }
 
-        if ((pGetSignalingChannelEndpointRequest->protocolsBitsMap & SIGNAL_ENDPOINT_PROTOCOL_WEBRTC) != 0) {
+        if ((pGetSignalingChannelEndpointRequest->protocolsBitsMap & SIGNALING_ENDPOINT_PROTOCOL_WEBRTC) != 0) {
             if (isFirstProtocol == false) {
                 strcpy(protocols + protocolIndex, ", ");
                 protocolIndex += 2;
@@ -880,18 +880,18 @@ SignalingResult_t Signaling_constructGetSignalingChannelEndpointRequest( Signali
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         length = snprintf(pRequestBuffer->pBody, pRequestBuffer->bodyLength, AWS_GET_CHANNEL_ENDPOINT_PARAM_JSON_TEMPLATE,
                           (int) pGetSignalingChannelEndpointRequest->channelArnLength, pGetSignalingChannelEndpointRequest->pChannelArn,
                           protocols,
-                          pGetSignalingChannelEndpointRequest->role == SIGNAL_ROLE_MASTER? SIGNAL_STRING_MASTER:SIGNAL_STRING_VIEWER);
+                          pGetSignalingChannelEndpointRequest->role == SIGNALING_ROLE_MASTER? SIGNALING_STRING_MASTER:SIGNALING_STRING_VIEWER);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->bodyLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -903,7 +903,7 @@ SignalingResult_t Signaling_constructGetSignalingChannelEndpointRequest( Signali
 
 SignalingResult_t Signaling_parseGetSignalingChannelEndpointResponse( SignalingContext_t *pCtx, char * pMessage, size_t messageLength, SignalingGetSignalingChannelEndpointResponse_t * pGetSignalingChannelEndpointResponse )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
@@ -919,18 +919,18 @@ SignalingResult_t Signaling_parseGetSignalingChannelEndpointResponse( SignalingC
 
     /* input check */
     if (pCtx == NULL || pMessage == NULL || pGetSignalingChannelEndpointResponse == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Validate(pMessage, messageLength);
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         memset(pGetSignalingChannelEndpointResponse, 0, sizeof(SignalingGetSignalingChannelEndpointResponse_t));
 
         /* Check if it's resourceEndpoint. */
@@ -941,17 +941,17 @@ SignalingResult_t Signaling_parseGetSignalingChannelEndpointResponse( SignalingC
                 pair.keyLength != strlen("ResourceEndpointList") || 
                 strncmp(pair.key, "ResourceEndpointList", pair.keyLength) != 0) {
                 /* Not an ice server list meesage. */
-                result = SIGNAL_RESULT_NOT_EXPECT_RESPONSE;
+                result = SIGNALING_RESULT_NOT_EXPECT_RESPONSE;
             } else {
                 pResourceEndpointListBuffer = pair.value;
                 resourceEndpointListBufferLength = pair.valueLength;
             }
         } else {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    while (result == SIGNAL_RESULT_OK) {
+    while (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Iterate( pResourceEndpointListBuffer, resourceEndpointListBufferLength, &resourceEndpointStart, &resourceEndpointNext, &pair );
 
         if (jsonResult == JSONSuccess) {
@@ -961,7 +961,7 @@ SignalingResult_t Signaling_parseGetSignalingChannelEndpointResponse( SignalingC
             endpointListNext = 0;
             pTempEndpoint = NULL;
             tempEndpointLength = 0;
-            protocol = SIGNAL_ENDPOINT_PROTOCOL_NONE;
+            protocol = SIGNALING_ENDPOINT_PROTOCOL_NONE;
 
             jsonResult = JSON_Iterate( pEndpointListBuffer, endpointListBufferLength, &endpointListStart, &endpointListNext, &pair );
             while (jsonResult == JSONSuccess) {
@@ -975,17 +975,17 @@ SignalingResult_t Signaling_parseGetSignalingChannelEndpointResponse( SignalingC
                 jsonResult = JSON_Iterate( pEndpointListBuffer, endpointListBufferLength, &endpointListStart, &endpointListNext, &pair );
             }
 
-            if (pTempEndpoint != NULL && protocol != SIGNAL_ENDPOINT_PROTOCOL_NONE) {
+            if (pTempEndpoint != NULL && protocol != SIGNALING_ENDPOINT_PROTOCOL_NONE) {
                 switch (protocol) {
-                    case SIGNAL_ENDPOINT_PROTOCOL_WEBSOCKET_SECURE:
+                    case SIGNALING_ENDPOINT_PROTOCOL_WEBSOCKET_SECURE:
                         pGetSignalingChannelEndpointResponse->pEndpointWebsocketSecure = pTempEndpoint;
                         pGetSignalingChannelEndpointResponse->endpointWebsocketSecureLength = tempEndpointLength;
                         break;
-                    case SIGNAL_ENDPOINT_PROTOCOL_HTTPS:
+                    case SIGNALING_ENDPOINT_PROTOCOL_HTTPS:
                         pGetSignalingChannelEndpointResponse->pEndpointHttps = pTempEndpoint;
                         pGetSignalingChannelEndpointResponse->endpointHttpsLength = tempEndpointLength;
                         break;
-                    case SIGNAL_ENDPOINT_PROTOCOL_WEBRTC:
+                    case SIGNALING_ENDPOINT_PROTOCOL_WEBRTC:
                     default:
                         pGetSignalingChannelEndpointResponse->pEndpointWebrtc = pTempEndpoint;
                         pGetSignalingChannelEndpointResponse->endpointWebrtcLength = tempEndpointLength;
@@ -1003,44 +1003,44 @@ SignalingResult_t Signaling_parseGetSignalingChannelEndpointResponse( SignalingC
 
 SignalingResult_t Signaling_constructGetIceServerConfigRequest( SignalingContext_t *pCtx, SignalingGetIceServerConfigRequest_t * pGetIceServerConfigReqeust, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
 
     /* input check */
     if (pCtx == NULL || pRequestBuffer == NULL || pGetIceServerConfigReqeust == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL ||
         pGetIceServerConfigReqeust->pClientId == NULL || pGetIceServerConfigReqeust->pEndpointHttps == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pGetIceServerConfigReqeust->endpointHttpsLength, pGetIceServerConfigReqeust->pEndpointHttps,
                           AWS_GET_ICE_CONFIG_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         length = snprintf(pRequestBuffer->pBody, pRequestBuffer->bodyLength, AWS_GET_ICE_CONFIG_PARAM_JSON_TEMPLATE,
                           (int) pGetIceServerConfigReqeust->channelArnLength, pGetIceServerConfigReqeust->pChannelArn,
                           (int) pGetIceServerConfigReqeust->clientIdLength, pGetIceServerConfigReqeust->pClientId);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->bodyLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -1052,7 +1052,7 @@ SignalingResult_t Signaling_constructGetIceServerConfigRequest( SignalingContext
 
 SignalingResult_t Signaling_parseGetIceServerConfigResponse( SignalingContext_t *pCtx, char * pMessage, size_t messageLength, SignalingGetIceServerConfigResponse_t *pGetIceConfigResponse )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
@@ -1061,18 +1061,18 @@ SignalingResult_t Signaling_parseGetIceServerConfigResponse( SignalingContext_t 
 
     /* input check */
     if (pCtx == NULL || pMessage == NULL || pGetIceConfigResponse == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Validate(pMessage, messageLength);
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         memset(pGetIceConfigResponse, 0, sizeof(SignalingGetIceServerConfigResponse_t));
 
         /* Check if it's IceServerList. */
@@ -1083,17 +1083,17 @@ SignalingResult_t Signaling_parseGetIceServerConfigResponse( SignalingContext_t 
                 pair.keyLength != strlen("IceServerList") || 
                 strncmp(pair.key, "IceServerList", pair.keyLength) != 0) {
                 /* Not an ice server list meesage. */
-                result = SIGNAL_RESULT_NOT_EXPECT_RESPONSE;
+                result = SIGNALING_RESULT_NOT_EXPECT_RESPONSE;
             } else {
                 pIceServerListBuffer = pair.value;
                 iceServerListBufferLength = pair.valueLength;
             }
         } else {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         result = parseIceServerList(pIceServerListBuffer, iceServerListBufferLength, pGetIceConfigResponse);
     }
 
@@ -1102,36 +1102,36 @@ SignalingResult_t Signaling_parseGetIceServerConfigResponse( SignalingContext_t 
 
 SignalingResult_t Signaling_constuctJoinStorageSessionRequest( SignalingContext_t *pCtx, SignalingJoinStorageSessionRequest_t * pJoinStorageSessionRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
 
     /* input check */
     if (pCtx == NULL || pRequestBuffer == NULL || pJoinStorageSessionRequest == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL ||
         pJoinStorageSessionRequest->pChannelArn == NULL || pJoinStorageSessionRequest->pEndpointWebrtc == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pJoinStorageSessionRequest->endpointWebrtcLength, pJoinStorageSessionRequest->pEndpointWebrtc,
                           AWS_JOIN_STORAGE_SESSION_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
-        if (pJoinStorageSessionRequest->role == SIGNAL_ROLE_MASTER) {
+        if (pJoinStorageSessionRequest->role == SIGNALING_ROLE_MASTER) {
             snprintf(pRequestBuffer->pBody, pRequestBuffer->bodyLength, AWS_JOIN_STORAGE_SESSION_MASTER_PARAM_JSON_TEMPLATE,
                      (int) pJoinStorageSessionRequest->channelArnLength, pJoinStorageSessionRequest->pChannelArn);
         } else {
@@ -1141,10 +1141,10 @@ SignalingResult_t Signaling_constuctJoinStorageSessionRequest( SignalingContext_
         }
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->bodyLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -1156,44 +1156,44 @@ SignalingResult_t Signaling_constuctJoinStorageSessionRequest( SignalingContext_
 
 SignalingResult_t Signaling_constructDeleteSignalingChannelRequest( SignalingContext_t *pCtx, SignalingDeleteSignalingChannelRequest_t * pDeleteSignalingChannelRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
 
     /* input check */
     if (pCtx == NULL || pRequestBuffer == NULL || pDeleteSignalingChannelRequest == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL ||
         pDeleteSignalingChannelRequest->pChannelArn == NULL || pDeleteSignalingChannelRequest->pVersion == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
         length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s%s",
                           (int) pCtx->controlPlaneUrlLength, pCtx->controlPlaneUrl,
                           AWS_DELETE_SIGNALING_CHANNEL_API_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // Prepare the body for the call
         snprintf(pRequestBuffer->pBody, pRequestBuffer->bodyLength, AWS_DELETE_CHANNEL_PARAM_JSON_TEMPLATE,
                  (int) pDeleteSignalingChannelRequest->channelArnLength, pDeleteSignalingChannelRequest->pChannelArn,
                  (int) pDeleteSignalingChannelRequest->versionLength, pDeleteSignalingChannelRequest->pVersion);
         
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->bodyLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->bodyLength = length;
@@ -1205,22 +1205,22 @@ SignalingResult_t Signaling_constructDeleteSignalingChannelRequest( SignalingCon
 
 SignalingResult_t Signaling_constructConnectWssEndpointRequest( SignalingContext_t *pCtx, SignalingConnectWssEndpointRequest_t * pConnectWssEndpointRequest, SignalingRequest_t *pRequestBuffer )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
 
     /* input check */
     if (pCtx == NULL || pRequestBuffer == NULL || pConnectWssEndpointRequest == NULL ||
         pRequestBuffer->pUrl == NULL ||
         pConnectWssEndpointRequest->pChannelArn == NULL || pConnectWssEndpointRequest->pEndpointWebsocketSecure == NULL ||
-        (pConnectWssEndpointRequest->role != SIGNAL_ROLE_MASTER && pConnectWssEndpointRequest->role != SIGNAL_ROLE_VIEWER)) {
-        result = SIGNAL_RESULT_BAD_PARAM;
-    } else if (pConnectWssEndpointRequest->role == SIGNAL_ROLE_VIEWER && pConnectWssEndpointRequest->pClientId == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        (pConnectWssEndpointRequest->role != SIGNALING_ROLE_MASTER && pConnectWssEndpointRequest->role != SIGNALING_ROLE_VIEWER)) {
+        result = SIGNALING_RESULT_BAD_PARAM;
+    } else if (pConnectWssEndpointRequest->role == SIGNALING_ROLE_VIEWER && pConnectWssEndpointRequest->pClientId == NULL) {
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         // calculate the length of url
-        if (pConnectWssEndpointRequest->role == SIGNAL_ROLE_MASTER) {
+        if (pConnectWssEndpointRequest->role == SIGNALING_ROLE_MASTER) {
             length = snprintf(pRequestBuffer->pUrl, pRequestBuffer->urlLength, "%.*s?%s=%.*s",
                               (int) pConnectWssEndpointRequest->endpointWebsocketSecureLength, pConnectWssEndpointRequest->pEndpointWebsocketSecure,
                               AWS_SIGNALING_CHANNEL_ARN_PARAM_NAME,
@@ -1235,10 +1235,10 @@ SignalingResult_t Signaling_constructConnectWssEndpointRequest( SignalingContext
         }
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= pRequestBuffer->urlLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             pRequestBuffer->urlLength = length;
@@ -1250,7 +1250,7 @@ SignalingResult_t Signaling_constructConnectWssEndpointRequest( SignalingContext
 
 SignalingResult_t Signaling_constructWssMessage( SignalingWssSendMessage_t * pWssSendMessage, char * pBuffer, size_t * pBufferLength )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     int length=0;
     char * pCurrentWrite = pBuffer;
     size_t remainingLength = *pBufferLength;
@@ -1259,20 +1259,20 @@ SignalingResult_t Signaling_constructWssMessage( SignalingWssSendMessage_t * pWs
     if (pWssSendMessage == NULL || pBuffer == NULL ||
         pWssSendMessage->pBase64EncodedMessage == NULL ||
         pWssSendMessage->pRecipientClientId == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         length = snprintf(pCurrentWrite, remainingLength, AWS_SIGNALING_SEND_MESSAGE_TEMPLATE_PREFIX,
                           getStringFromMessageType(pWssSendMessage->messageType),
                           (int) pWssSendMessage->recipientClientIdLength, pWssSendMessage->pRecipientClientId,
                           (int) pWssSendMessage->base64EncodedMessageLength, pWssSendMessage->pBase64EncodedMessage);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             remainingLength -= length;
@@ -1281,15 +1281,15 @@ SignalingResult_t Signaling_constructWssMessage( SignalingWssSendMessage_t * pWs
     }
 
     /* Append correlation ID. */
-    if (result == SIGNAL_RESULT_OK && pWssSendMessage->correlationIdLength > 0) {
+    if (result == SIGNALING_RESULT_OK && pWssSendMessage->correlationIdLength > 0) {
         length = snprintf(pCurrentWrite, remainingLength, AWS_SIGNALING_SEND_MESSAGE_TEMPLATE_CORRELATION_ID,
                           (int) pWssSendMessage->correlationIdLength, pWssSendMessage->pCorrelationId);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             remainingLength -= length;
@@ -1298,21 +1298,21 @@ SignalingResult_t Signaling_constructWssMessage( SignalingWssSendMessage_t * pWs
     }
 
     /* Append ice server list if it's SDP_OFFER. */
-    if (result == SIGNAL_RESULT_OK && pWssSendMessage->messageType == SIGNAL_MESSAGE_TYPE_SDP_OFFER &&
+    if (result == SIGNALING_RESULT_OK && pWssSendMessage->messageType == SIGNALING_TYPE_MESSAGE_SDP_OFFER &&
         pWssSendMessage->iceServerList.iceServerNum > 0) {
         length = remainingLength;
         result = appendIceServerList(pCurrentWrite, &length, &pWssSendMessage->iceServerList);
     }
 
     /* Append send message postfix. */
-    if (result == SIGNAL_RESULT_OK ) {
+    if (result == SIGNALING_RESULT_OK ) {
         length = snprintf(pCurrentWrite, remainingLength, AWS_SIGNALING_SEND_MESSAGE_TEMPLATE_POSTFIX);
 
         if (length < 0) { //LCOV_EXCL_BR_LINE
-            result = SIGNAL_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
         }
         else if (length >= remainingLength) {
-            result = SIGNAL_RESULT_OUT_OF_MEMORY;
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
         }
         else {
             remainingLength -= length;
@@ -1320,7 +1320,7 @@ SignalingResult_t Signaling_constructWssMessage( SignalingWssSendMessage_t * pWs
         }
     }
     
-    if (result == SIGNAL_RESULT_OK ) {
+    if (result == SIGNALING_RESULT_OK ) {
         *pBufferLength = *pBufferLength - remainingLength;
     }
 
@@ -1329,7 +1329,7 @@ SignalingResult_t Signaling_constructWssMessage( SignalingWssSendMessage_t * pWs
 
 SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t messageLength, SignalingWssRecvMessage_t * pWssRecvMessage )
 {
-    SignalingResult_t result = SIGNAL_RESULT_OK;
+    SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
     size_t start = 0, next = 0;
     JSONPair_t pair = { 0 };
@@ -1339,7 +1339,7 @@ SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t message
 
     /* input check */
     if (pMessage == NULL || pWssRecvMessage == NULL) {
-        result = SIGNAL_RESULT_BAD_PARAM;
+        result = SIGNALING_RESULT_BAD_PARAM;
     }
 
     // Exclude '\0' in messageLength.
@@ -1347,15 +1347,15 @@ SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t message
         messageLength--;
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         jsonResult = JSON_Validate(pMessage, messageLength);
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
 
-    if (result == SIGNAL_RESULT_OK) {
+    if (result == SIGNALING_RESULT_OK) {
         memset(pWssRecvMessage, 0, sizeof(SignalingWssRecvMessage_t));
 
         jsonResult = JSON_Iterate( pMessage, messageLength, &start, &next, &pair );
@@ -1366,19 +1366,19 @@ SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t message
                 pWssRecvMessage->senderClientIdLength = pair.valueLength;
             } else if (strncmp(pair.key, "messageType", pair.keyLength) == 0) {
                 if (strncmp(pair.value, "SDP_OFFER", pair.valueLength) == 0) {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_SDP_OFFER;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_SDP_OFFER;
                 } else if (strncmp(pair.value, "SDP_ANSWER", pair.valueLength) == 0) {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_SDP_ANSWER;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_SDP_ANSWER;
                 } else if (strncmp(pair.value, "ICE_CANDIDATE", pair.valueLength) == 0) {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_ICE_CANDIDATE;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE;
                 } else if (strncmp(pair.value, "GO_AWAY", pair.valueLength) == 0) {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_GO_AWAY;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_GO_AWAY;
                 } else if (strncmp(pair.value, "RECONNECT_ICE_SERVER", pair.valueLength) == 0) {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_RECONNECT_ICE_SERVER;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER;
                 } else if (strncmp(pair.value, "STATUS_RESPONSE", pair.valueLength) == 0) {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_STATUS_RESPONSE;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_STATUS_RESPONSE;
                 } else {
-                    pWssRecvMessage->messageType = SIGNAL_MESSAGE_TYPE_UNKNOWN;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_UNKNOWN;
                 }
             } else if (strncmp(pair.key, "messagePayload", pair.keyLength) == 0) {
                 pWssRecvMessage->pBase64EncodedPayload = pair.value;
@@ -1390,7 +1390,7 @@ SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t message
                     statusResponseStart = 0;
                     statusResponseNext = 0;
                 } else {
-                    result = SIGNAL_RESULT_NOT_EXPECT_RESPONSE;
+                    result = SIGNALING_RESULT_NOT_EXPECT_RESPONSE;
                     break;
                 }
             } else if (pair.jsonType == JSONArray &&
@@ -1398,7 +1398,7 @@ SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t message
                        strncmp(pair.key, "IceServerList", pair.keyLength) == 0) {
                 result = parseIceServerList(pair.value, pair.valueLength, &pWssRecvMessage->iceServerList);
 
-                if (result != SIGNAL_RESULT_OK) {
+                if (result != SIGNALING_RESULT_OK) {
                     break;
                 }
             } else {
@@ -1409,11 +1409,11 @@ SignalingResult_t Signaling_parseWssRecvMessage( char * pMessage, size_t message
         }
     }
 
-    if (result == SIGNAL_RESULT_OK && pStatusResponseBuffer != NULL) {
+    if (result == SIGNALING_RESULT_OK && pStatusResponseBuffer != NULL) {
         jsonResult = JSON_Iterate( pStatusResponseBuffer, statusResponseBufferLength, &statusResponseStart, &statusResponseNext, &pair );
 
         if (jsonResult != JSONSuccess) {
-            result = SIGNAL_RESULT_INVALID_STATUS_RESPONSE;
+            result = SIGNALING_RESULT_INVALID_STATUS_RESPONSE;
         }
 
         while (jsonResult == JSONSuccess) {

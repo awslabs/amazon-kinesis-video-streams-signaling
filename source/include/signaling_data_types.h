@@ -187,10 +187,10 @@ typedef enum SignalingChannelEndpointProtocol
 /**
  * @brief Channel type
  */
-typedef enum SignalingChannelType {
-    SIGNALING_CHANNEL_TYPE_UNKNOWN,       //!< Channel type is unknown
-    SIGNALING_CHANNEL_TYPE_SINGLE_MASTER, //!< Channel type is master
-} SignalingChannelType_t;
+typedef enum SignalingTypeChannel {
+    SIGNALING_TYPE_CHANNEL_UNKNOWN,       //!< Channel type is unknown
+    SIGNALING_TYPE_CHANNEL_SINGLE_MASTER, //!< Channel type is master
+} SignalingTypeChannel_t;
 
 typedef enum SignalingRole
 {
@@ -199,16 +199,16 @@ typedef enum SignalingRole
     SIGNALING_ROLE_VIEWER,
 } SignalingRole_t;
 
-typedef enum SignalingMessageType
+typedef enum SignalingTypeMessage
 {
-    SIGNALING_MESSAGE_TYPE_UNKNOWN = 0,
-    SIGNALING_MESSAGE_TYPE_SDP_OFFER,
-    SIGNALING_MESSAGE_TYPE_SDP_ANSWER,
-    SIGNALING_MESSAGE_TYPE_ICE_CANDIDATE,
-    SIGNALING_MESSAGE_TYPE_GO_AWAY,
-    SIGNALING_MESSAGE_TYPE_RECONNECT_ICE_SERVER,
-    SIGNALING_MESSAGE_TYPE_STATUS_RESPONSE,
-} SignalingMessageType_t;
+    SIGNALING_TYPE_MESSAGE_UNKNOWN = 0,
+    SIGNALING_TYPE_MESSAGE_SDP_OFFER,
+    SIGNALING_TYPE_MESSAGE_SDP_ANSWER,
+    SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE,
+    SIGNALING_TYPE_MESSAGE_GO_AWAY,
+    SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER,
+    SIGNALING_TYPE_MESSAGE_STATUS_RESPONSE,
+} SignalingTypeMessage_t;
 
 typedef struct SignalingChannelInfo
 {
@@ -218,7 +218,7 @@ typedef struct SignalingChannelInfo
     size_t channelNameLength;
     const char * pChannelStatus;
     size_t channelStatusLength;
-    SignalingChannelType_t channelType;
+    SignalingTypeChannel_t type;
     const char * pVersion;
     size_t versionLength;
     const char * pCreationTime;
@@ -387,7 +387,7 @@ typedef struct SignalingConnectWssEndpointRequest
 
 typedef struct SignalingWssSendMessage
 {
-    SignalingMessageType_t messageType;
+    SignalingTypeMessage_t messageType;
     const char * pRecipientClientId;
     size_t recipientClientIdLength;
     const char * pBase64EncodedMessage;
@@ -415,7 +415,7 @@ typedef struct SignalingWssRecvMessages
 {
     const char * pSenderClientId;
     size_t senderClientIdLength;
-    SignalingMessageType_t messageType;
+    SignalingTypeMessage_t messageType;
     const char * pBase64EncodedPayload;
     size_t base64EncodedPayloadLength;
     SignalingWssStatusResponse_t statusResponse;
