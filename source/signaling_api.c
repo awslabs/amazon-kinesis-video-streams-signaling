@@ -308,16 +308,21 @@ SignalingResult_t Signaling_Init( SignalingContext_t *pCtx, SignalingAwsControlP
         memset(pCtx, 0, sizeof(SignalingContext_t));
 
         if (pAwsControlPlaneInfo->pRegion == NULL) {
-            if( strlen(SIGNALING_AWS_DEFAULT_REGION) <= SIGNALING_AWS_REGION_MAX_LENGTH ) {
-                pCtx->regionLength = strlen(SIGNALING_AWS_DEFAULT_REGION);
-                memcpy(pCtx->region, SIGNALING_AWS_DEFAULT_REGION, pCtx->regionLength);
-            } else {
-
-            }
+            length = snprintf(pCtx->region, SIGNALING_AWS_REGION_MAX_LENGTH, "%.*s",
+                              (int) strlen(SIGNALING_AWS_DEFAULT_REGION), SIGNALING_AWS_DEFAULT_REGION);
         } else {
-            // TODO: Add error handling
-            pCtx->regionLength = pAwsControlPlaneInfo->regionLength;
-            memcpy(pCtx->region, pAwsControlPlaneInfo->pRegion, pCtx->regionLength);
+            length = snprintf(pCtx->region, SIGNALING_AWS_REGION_MAX_LENGTH, "%.*s",
+                              (int) pAwsControlPlaneInfo->regionLength, pAwsControlPlaneInfo->pRegion);
+        }
+
+        if (length < 0) { //LCOV_EXCL_BR_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+        }
+        else if (length >= SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH) {
+            result = SIGNALING_RESULT_REGION_LENGTH_TOO_LARGE;
+        }
+        else {
+            pCtx->regionLength = length;
         }
     }
 
@@ -327,20 +332,19 @@ SignalingResult_t Signaling_Init( SignalingContext_t *pCtx, SignalingAwsControlP
             length = snprintf(pCtx->controlPlaneUrl, SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH, "%s%s.%s%s",
                               AWS_CONTROL_PLANE_URI_PREFIX, AWS_KINESIS_VIDEO_SERVICE_NAME, 
                               pCtx->region, AWS_CONTROL_PLANE_URI_POSTFIX);
-
-            if (length < 0) { //LCOV_EXCL_BR_LINE
-                result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
-            }
-            else if ((size_t)length >= SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH) {
-                result = SIGNALING_RESULT_OUT_OF_MEMORY;
-            }
-            else {
-                pCtx->controlPlaneUrlLength = length;
-            }
         } else {
-            // TODO: Add error handling
-            pCtx->controlPlaneUrlLength = pAwsControlPlaneInfo->controlPlaneUrlLength;
-            memcpy(pCtx->controlPlaneUrl, pAwsControlPlaneInfo->pControlPlaneUrl, pCtx->controlPlaneUrlLength);
+            length = snprintf(pCtx->controlPlaneUrl, SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH, "%.*s",
+                              (int) pAwsControlPlaneInfo->controlPlaneUrlLength, pAwsControlPlaneInfo->pControlPlaneUrl);
+        }
+
+        if (length < 0) { //LCOV_EXCL_BR_LINE
+            result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
+        }
+        else if (length >= SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH) {
+            result = SIGNALING_RESULT_OUT_OF_MEMORY;
+        }
+        else {
+            pCtx->controlPlaneUrlLength = length;
         }
     }
 
