@@ -48,14 +48,14 @@ static SignalingResult_t appendIceServerList( char *pBuffer, int *pBufferLength,
     size_t remainingLength = *pBufferLength;
 
     /* pBuffer, pBufferLength, and pIceServerList are guaranteed before calling. */
-    if (pIceServerList->iceServerNum > AWS_ICE_SERVER_MAX_NUM) {
+    if (pIceServerList->iceServerNum > SIGNALING_AWS_ICE_SERVER_MAX_NUM) {
         result = SIGNALING_RESULT_INVALID_ICE_SERVER_COUNT;
     }
 
     if (result == SIGNALING_RESULT_OK) {
         /* Append ice server configs. */
         for (i = 0; i < pIceServerList->iceServerNum; i++) {
-            if (pIceServerList->iceServer[i].urisNum > AWS_ICE_SERVER_MAX_URIS) {
+            if (pIceServerList->iceServer[i].urisNum > SIGNALING_AWS_ICE_SERVER_MAX_URIS) {
                 result = SIGNALING_RESULT_INVALID_ICE_SERVER_URIS_COUNT;
                 break;
             }
@@ -206,7 +206,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    while (result == SIGNALING_RESULT_OK && pIceServerList->iceServerNum < AWS_ICE_SERVER_MAX_NUM) {
+    while (result == SIGNALING_RESULT_OK && pIceServerList->iceServerNum < SIGNALING_AWS_ICE_SERVER_MAX_NUM) {
         jsonResult = JSON_Iterate( pIceServerListBuffer, iceServerListBufferLength, &start, &next, &pair );
 
         if (jsonResult == JSONSuccess) {
@@ -221,7 +221,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
                     if (pIceServerList->iceServer[pIceServerList->iceServerNum].pPassword != NULL) {
                         pIceServerList->iceServerNum++;
 
-                        if (pIceServerList->iceServerNum >= AWS_ICE_SERVER_MAX_NUM) {
+                        if (pIceServerList->iceServerNum >= SIGNALING_AWS_ICE_SERVER_MAX_NUM) {
                             /* Ignore following servers. */
                             break;
                         }
@@ -239,7 +239,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
                     if (pIceServerList->iceServer[pIceServerList->iceServerNum].messageTtlSeconds != 0) {
                         pIceServerList->iceServerNum++;
 
-                        if (pIceServerList->iceServerNum >= AWS_ICE_SERVER_MAX_NUM) {
+                        if (pIceServerList->iceServerNum >= SIGNALING_AWS_ICE_SERVER_MAX_NUM) {
                             /* Ignore following servers. */
                             break;
                         }
@@ -257,7 +257,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
                     if (pIceServerList->iceServer[pIceServerList->iceServerNum].pUris[0] != NULL) {
                         pIceServerList->iceServerNum++;
 
-                        if (pIceServerList->iceServerNum >= AWS_ICE_SERVER_MAX_NUM) {
+                        if (pIceServerList->iceServerNum >= SIGNALING_AWS_ICE_SERVER_MAX_NUM) {
                             /* Ignore following servers. */
                             break;
                         }
@@ -268,7 +268,7 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
                     if (pIceServerList->iceServer[pIceServerList->iceServerNum].pUserName != NULL) {
                         pIceServerList->iceServerNum++;
 
-                        if (pIceServerList->iceServerNum >= AWS_ICE_SERVER_MAX_NUM) {
+                        if (pIceServerList->iceServerNum >= SIGNALING_AWS_ICE_SERVER_MAX_NUM) {
                             /* Ignore following servers. */
                             break;
                         }
@@ -293,13 +293,13 @@ static SignalingResult_t parseIceServerList(const char *pIceServerListBuffer, si
     return result;
 }
 
-SignalingResult_t Signaling_createSignaling( SignalingContext_t *pCtx, SignalingCreate_t *pCreate )
+SignalingResult_t Signaling_Init( SignalingContext_t *pCtx, SignalingAwsControlPlaneInfo_t *pAwsControlPlaneInfo )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int length = 0;
 
     /* input check */
-    if (pCtx == NULL || pCreate == NULL) {
+    if (pCtx == NULL || pAwsControlPlaneInfo == NULL) {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
@@ -307,28 +307,31 @@ SignalingResult_t Signaling_createSignaling( SignalingContext_t *pCtx, Signaling
     if (result == SIGNALING_RESULT_OK) {
         memset(pCtx, 0, sizeof(SignalingContext_t));
 
-        if (pCreate->pRegion == NULL) {
-            // TODO: Add error handling
-            pCtx->regionLength = strlen(AWS_DEFAULT_REGION);
-            memcpy(pCtx->region, AWS_DEFAULT_REGION, pCtx->regionLength);
+        if (pAwsControlPlaneInfo->pRegion == NULL) {
+            if( strlen(SIGNALING_AWS_DEFAULT_REGION) <= SIGNALING_AWS_REGION_MAX_LENGTH ) {
+                pCtx->regionLength = strlen(SIGNALING_AWS_DEFAULT_REGION);
+                memcpy(pCtx->region, SIGNALING_AWS_DEFAULT_REGION, pCtx->regionLength);
+            } else {
+
+            }
         } else {
             // TODO: Add error handling
-            pCtx->regionLength = pCreate->regionLength;
-            memcpy(pCtx->region, pCreate->pRegion, pCtx->regionLength);
+            pCtx->regionLength = pAwsControlPlaneInfo->regionLength;
+            memcpy(pCtx->region, pAwsControlPlaneInfo->pRegion, pCtx->regionLength);
         }
     }
 
     /* Set control plane. */
     if (result == SIGNALING_RESULT_OK) {
-        if (pCreate->pControlPlaneUrl == NULL) {
-            length = snprintf(pCtx->controlPlaneUrl, AWS_CONTROL_PLANE_URL_MAX_LENGTH, "%s%s.%s%s",
+        if (pAwsControlPlaneInfo->pControlPlaneUrl == NULL) {
+            length = snprintf(pCtx->controlPlaneUrl, SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH, "%s%s.%s%s",
                               AWS_CONTROL_PLANE_URI_PREFIX, AWS_KINESIS_VIDEO_SERVICE_NAME, 
                               pCtx->region, AWS_CONTROL_PLANE_URI_POSTFIX);
 
             if (length < 0) { //LCOV_EXCL_BR_LINE
                 result = SIGNALING_RESULT_SNPRINTF_ERROR; // LCOV_EXCL_LINE
             }
-            else if ((size_t)length >= AWS_CONTROL_PLANE_URL_MAX_LENGTH) {
+            else if ((size_t)length >= SIGNALING_AWS_CONTROL_PLANE_URL_MAX_LENGTH) {
                 result = SIGNALING_RESULT_OUT_OF_MEMORY;
             }
             else {
@@ -336,8 +339,8 @@ SignalingResult_t Signaling_createSignaling( SignalingContext_t *pCtx, Signaling
             }
         } else {
             // TODO: Add error handling
-            pCtx->controlPlaneUrlLength = pCreate->controlPlaneUrlLength;
-            memcpy(pCtx->controlPlaneUrl, pCreate->pControlPlaneUrl, pCtx->controlPlaneUrlLength);
+            pCtx->controlPlaneUrlLength = pAwsControlPlaneInfo->controlPlaneUrlLength;
+            memcpy(pCtx->controlPlaneUrl, pAwsControlPlaneInfo->pControlPlaneUrl, pCtx->controlPlaneUrlLength);
         }
     }
 
@@ -444,7 +447,7 @@ SignalingResult_t Signaling_parseDescribeSignalingChannelResponse( SignalingCont
                 pDescribeSignalingChannelResponse->pChannelArn = pair.value;
                 pDescribeSignalingChannelResponse->channelArnLength = pair.valueLength;
             } else if (strncmp(pair.key, "ChannelName", pair.keyLength) == 0) {
-                if (pair.valueLength < AWS_MAX_CHANNEL_NAME_LEN) {
+                if (pair.valueLength < SIGNALING_AWS_MAX_CHANNEL_NAME_LEN) {
                     pDescribeSignalingChannelResponse->pChannelName = pair.value;
                     pDescribeSignalingChannelResponse->channelNameLength = pair.valueLength;
 
@@ -642,7 +645,7 @@ SignalingResult_t Signaling_constructCreateSignalingChannelRequest( SignalingCon
     if (pCtx == NULL || pRequestBuffer == NULL || pCreateSignalingChannelRequest == NULL ||
         pRequestBuffer->pUrl == NULL || pRequestBuffer->pBody == NULL || 
         (pCreateSignalingChannelRequest->tagsCount > 0 && pCreateSignalingChannelRequest->pTags == NULL) ||
-        pCreateSignalingChannelRequest->channelInfo.channelNameLength >= AWS_MAX_CHANNEL_NAME_LEN) {
+        pCreateSignalingChannelRequest->channelInfo.channelNameLength >= SIGNALING_AWS_MAX_CHANNEL_NAME_LEN) {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
@@ -796,19 +799,18 @@ SignalingResult_t Signaling_parseCreateSignalingChannelResponse( SignalingContex
     }
 
     if (result == SIGNALING_RESULT_OK) {
-        pCreateSignalingChannelResponse->channelInfo.pChannelArn = NULL;
-        pCreateSignalingChannelResponse->channelInfo.channelArnLength = 0;
+        memset(pCreateSignalingChannelResponse, 0, sizeof(SignalingCreateSignalingChannelResponse_t));
 
         /* Check if it's IceServerList. */
         jsonResult = JSON_Iterate( pMessage, messageLength, &start, &next, &pair );
 
         if (jsonResult == JSONSuccess) {
             if (strncmp(pair.key, "ChannelARN", pair.keyLength) == 0) {
-                pCreateSignalingChannelResponse->channelInfo.pChannelArn = pair.value;
-                pCreateSignalingChannelResponse->channelInfo.channelArnLength = pair.valueLength;
+                pCreateSignalingChannelResponse->pChannelArn = pair.value;
+                pCreateSignalingChannelResponse->channelArnLength = pair.valueLength;
             }
         } else {
-            result = SIGNALING_RESULT_INVALID_JSON;
+            result = SIGNALING_RESULT_NOT_EXPECT_RESPONSE;
         }
     }
 
