@@ -601,7 +601,7 @@ SignalingResult_t Signaling_parseDescribeMediaStorageConfigResponse( SignalingCo
         jsonResult = JSON_Iterate( pMessage, messageLength, &start, &next, &pair );
 
         if (jsonResult == JSONSuccess) {
-            if (pair.jsonType != JSONArray || 
+            if (pair.jsonType != JSONObject || 
                 pair.keyLength != strlen("MediaStorageConfiguration") || 
                 strncmp(pair.key, "MediaStorageConfiguration", pair.keyLength) != 0) {
                 /* Not an ice server list meesage. */
