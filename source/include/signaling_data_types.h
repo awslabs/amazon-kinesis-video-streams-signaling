@@ -281,9 +281,9 @@ typedef struct SignalingContext
  */
 typedef struct SignalingRequest
 {
-    char *pUrl;
+    char * pUrl;
     size_t urlLength;
-    char *pBody;
+    char * pBody;
     size_t bodyLength;
 } SignalingRequest_t;
 
