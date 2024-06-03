@@ -16,5 +16,4 @@ set( SIGNALING_INCLUDE_PUBLIC_DIRS
 # Signaling library public include header files.
 set( SIGNALING_INCLUDE_PUBLIC_FILES
      "source/include/signaling_api.h"
-     "source/include/signaling_data_types.h" 
-     "source/include/signaling_config_defaults.h" )
+     "source/include/signaling_data_types.h" )
