@@ -1,7 +1,7 @@
 ## amazon-kinesis-video-streams-signaling
 
 The goal of the Signaling library is provide functionalities of control plane
-communication with AWS KVS services. Refer to [AWS KVS API Reference](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_Reference.html) for more detail.
+communication with AWS KVS services. Refer to [AWS KVS API Reference](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_Reference.html) and [WebRTC Websocket APIs](https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis.html) for more detail.
 
 ## What is Signaling?
 
