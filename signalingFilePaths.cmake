@@ -7,13 +7,13 @@
 
 # Signaling library source files.
 set( SIGNALING_SOURCES
-     "source/signaling_api.c" )
+     "${CMAKE_CURRENT_LIST_DIR}/source/signaling_api.c" )
 
 # Signaling library Public Include directories.
 set( SIGNALING_INCLUDE_PUBLIC_DIRS
-     "source/include" )
+     "${CMAKE_CURRENT_LIST_DIR}/source/include" )
 
 # Signaling library public include header files.
 set( SIGNALING_INCLUDE_PUBLIC_FILES
-     "source/include/signaling_api.h"
-     "source/include/signaling_data_types.h" )
+     "${CMAKE_CURRENT_LIST_DIR}/source/include/signaling_api.h"
+     "${CMAKE_CURRENT_LIST_DIR}/source/include/signaling_data_types.h" )
