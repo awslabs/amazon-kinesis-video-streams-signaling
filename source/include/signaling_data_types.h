@@ -79,11 +79,11 @@ typedef enum SignalingProtocol
  * @brief Type of signaling channel.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_ChannelInfo.html#KinesisVideo-Type-ChannelInfo-ChannelType for more detail.
  */
-typedef enum SignalingChannelType
+typedef enum SignalingTypeChannel
 {
-    SIGNALING_CHANNEL_TYPE_UNKNOWN,
-    SIGNALING_CHANNEL_TYPE_SINGLE_MASTER,
-} SignalingChannelType_t;
+    SIGNALING_TYPE_CHANNEL_UNKNOWN,
+    SIGNALING_TYPE_CHANNEL_SINGLE_MASTER,
+} SignalingTypeChannel_t;
 
 /**
  * @ingroup signaling_enum_types
@@ -102,35 +102,55 @@ typedef enum SignalingRole
  * @brief Type of signaling message.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis-7.html for more detail.
  */
-typedef enum SignalingMessageType
+typedef enum SignalingTypeMessage
 {
-    SIGNALING_MESSAGE_TYPE_UNKNOWN = 0,
-    SIGNALING_MESSAGE_TYPE_SDP_OFFER,
-    SIGNALING_MESSAGE_TYPE_SDP_ANSWER,
-    SIGNALING_MESSAGE_TYPE_ICE_CANDIDATE,
-    SIGNALING_MESSAGE_TYPE_GO_AWAY,
-    SIGNALING_MESSAGE_TYPE_RECONNECT_ICE_SERVER,
-    SIGNALING_MESSAGE_TYPE_STATUS_RESPONSE,
-} SignalingMessageType_t;
+    SIGNALING_TYPE_MESSAGE_UNKNOWN = 0,
+    SIGNALING_TYPE_MESSAGE_SDP_OFFER,
+    SIGNALING_TYPE_MESSAGE_SDP_ANSWER,
+    SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE,
+    SIGNALING_TYPE_MESSAGE_GO_AWAY,
+    SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER,
+    SIGNALING_TYPE_MESSAGE_STATUS_RESPONSE,
+} SignalingTypeMessage_t;
 
 /*-----------------------------------------------------------*/
 
 /**
  * @ingroup signaling_enum_types
- * @brief Basic output format of the signaling request.
+ * @brief Basic format of the signaling request.
  */
 typedef struct SignalingRequest
 {
+    char * pUrl;
+    size_t urlLength;
     char * pBody;
     size_t bodyLength;
 } SignalingRequest_t;
 
+/**
+ * @ingroup signaling_enum_types
+ * @brief Basic format of the AWS region name.
+ */
+typedef struct SignalingAwsRegion
+{
+    const char * pAwsRegion;
+    size_t awsRegionLength;
+} SignalingAwsRegion_t;
+
+/**
+ * @ingroup signaling_enum_types
+ * @brief Basic format of the channel name.
+ */
 typedef struct SignalingChannelName
 {
     const char * pChannelName;
     size_t channelNameLength;
 } SignalingChannelName_t;
 
+/**
+ * @ingroup signaling_enum_types
+ * @brief Basic format of the signaling channel ARN.
+ */
 typedef struct SignalingChannelArn
 {
     const char * pChannelArn;
@@ -148,7 +168,7 @@ typedef struct SignalingChannelInfo
     SignalingChannelName_t channelName;
     const char * pChannelStatus;
     size_t channelStatusLength;
-    SignalingChannelType_t channelType;
+    SignalingTypeChannel_t channelType;
     const char * pVersion;
     size_t versionLength;
     const char * pCreationTime;
@@ -183,17 +203,23 @@ typedef struct SignalingTag {
 
 /**
  * @ingroup signaling_enum_types
+ * @brief Basic endpoint structure.
+ */
+typedef struct SignalingChannelEndpoint {
+    const char * pEndpoint;
+    size_t endpointLength;
+} SignalingChannelEndpoint_t;
+
+/**
+ * @ingroup signaling_enum_types
  * @brief The structure of GetSignalingChannelEndpoint response.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_GetSignalingChannelEndpoint.html for more detail.
  */
 typedef struct SignalingChannelEndpoints
 {
-    const char * pWssEndpoint;
-    size_t wssEndpointLength;
-    const char * pHttpsEndpoint;
-    size_t httpsEndpointLength;
-    const char * pWebrtcEndpoint;
-    size_t webrtcEndpointLength;
+    SignalingChannelEndpoint_t wssEndpoint;
+    SignalingChannelEndpoint_t httpsEndpoint;
+    SignalingChannelEndpoint_t webrtcEndpoint;
 } SignalingChannelEndpoints_t;
 
 /**
@@ -221,7 +247,7 @@ typedef struct SignalingIceServer
 typedef struct CreateSignalingChannelRequestInfo
 {
     SignalingChannelName_t channelName;
-    SignalingChannelType_t channelType;
+    SignalingTypeChannel_t channelType;
     uint32_t messageTtlSeconds;
     SignalingTag_t * pTags;
     size_t numTags;
@@ -249,7 +275,7 @@ typedef struct GetIceServerConfigRequestInfo
     SignalingChannelArn_t channelArn;
     char * pClientId;
     size_t clientIdLength;
-} GetIceServerConfigRequestIfo_t;
+} GetIceServerConfigRequestInfo_t;
 
 /**
  * @ingroup signaling_enum_types
@@ -278,6 +304,19 @@ typedef struct DeleteSignalingChannelRequestInfo
 
 /**
  * @ingroup signaling_enum_types
+ * @brief The structure of GetSignalingChannelEndpoint request.
+ *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_GetSignalingChannelEndpoint.html for more detail.
+ */
+typedef struct ConnectWssEndpointRequestInfo
+{
+    SignalingChannelArn_t channelArn;
+    SignalingRole_t role;
+    const char * pClientId;
+    size_t clientIdLength;
+} ConnectWssEndpointRequestInfo_t;
+
+/**
+ * @ingroup signaling_enum_types
  * @brief The structure to send message to websocket secure endpoint.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis3.html,
  *        https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis4.html,
@@ -286,7 +325,7 @@ typedef struct DeleteSignalingChannelRequestInfo
  */
 typedef struct WssSendMessage
 {
-    SignalingMessageType_t messageType;
+    SignalingTypeMessage_t messageType;
     const char * pRecipientClientId;
     size_t recipientClientIdLength;
     const char * pBase64EncodedMessage;
@@ -296,7 +335,6 @@ typedef struct WssSendMessage
     SignalingIceServer_t * pIceServers;
     size_t numIceServers;
 } WssSendMessage_t;
-
 
 /**
  * @ingroup signaling_enum_types
@@ -324,7 +362,7 @@ typedef struct WssRecvMessage
 {
     const char * pSenderClientId;
     size_t senderClientIdLength;
-    SignalingMessageType_t messageType;
+    SignalingTypeMessage_t messageType;
     const char * pBase64EncodedPayload;
     size_t base64EncodedPayloadLength;
     WssStatusResponse_t statusResponse;

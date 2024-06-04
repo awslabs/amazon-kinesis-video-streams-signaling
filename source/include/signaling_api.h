@@ -16,46 +16,10 @@ extern "C" {
 /*-----------------------------------------------------------*/
 
 /**
- * Helper macros to create URLs for various requests.
- */
-
-#define SIGNALING_CONTROL_PLANE_URL( region ) \
-    "https://kinesisvideo." region ".amazonaws.com"
-
-#define SIGNALING_DESCRIBE_SIGNALING_CHANNEL_URL( region ) \
-    "https://kinesisvideo." region ".amazonaws.com/describeSignalingChannel"
-
-#define SIGNALING_DESCRIBE_MEDIA_STORAGE_CONFIG_URL( region ) \
-    "https://kinesisvideo." region ".amazonaws.com/describeMediaStorageConfiguration"
-
-#define SIGNALING_CREATE_SIGNALING_CHANNEL_URL( region ) \
-    "https://kinesisvideo." region ".amazonaws.com/createSignalingChannel"
-
-#define SIGNALING_GET_SIGNALING_CHANNEL_ENDPOINT_URL( region ) \
-    "https://kinesisvideo." region ".amazonaws.com/getSignalingChannelEndpoint"
-
-#define SIGNALING_GET_ICE_SERVER_CONFIG_URL( channelEndpoint ) \
-    channelEndpoint "/v1/get-ice-server-config"
-
-#define SIGNALING_JOIN_STORAGE_SESSION_URL( channelEndpoint ) \
-    channelEndpoint "/joinStorageSession"
-
-#define SIGNALING_DELETE_SIGNALING_CHANNEL_URL( region ) \
-    "https://kinesisvideo." region ".amazonaws.com/deleteSignalingChannel"
-
-#define SIGNALING_CONNECT_AS_MASTER_URL( channelWssEndpoint, channelArn ) \
-    channelWssEndpoint "?X-Amz-ChannelARN=" channelArn
-
-#define SIGNALING_CONNECT_AS_VIEWER_URL( channelWssEndpoint, channelArn, clientId ) \
-    channelWssEndpoint "?X-Amz-ChannelARN=" channelArn "&X-Amz-ClientId=" clientId
-
-/*-----------------------------------------------------------*/
-
-/**
  * @brief This function is used to construct request to query signaling channel information.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pDescribeSignalingChannelRequest The parameters that needed to construct request to query signaling channel information.
+ * @param[in] pAwsRegion The AWS region.
+ * @param[in] pChannelName The channel name set in AWS account.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -66,16 +30,16 @@ extern "C" {
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_DescribeSignalingChannel.html for details.
  */
-SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingChannelName_t * pChannelName,
+SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                      SignalingChannelName_t * pChannelName,
                                                                       SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to parse response of describe signaling channel.
  *
- * @param[in] pCtx The pointer of signaling context.
  * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
  * @param[in] messageLength Length of raw message.
- * @param[out] pDescribeSignalingChannelResponse The output structure includes the signaling channel information.
+ * @param[out] pChannelInfo The output structure includes the signaling channel information.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.
@@ -95,8 +59,8 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
 /**
  * @brief This function is used to construct request to query media storage configuration.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pDescribeMediaStorageConfigRequest The parameters that needed to construct request to query media storage configuration.
+ * @param[in] pAwsRegion The AWS region.
+ * @param[in] pChannelArn The channel ARN which gets from Signaling_ConstructDescribeSignalingChannelRequest.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -107,16 +71,16 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_DescribeMediaStorageConfiguration.html for details.
  */
-SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( SignalingChannelArn_t * pChannelArn,
+SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                        SignalingChannelArn_t * pChannelArn,
                                                                         SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to parse response of describe media storage configurations.
  *
- * @param[in] pCtx The pointer of signaling context.
  * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
  * @param[in] messageLength Length of raw message.
- * @param[out] pDescribeMediaStorageConfigResponse The output structure includes the media storage configuration properties.
+ * @param[out] pMediaStorageConfig The output structure includes the media storage configuration properties.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.
@@ -133,8 +97,8 @@ SignalingResult_t Signaling_ParseDescribeMediaStorageConfigResponse( const char 
 /**
  * @brief This function is used to construct request to create signaling channel.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pCreateSignalingChannelRequest The parameters that needed to construct request to create signaling channel.
+ * @param[in] pAwsRegion The AWS region.
+ * @param[in] pCreateSignalingChannelRequestInfo The parameters that needed to construct request to create signaling channel.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -145,16 +109,16 @@ SignalingResult_t Signaling_ParseDescribeMediaStorageConfigResponse( const char 
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_CreateSignalingChannel.html for details.
  */
-SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( CreateSignalingChannelRequestInfo_t * pCreateSignalingChannelRequestInfo,
+SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                    CreateSignalingChannelRequestInfo_t * pCreateSignalingChannelRequestInfo,
                                                                     SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to parse response of creating signaling channel.
  *
- * @param[in] pCtx The pointer of signaling context.
  * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
  * @param[in] messageLength Length of raw message.
- * @param[out] pCreateSignalingChannelResponse The output structure includes the ARN of created channel.
+ * @param[out] pChannelArn The output structure includes the ARN of created channel.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.
@@ -172,8 +136,8 @@ SignalingResult_t Signaling_ParseCreateSignalingChannelResponse( const char * pM
 /**
  * @brief This function is used to construct request to query signaling channel endpoints.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pGetSignalingChannelEndpointRequest The parameters that needed to construct request to query signaling channel endpoints.
+ * @param[in] pAwsRegion The AWS region.
+ * @param[in] pGetSignalingChannelEndpointRequestInfo The parameters that needed to construct request to query signaling channel endpoints.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -184,22 +148,23 @@ SignalingResult_t Signaling_ParseCreateSignalingChannelResponse( const char * pM
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_GetSignalingChannelEndpoint.html for details.
  */
-SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( GetSignalingChannelEndpointRequestInfo_t * pGetSignalingChannelEndpointRequestInfo,
+SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                         GetSignalingChannelEndpointRequestInfo_t * pGetSignalingChannelEndpointRequestInfo,
                                                                          SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to parse response of get signaling channel endpoints.
  *
- * @param[in] pCtx The pointer of signaling context.
  * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
  * @param[in] messageLength Length of raw message.
- * @param[out] pGetSignalingChannelEndpointResponse The output structure includes endpoints of the signaling channel for websocket secure, HTTPS and WebRTC.
+ * @param[out] pSignalingChannelEndpoints The output structure includes endpoints of the signaling channel for websocket secure, HTTPS and WebRTC.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.
  * - #SIGNALING_RESULT_BAD_PARAM, if any mandatory parameters is NULL.
  * - #SIGNALING_RESULT_INVALID_JSON, if raw message is not a valid JSON message.
  * - #SIGNALING_RESULT_UNEXPECTED_RESPONSE, if the message isn't the expected one.
+ * - #SIGNALING_RESULT_INVALID_PROTOCOL, if protocol type in endpoint is invalid.
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_GetSignalingChannelEndpoint.html for details.
  */
@@ -210,8 +175,8 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
 /**
  * @brief This function is used to construct request to get ICE server configs.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pGetIceServerConfigReqeust The parameters that needed to construct request to get ICE server configs.
+ * @param[in] pHttpsEndpoint The HTTPS endpoint get from Signaling_ConstructGetSignalingChannelEndpointRequest.
+ * @param[in] pGetIceServerConfigRequestInfo The parameters that needed to construct request to get ICE server configs.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -222,16 +187,17 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_signaling_GetIceServerConfig.html for details.
  */
-SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( GetIceServerConfigRequestIfo_t * pGetIceServerConfigRequestInfo,
+SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( SignalingChannelEndpoint_t * pHttpsEndpoint,
+                                                                GetIceServerConfigRequestInfo_t * pGetIceServerConfigRequestInfo,
                                                                 SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to parse response of get signaling channel endpoints.
  *
- * @param[in] pCtx The pointer of signaling context.
  * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
  * @param[in] messageLength Length of raw message.
- * @param[out] pGetIceConfigResponse The output structure includes a list of ICE server information.
+ * @param[out] pIceServers The output structures include a list of ICE servers' information, user must provide memory to store this information.
+ * @param[in, out] pIceServers The maximum number of ICE servers the memory can store, provide the exact ICE server number while return.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.
@@ -250,8 +216,8 @@ SignalingResult_t Signaling_ParseGetIceServerConfigResponse( const char * pMessa
 /**
  * @brief This function is used to construct request to join storage session.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pJoinStorageSessionRequest The parameters that needed to construct request to join storage session.
+ * @param[in] pWebrtcEndpoint The webrtc endpoint get from Signaling_ConstructGetSignalingChannelEndpointRequest.
+ * @param[in] pJoinStorageSessionRequestInfo The parameters that needed to construct request to join storage session.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -262,14 +228,15 @@ SignalingResult_t Signaling_ParseGetIceServerConfigResponse( const char * pMessa
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_webrtc_JoinStorageSession.html for details.
  */
-SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( JoinStorageSessionRequestInfo_t * pJoinStorageSessionRequestInfo,
+SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannelEndpoint_t * pWebrtcEndpoint,
+                                                                JoinStorageSessionRequestInfo_t * pJoinStorageSessionRequestInfo,
                                                                 SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to construct request to delete signaling channel.
  *
- * @param[in] pCtx The pointer of signaling context.
- * @param[in] pDeleteSignalingChannelRequest The parameters that needed to construct request to delete signaling channel.
+ * @param[in] pAwsRegion The AWS region.
+ * @param[in] pDeleteSignalingChannelRequestInfo The parameters that needed to construct request to delete signaling channel.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -280,8 +247,28 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( JoinStorageSessi
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis-7.html for details.
  */
-SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( DeleteSignalingChannelRequestInfo_t * pDeleteSignalingChannelRequestInfo,
+SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                    DeleteSignalingChannelRequestInfo_t * pDeleteSignalingChannelRequestInfo,
                                                                     SignalingRequest_t * pRequestBuffer );
+
+/**
+ * @brief This function is used to construct request to connect with websocket secure endpoint.
+ *
+ * @param[in] pWssEndpoint The Websocket endpoint get from Signaling_ConstructGetSignalingChannelEndpointRequest.
+ * @param[in] pConnectWssEndpointRequestInfo The parameters that needed to construct request.
+ * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
+ *
+ * @return Returns one of the following:
+ * - #SIGNALING_RESULT_OK, if initialization was performed without error.
+ * - #SIGNALING_RESULT_BAD_PARAM, if any mandatory parameters is NULL.
+ * - #SIGNALING_RESULT_SNPRINTF_ERROR, if snprintf returns negative value.
+ * - #SIGNALING_RESULT_OUT_OF_MEMORY, if buffer is not enough to store constructed message.
+ *
+ * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis.html for details.
+ */
+SignalingResult_t Signaling_ConstructConnectWssEndpointRequest( SignalingChannelEndpoint_t * pWssEndpoint,
+                                                                ConnectWssEndpointRequestInfo_t * pConnectWssEndpointRequestInfo,
+                                                                SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to construct event message to websocket secure endpoint.
@@ -307,8 +294,8 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
  *
  * @param[in] pMessage Raw event message from websocket secure endpoint.
  * @param[in] messageLength Length of raw event message.
- * @param[out] pWssRecvMessage The parsed message is encapsulated within a structure that
- *                             employs pointers and size fields to represent the data.
+ * @param[in, out] pWssRecvMessage The parsed message is encapsulated within a structure that
+ *                                 employs pointers and size fields to represent the data.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.

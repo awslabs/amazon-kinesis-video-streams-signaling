@@ -9,6 +9,11 @@
 /* CoreJSON includes. */
 #include "core_json.h"
 
+/**
+ * Helper macros to create URLs for various requests.
+ */
+#define SIGNALING_IS_CHINA_REGION( pAwsRegion ) ( ( ( pAwsRegion )->awsRegionLength >= 3 ) && ( strncmp( "cn-", ( pAwsRegion )->pAwsRegion, 3 ) == 0 ) )
+
 /* Longest protocol string is is "WSS","HTTPS","WEBRTC". */
 #define SIGNALING_GET_ENDPOINT_PROTOCOL_MAX_STRING_LENGTH ( 23 ) /* Includes NULL terminator. */
 
@@ -17,7 +22,7 @@
 static SignalingResult_t InterpretSnprintfReturnValue( int snprintfRetVal,
                                                        size_t bufferLength );
 
-static char * GetStringFromMessageType( SignalingMessageType_t messageType );
+static char * GetStringFromMessageType( SignalingTypeMessage_t messageType );
 
 static SignalingResult_t AppendIceServerList( char * pBuffer,
                                               size_t * pRemainingLength,
@@ -59,21 +64,21 @@ static SignalingResult_t InterpretSnprintfReturnValue( int snprintfRetVal,
 
 /*-----------------------------------------------------------*/
 
-static char * GetStringFromMessageType( SignalingMessageType_t messageType )
+static char * GetStringFromMessageType( SignalingTypeMessage_t messageType )
 {
     char * ret = NULL;
 
     switch( messageType )
     {
-        case SIGNALING_MESSAGE_TYPE_SDP_OFFER:
+        case SIGNALING_TYPE_MESSAGE_SDP_OFFER:
             ret = "SDP_OFFER";
             break;
 
-        case SIGNALING_MESSAGE_TYPE_SDP_ANSWER:
+        case SIGNALING_TYPE_MESSAGE_SDP_ANSWER:
             ret = "SDP_ANSWER";
             break;
 
-        case SIGNALING_MESSAGE_TYPE_ICE_CANDIDATE:
+        case SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE:
             ret = "ICE_CANDIDATE";
             break;
 
@@ -352,17 +357,48 @@ static SignalingResult_t ParseIceServerList( const char * pIceServerListBuffer,
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingChannelName_t * pChannelName,
+SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                      SignalingChannelName_t * pChannelName,
                                                                       SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( pChannelName == NULL ) ||
+    if( ( pAwsRegion == NULL ) ||
+        ( pAwsRegion->pAwsRegion == NULL ) ||
+        ( pChannelName == NULL ) ||
         ( pRequestBuffer == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        if( SIGNALING_IS_CHINA_REGION( pAwsRegion ) )
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com.cn/describeSignalingChannel",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+        else
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com/describeSignalingChannel",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -475,7 +511,7 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
             {
                 if( strncmp( pair.value, "SINGLE_MASTER", pair.valueLength ) == 0 )
                 {
-                    pChannelInfo->channelType = SIGNALING_CHANNEL_TYPE_SINGLE_MASTER;
+                    pChannelInfo->channelType = SIGNALING_TYPE_CHANNEL_SINGLE_MASTER;
                 }
                 else
                 {
@@ -550,18 +586,49 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( SignalingChannelArn_t * pChannelArn,
+SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                        SignalingChannelArn_t * pChannelArn,
                                                                         SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( pChannelArn == NULL ) ||
+    if( ( pAwsRegion == NULL ) ||
+        ( pAwsRegion->pAwsRegion == NULL ) ||
+        ( pChannelArn == NULL ) ||
         ( pRequestBuffer == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
         ( pChannelArn->pChannelArn == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        if( SIGNALING_IS_CHINA_REGION( pAwsRegion ) )
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com.cn/describeMediaStorageConfiguration",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+        else
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com/describeMediaStorageConfiguration",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -670,20 +737,51 @@ SignalingResult_t Signaling_ParseDescribeMediaStorageConfigResponse( const char 
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( CreateSignalingChannelRequestInfo_t * pCreateSignalingChannelRequestInfo,
+SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                    CreateSignalingChannelRequestInfo_t * pCreateSignalingChannelRequestInfo,
                                                                     SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
     size_t remainingLength = 0, currentIndex = 0, i;
 
-    if( ( pRequestBuffer == NULL ) ||
+    if( ( pAwsRegion == NULL ) ||
+        ( pAwsRegion->pAwsRegion == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
         ( pCreateSignalingChannelRequestInfo == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
         ( ( pCreateSignalingChannelRequestInfo->numTags > 0 ) && ( pCreateSignalingChannelRequestInfo->pTags == NULL ) ) ||
         ( pCreateSignalingChannelRequestInfo->channelName.channelNameLength >= SIGNALING_CHANNEL_NAME_MAX_LEN ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        if( SIGNALING_IS_CHINA_REGION( pAwsRegion ) )
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com.cn/createSignalingChannel",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+        else
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com/createSignalingChannel",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -701,7 +799,7 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( CreateSignal
                                         "}",
                                    ( int ) pCreateSignalingChannelRequestInfo->channelName.channelNameLength,
                                    pCreateSignalingChannelRequestInfo->channelName.pChannelName,
-                                   ( pCreateSignalingChannelRequestInfo->channelType == SIGNALING_CHANNEL_TYPE_SINGLE_MASTER ) ? "SINGLE_MASTER" : "UNKOWN",
+                                   ( pCreateSignalingChannelRequestInfo->channelType == SIGNALING_TYPE_CHANNEL_SINGLE_MASTER ) ? "SINGLE_MASTER" : "UNKOWN",
                                    pCreateSignalingChannelRequestInfo->messageTtlSeconds );
 
         result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
@@ -859,7 +957,8 @@ SignalingResult_t Signaling_ParseCreateSignalingChannelResponse( const char * pM
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( GetSignalingChannelEndpointRequestInfo_t * pGetSignalingChannelEndpointRequestInfo,
+SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                         GetSignalingChannelEndpointRequestInfo_t * pGetSignalingChannelEndpointRequestInfo,
                                                                          SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
@@ -868,13 +967,43 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( GetSign
     size_t protocolIndex = 0;
     uint8_t isFirstProtocol = 1;
 
-    if( ( pRequestBuffer == NULL ) ||
+    if( ( pAwsRegion == NULL ) ||
+        ( pAwsRegion->pAwsRegion == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
         ( pGetSignalingChannelEndpointRequestInfo == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
         ( pGetSignalingChannelEndpointRequestInfo->channelArn.pChannelArn == NULL ) ||
         ( ( pGetSignalingChannelEndpointRequestInfo->role != SIGNALING_ROLE_MASTER ) && ( pGetSignalingChannelEndpointRequestInfo->role != SIGNALING_ROLE_VIEWER ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        if( SIGNALING_IS_CHINA_REGION( pAwsRegion ) )
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com.cn/getSignalingChannelEndpoint",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+        else
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com/getSignalingChannelEndpoint",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -1043,22 +1172,20 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
                 if( ( strncmp( pProtocol, "WSS", 3 ) == 0 ) ||
                     ( strncmp( pProtocol, "wss", 3 ) == 0 ) )
                 {
-                    pSignalingChannelEndpoints->pWssEndpoint = pEndpoint;
-                    pSignalingChannelEndpoints->wssEndpointLength = endpointLength;
+                    pSignalingChannelEndpoints->wssEndpoint.pEndpoint = pEndpoint;
+                    pSignalingChannelEndpoints->wssEndpoint.endpointLength = endpointLength;
                 }
                 else if( ( strncmp( pProtocol, "HTTPS", 5 ) == 0 ) ||
                          ( strncmp( pProtocol, "https", 5 ) == 0 ) )
                 {
-                    pSignalingChannelEndpoints->pHttpsEndpoint = pEndpoint;
-                    pSignalingChannelEndpoints->httpsEndpointLength = endpointLength;
-
+                    pSignalingChannelEndpoints->httpsEndpoint.pEndpoint = pEndpoint;
+                    pSignalingChannelEndpoints->httpsEndpoint.endpointLength = endpointLength;
                 }
                 else if( ( strncmp( pProtocol, "WEBRTC", 6 ) == 0 ) ||
                          ( strncmp( pProtocol, "webrtc", 6 ) == 0 ) )
                 {
-                    pSignalingChannelEndpoints->pWebrtcEndpoint = pEndpoint;
-                    pSignalingChannelEndpoints->webrtcEndpointLength = endpointLength;
-
+                    pSignalingChannelEndpoints->webrtcEndpoint.pEndpoint = pEndpoint;
+                    pSignalingChannelEndpoints->webrtcEndpoint.endpointLength = endpointLength;
                 }
                 else
                 {
@@ -1078,18 +1205,38 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( GetIceServerConfigRequestIfo_t * pGetIceServerConfigRequestInfo,
+SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( SignalingChannelEndpoint_t * pHttpsEndpoint,
+                                                                GetIceServerConfigRequestInfo_t * pGetIceServerConfigRequestInfo,
                                                                 SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( pRequestBuffer == NULL ) ||
+    if( ( pHttpsEndpoint == NULL ) ||
+        ( pHttpsEndpoint->pEndpoint == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
         ( pGetIceServerConfigRequestInfo == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
         ( pGetIceServerConfigRequestInfo->pClientId == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                   pRequestBuffer->urlLength,
+                                   "%.*s/v1/get-ice-server-config",
+                                   ( int ) pHttpsEndpoint->endpointLength,
+                                   pHttpsEndpoint->pEndpoint );
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -1132,7 +1279,8 @@ SignalingResult_t Signaling_ParseGetIceServerConfigResponse( const char * pMessa
     size_t iceServerListBufferLength;
 
     if( ( pMessage == NULL ) ||
-        ( pIceServers == NULL ) )
+        ( pIceServers == NULL ) ||
+        ( pNumIceServers == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1183,18 +1331,38 @@ SignalingResult_t Signaling_ParseGetIceServerConfigResponse( const char * pMessa
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( JoinStorageSessionRequestInfo_t * pJoinStorageSessionRequestInfo,
+SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannelEndpoint_t * pWebrtcEndpoint,
+                                                                JoinStorageSessionRequestInfo_t * pJoinStorageSessionRequestInfo,
                                                                 SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( pRequestBuffer == NULL ) ||
+    if( ( pWebrtcEndpoint == NULL ) ||
+        ( pWebrtcEndpoint->pEndpoint == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
         ( pJoinStorageSessionRequestInfo == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
         ( pJoinStorageSessionRequestInfo->channelArn.pChannelArn == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                   pRequestBuffer->urlLength,
+                                   "%.*s/joinStorageSession",
+                                   ( int ) pWebrtcEndpoint->endpointLength,
+                                   pWebrtcEndpoint->pEndpoint );
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -1237,19 +1405,50 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( JoinStorageSessi
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( DeleteSignalingChannelRequestInfo_t * pDeleteSignalingChannelRequestInfo,
+SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( SignalingAwsRegion_t * pAwsRegion,
+                                                                    DeleteSignalingChannelRequestInfo_t * pDeleteSignalingChannelRequestInfo,
                                                                     SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( pRequestBuffer == NULL ) ||
+    if( ( pAwsRegion == NULL ) ||
+        ( pAwsRegion->pAwsRegion == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
         ( pDeleteSignalingChannelRequestInfo == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
         ( pDeleteSignalingChannelRequestInfo->channelArn.pChannelArn == NULL ) ||
         ( pDeleteSignalingChannelRequestInfo->pVersion == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        if( SIGNALING_IS_CHINA_REGION( pAwsRegion ) )
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com.cn/deleteSignalingChannel",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+        else
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "https://kinesisvideo.%.*s.amazonaws.com/deleteSignalingChannel",
+                                       ( int ) pAwsRegion->awsRegionLength,
+                                       pAwsRegion->pAwsRegion );
+        }
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
     }
 
     if( result == SIGNALING_RESULT_OK )
@@ -1278,6 +1477,68 @@ SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( DeleteSignal
 
 /*-----------------------------------------------------------*/
 
+SignalingResult_t Signaling_ConstructConnectWssEndpointRequest( SignalingChannelEndpoint_t * pWssEndpoint,
+                                                                ConnectWssEndpointRequestInfo_t * pConnectWssEndpointRequestInfo,
+                                                                SignalingRequest_t * pRequestBuffer )
+{
+    SignalingResult_t result = SIGNALING_RESULT_OK;
+    int snprintfRetVal = 0;
+
+    /* input check */
+    if( ( pWssEndpoint == NULL ) ||
+        ( pWssEndpoint->pEndpoint == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
+        ( pConnectWssEndpointRequestInfo == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) ||
+        ( pConnectWssEndpointRequestInfo->channelArn.pChannelArn == NULL ) ||
+        ( ( pConnectWssEndpointRequestInfo->role != SIGNALING_ROLE_MASTER ) && ( pConnectWssEndpointRequestInfo->role != SIGNALING_ROLE_VIEWER ) ) )
+    {
+        result = SIGNALING_RESULT_BAD_PARAM;
+    }
+    else if( ( pConnectWssEndpointRequestInfo->role == SIGNALING_ROLE_VIEWER ) && ( pConnectWssEndpointRequestInfo->pClientId == NULL ) )
+    {
+        result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        // calculate the length of url
+        if( pConnectWssEndpointRequestInfo->role == SIGNALING_ROLE_MASTER )
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "%.*s?X-Amz-ChannelARN=%.*s",
+                                       ( int ) pWssEndpoint->endpointLength,
+                                       pWssEndpoint->pEndpoint,
+                                       ( int ) pConnectWssEndpointRequestInfo->channelArn.channelArnLength,
+                                       pConnectWssEndpointRequestInfo->channelArn.pChannelArn );
+        }
+        else
+        {
+            snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                       pRequestBuffer->urlLength,
+                                       "%.*s?X-Amz-ChannelARN=%.*s&X-Amz-ClientId=%.*s",
+                                       ( int ) pWssEndpoint->endpointLength,
+                                       pWssEndpoint->pEndpoint,
+                                       ( int ) pConnectWssEndpointRequestInfo->channelArn.channelArnLength,
+                                       pConnectWssEndpointRequestInfo->channelArn.pChannelArn,
+                                       ( int ) pConnectWssEndpointRequestInfo->clientIdLength,
+                                       pConnectWssEndpointRequestInfo->pClientId );
+        }
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal, pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
+    }
+
+    return result;
+}
+
+/*-----------------------------------------------------------*/
+
 SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMessage,
                                                  char * pBuffer,
                                                  size_t * pBufferLength )
@@ -1290,7 +1551,8 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
-        ( pWssSendMessage->pRecipientClientId == NULL ) )
+        ( pWssSendMessage->pRecipientClientId == NULL ) ||
+        ( ( pWssSendMessage->numIceServers > 0 ) && ( pWssSendMessage->pIceServers == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1340,7 +1602,7 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
 
     /* Append ice server list, if the message is SDP_OFFER. */
     if( ( result == SIGNALING_RESULT_OK ) &&
-        ( pWssSendMessage->messageType == SIGNALING_MESSAGE_TYPE_SDP_OFFER ) &&
+        ( pWssSendMessage->messageType == SIGNALING_TYPE_MESSAGE_SDP_OFFER ) &&
         ( pWssSendMessage->numIceServers > 0 ) )
     {
         result = AppendIceServerList( pBuffer,
@@ -1388,7 +1650,8 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
     size_t statusResponseStart = 0, statusResponseNext = 0;
 
     if( ( pMessage == NULL ) ||
-        ( pWssRecvMessage == NULL ) )
+        ( pWssRecvMessage == NULL ) ||
+        ( pWssRecvMessage->numIceServers > 0 ) && ( pWssRecvMessage->pIceServers == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1413,7 +1676,7 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
     {
         pWssRecvMessage->pSenderClientId = NULL;
         pWssRecvMessage->senderClientIdLength = 0;
-        pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_UNKNOWN;
+        pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_UNKNOWN;
         pWssRecvMessage->pBase64EncodedPayload = NULL;
         pWssRecvMessage->base64EncodedPayloadLength = 0;
         memset( &( pWssRecvMessage->statusResponse ), 0, sizeof( WssStatusResponse_t ) );
@@ -1432,31 +1695,31 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
             {
                 if( strncmp( pair.value, "SDP_OFFER", pair.valueLength ) == 0 )
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_SDP_OFFER;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_SDP_OFFER;
                 }
                 else if( strncmp( pair.value, "SDP_ANSWER", pair.valueLength ) == 0 )
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_SDP_ANSWER;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_SDP_ANSWER;
                 }
                 else if( strncmp( pair.value, "ICE_CANDIDATE", pair.valueLength ) == 0 )
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_ICE_CANDIDATE;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE;
                 }
                 else if( strncmp( pair.value, "GO_AWAY", pair.valueLength ) == 0 )
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_GO_AWAY;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_GO_AWAY;
                 }
                 else if( strncmp( pair.value, "RECONNECT_ICE_SERVER", pair.valueLength ) == 0 )
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_RECONNECT_ICE_SERVER;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER;
                 }
                 else if( strncmp( pair.value, "STATUS_RESPONSE", pair.valueLength ) == 0 )
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_STATUS_RESPONSE;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_STATUS_RESPONSE;
                 }
                 else
                 {
-                    pWssRecvMessage->messageType = SIGNALING_MESSAGE_TYPE_UNKNOWN;
+                    pWssRecvMessage->messageType = SIGNALING_TYPE_MESSAGE_UNKNOWN;
                 }
             }
             else if( strncmp( pair.key, "messagePayload", pair.keyLength ) == 0 )
