@@ -10,9 +10,11 @@
 #include "core_json.h"
 
 /**
- * Helper macros to create URLs for various requests.
+ * Helper macro to check if the AWS region is China region.
  */
-#define SIGNALING_IS_CHINA_REGION( pAwsRegion ) ( ( ( pAwsRegion )->awsRegionLength >= 3 ) && ( strncmp( "cn-", ( pAwsRegion )->pAwsRegion, 3 ) == 0 ) )
+#define SIGNALING_IS_CHINA_REGION( pAwsRegion )     \
+    ( ( ( pAwsRegion )->awsRegionLength >= 3 ) &&   \
+      ( strncmp( "cn-", ( pAwsRegion )->pAwsRegion, 3 ) == 0 ) )
 
 /* Longest protocol string is is "WSS","HTTPS","WEBRTC". */
 #define SIGNALING_GET_ENDPOINT_PROTOCOL_MAX_STRING_LENGTH ( 23 ) /* Includes NULL terminator. */
@@ -132,10 +134,10 @@ static SignalingResult_t AppendIceServerList( char * pBuffer,
             snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                        remainingLength,
                                        "{"
-                                       "\"Password\":\"%.*s\","
-                                       "\"Ttl\":%u,"
-                                       "\"Username\":\"%.*s\","
-                                       "\"Uris\":[",
+                                            "\"Password\":\"%.*s\","
+                                            "\"Ttl\":%u,"
+                                            "\"Username\":\"%.*s\","
+                                            "\"Uris\":[",
                                        ( int ) pIceServers[ i ].passwordLength,
                                        pIceServers[ i ].pPassword,
                                        pIceServers[ i ].messageTtlSeconds,
@@ -147,10 +149,10 @@ static SignalingResult_t AppendIceServerList( char * pBuffer,
             snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                        remainingLength,
                                        ",{"
-                                       "\"Password\":\"%.*s\","
-                                       "\"Ttl\":%u,"
-                                       "\"Username\":\"%.*s\","
-                                       "\"Uris\":[",
+                                            "\"Password\":\"%.*s\","
+                                            "\"Ttl\":%u,"
+                                            "\"Username\":\"%.*s\","
+                                            "\"Uris\":[",
                                        ( int ) pIceServers[ i ].passwordLength,
                                        pIceServers[ i ].pPassword,
                                        pIceServers[ i ].messageTtlSeconds,
@@ -406,7 +408,7 @@ SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingA
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelName\":\"%.*s\""
+                                        "\"ChannelName\":\"%.*s\""
                                    "}",
                                    ( int ) pChannelName->channelNameLength,
                                    pChannelName->pChannelName );
@@ -636,7 +638,7 @@ SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( Signalin
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\""
+                                        "\"ChannelARN\":\"%.*s\""
                                    "}",
                                    ( int ) pChannelArn->channelArnLength,
                                    pChannelArn->pChannelArn );
@@ -791,12 +793,12 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
         snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                    remainingLength,
                                    "{"
-                                   "\"ChannelName\":\"%.*s\","
-                                   "\"ChannelType\":\"%s\","
-                                   "\"SingleMasterConfiguration\":"
-                                   "{"
-                                   "\"MessageTtlSeconds\":%u"
-                                   "}",
+                                        "\"ChannelName\":\"%.*s\","
+                                        "\"ChannelType\":\"%s\","
+                                        "\"SingleMasterConfiguration\":"
+                                        "{"
+                                            "\"MessageTtlSeconds\":%u"
+                                        "}",
                                    ( int ) pCreateSignalingChannelRequestInfo->channelName.channelNameLength,
                                    pCreateSignalingChannelRequestInfo->channelName.pChannelName,
                                    ( pCreateSignalingChannelRequestInfo->channelType == SIGNALING_TYPE_CHANNEL_SINGLE_MASTER ) ? "SINGLE_MASTER" : "UNKOWN",
@@ -836,8 +838,8 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                            remainingLength,
                                            "{"
-                                           "\"Key\":\"%.*s\","
-                                           "\"Value\":\"%.*s\""
+                                                "\"Key\":\"%.*s\","
+                                                "\"Value\":\"%.*s\""
                                            "}",
                                            ( int ) pCreateSignalingChannelRequestInfo->pTags[ i ].nameLength,
                                            pCreateSignalingChannelRequestInfo->pTags[ i ].pName,
@@ -849,8 +851,8 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                            remainingLength,
                                            ",{"
-                                           "\"Key\":\"%.*s\","
-                                           "\"Value\":\"%.*s\""
+                                                "\"Key\":\"%.*s\","
+                                                "\"Value\":\"%.*s\""
                                            "}",
                                            ( int ) pCreateSignalingChannelRequestInfo->pTags[ i ].nameLength,
                                            pCreateSignalingChannelRequestInfo->pTags[ i ].pName,
@@ -1048,13 +1050,13 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\","
-                                   "\"SingleMasterChannelEndpointConfiguration\":"
-                                   "{"
-                                   "\"Protocols\":[%.*s],"
-                                   "\"Role\":\"%s\""
-                                   "}"
-                                   "}",
+                                        "\"ChannelARN\":\"%.*s\","
+                                        "\"SingleMasterChannelEndpointConfiguration\":"
+                                        "{"
+                                            "\"Protocols\":[%.*s],"
+                                            "\"Role\":\"%s\""
+                                        "}"
+                                    "}",
                                    ( int ) pGetSignalingChannelEndpointRequestInfo->channelArn.channelArnLength,
                                    pGetSignalingChannelEndpointRequestInfo->channelArn.pChannelArn,
                                    ( int ) protocolIndex,
@@ -1244,10 +1246,10 @@ SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( SignalingChannel
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\","
-                                   "\"ClientId\":\"%.*s\","
-                                   "\"Service\":\"TURN\""
-                                   "}",
+                                        "\"ChannelARN\":\"%.*s\","
+                                        "\"ClientId\":\"%.*s\","
+                                        "\"Service\":\"TURN\""
+                                    "}",
                                    ( int ) pGetIceServerConfigRequestInfo->channelArn.channelArnLength,
                                    pGetIceServerConfigRequestInfo->channelArn.pChannelArn,
                                    ( int ) pGetIceServerConfigRequestInfo->clientIdLength,
@@ -1373,7 +1375,7 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                        pRequestBuffer->bodyLength,
                                        "{"
-                                       "\"channelArn\":\"%.*s\""
+                                            "\"channelArn\":\"%.*s\""
                                        "}",
                                        ( int ) pJoinStorageSessionRequestInfo->channelArn.channelArnLength,
                                        pJoinStorageSessionRequestInfo->channelArn.pChannelArn );
@@ -1383,8 +1385,8 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                        pRequestBuffer->bodyLength,
                                        "{"
-                                       "\"channelArn\":\"%.*s\","
-                                       "\"clientId\":\"%.*s\""
+                                            "\"channelArn\":\"%.*s\","
+                                            "\"clientId\":\"%.*s\""
                                        "}",
                                        ( int ) pJoinStorageSessionRequestInfo->channelArn.channelArnLength,
                                        pJoinStorageSessionRequestInfo->channelArn.pChannelArn,
@@ -1456,8 +1458,8 @@ SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( SignalingAws
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\","
-                                   "\"CurrentVersion\":\"%.*s\""
+                                        "\"ChannelARN\":\"%.*s\","
+                                        "\"CurrentVersion\":\"%.*s\""
                                    "}",
                                    ( int ) pDeleteSignalingChannelRequestInfo->channelArn.channelArnLength,
                                    pDeleteSignalingChannelRequestInfo->channelArn.pChannelArn,
@@ -1484,25 +1486,22 @@ SignalingResult_t Signaling_ConstructConnectWssEndpointRequest( SignalingChannel
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    /* input check */
     if( ( pWssEndpoint == NULL ) ||
         ( pWssEndpoint->pEndpoint == NULL ) ||
         ( pRequestBuffer == NULL ) ||
         ( pConnectWssEndpointRequestInfo == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) ||
         ( pConnectWssEndpointRequestInfo->channelArn.pChannelArn == NULL ) ||
-        ( ( pConnectWssEndpointRequestInfo->role != SIGNALING_ROLE_MASTER ) && ( pConnectWssEndpointRequestInfo->role != SIGNALING_ROLE_VIEWER ) ) )
-    {
-        result = SIGNALING_RESULT_BAD_PARAM;
-    }
-    else if( ( pConnectWssEndpointRequestInfo->role == SIGNALING_ROLE_VIEWER ) && ( pConnectWssEndpointRequestInfo->pClientId == NULL ) )
+        ( ( pConnectWssEndpointRequestInfo->role != SIGNALING_ROLE_MASTER ) &&
+          ( pConnectWssEndpointRequestInfo->role != SIGNALING_ROLE_VIEWER ) ) ||
+        ( ( pConnectWssEndpointRequestInfo->role == SIGNALING_ROLE_VIEWER ) &&
+          ( pConnectWssEndpointRequestInfo->pClientId == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
     if( result == SIGNALING_RESULT_OK )
     {
-        // calculate the length of url
         if( pConnectWssEndpointRequestInfo->role == SIGNALING_ROLE_MASTER )
         {
             snprintfRetVal = snprintf( pRequestBuffer->pUrl,
@@ -1552,7 +1551,8 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
         ( pBuffer == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
         ( pWssSendMessage->pRecipientClientId == NULL ) ||
-        ( ( pWssSendMessage->numIceServers > 0 ) && ( pWssSendMessage->pIceServers == NULL ) ) )
+        ( ( pWssSendMessage->numIceServers > 0 ) &&
+          ( pWssSendMessage->pIceServers == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1562,9 +1562,9 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
         snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                    remainingLength,
                                    "{"
-                                   "\"action\":\"%s\","
-                                   "\"RecipientClientId\":\"%.*s\","
-                                   "\"MessagePayload\": \"%.*s\"",
+                                        "\"action\":\"%s\","
+                                        "\"RecipientClientId\":\"%.*s\","
+                                        "\"MessagePayload\": \"%.*s\"",
                                    GetStringFromMessageType( pWssSendMessage->messageType ),
                                    ( int ) pWssSendMessage->recipientClientIdLength,
                                    pWssSendMessage->pRecipientClientId,
@@ -1651,7 +1651,8 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
 
     if( ( pMessage == NULL ) ||
         ( pWssRecvMessage == NULL ) ||
-        ( pWssRecvMessage->numIceServers > 0 ) && ( pWssRecvMessage->pIceServers == NULL ) )
+        ( ( pWssRecvMessage->numIceServers > 0 ) &&
+          ( pWssRecvMessage->pIceServers == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }

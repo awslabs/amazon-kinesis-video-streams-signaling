@@ -79,6 +79,8 @@ typedef enum SignalingProtocol
  * @brief Type of signaling channel.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_ChannelInfo.html#KinesisVideo-Type-ChannelInfo-ChannelType for more detail.
  */
+/* We cannot name it SignalingChannelType_t in order to avoid naming conflict
+ * with a data type in the existing KVS SDK. */
 typedef enum SignalingTypeChannel
 {
     SIGNALING_TYPE_CHANNEL_UNKNOWN,
@@ -102,6 +104,8 @@ typedef enum SignalingRole
  * @brief Type of signaling message.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis-7.html for more detail.
  */
+/* We cannot name it SignalingMessageType_t in order to avoid naming conflict
+ * with a data type in the existing KVS SDK. */
 typedef enum SignalingTypeMessage
 {
     SIGNALING_TYPE_MESSAGE_UNKNOWN = 0,
@@ -194,7 +198,8 @@ typedef struct SignalingMediaStorageConfig
  * @brief Tags to create signaling channel.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_Tag.html for more detail.
  */
-typedef struct SignalingTag {
+typedef struct SignalingTag
+{
     char * pName;
     size_t nameLength;
     char * pValue;
@@ -205,7 +210,8 @@ typedef struct SignalingTag {
  * @ingroup signaling_enum_types
  * @brief Basic endpoint structure.
  */
-typedef struct SignalingChannelEndpoint {
+typedef struct SignalingChannelEndpoint
+{
     const char * pEndpoint;
     size_t endpointLength;
 } SignalingChannelEndpoint_t;
