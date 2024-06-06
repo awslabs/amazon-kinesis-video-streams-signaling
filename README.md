@@ -1,7 +1,7 @@
 ## amazon-kinesis-video-streams-signaling
 
-The goal of the Signaling library is to enable control plane communication
-with the Amazon Kinesis Video Streams (KVS) service. Refer to
+The goal of the Signaling library is to enable communication with the Amazon
+Kinesis Video Signaling Service. Refer to
 [AWS KVS API Reference](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_Reference.html)
 and [WebRTC Websocket APIs](https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis.html)
 for more details.
@@ -23,9 +23,9 @@ the Signaling Service and to parse responses from the Signaling Service.
     - Ensure authenticate to sign the constructed requests using the Signature
       Version 4 (SigV4) [authentication flow](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)
       before sending them.
-3. Use the `Signaling_Parse*` APIs to parse the responses from the Signaling
+2. Use the `Signaling_Parse*` APIs to parse the responses from the Signaling
    Service.
-4. Use `Signaling_ConstructWssMessage` and `Signaling_ParseWssRecvMessage` APIs
+3. Use `Signaling_ConstructWssMessage` and `Signaling_ParseWssRecvMessage` APIs
    to communicate with the WSS endpoint.
     - Ensure to authenticate and sign the constructed messages using the
       Signature Version 4 (SigV4) [authentication flow](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)

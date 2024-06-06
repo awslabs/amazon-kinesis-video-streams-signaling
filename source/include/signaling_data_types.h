@@ -372,7 +372,7 @@ typedef struct WssRecvMessage
     const char * pBase64EncodedPayload;
     size_t base64EncodedPayloadLength;
     WssStatusResponse_t statusResponse;
-    SignalingIceServer_t * pIceServers; /* The caller needs to supply memory. */
+    SignalingIceServer_t * pIceServers;
     size_t numIceServers;
 } WssRecvMessage_t;
 

@@ -108,7 +108,7 @@ static SignalingResult_t AppendIceServerList( char * pBuffer,
 
     snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                remainingLength,
-                               ","                                                                                                                                            \
+                               ","
                                "\"IceServerList\":[" );
 
     result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
