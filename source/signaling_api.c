@@ -85,7 +85,7 @@ static char * GetStringFromMessageType( SignalingTypeMessage_t messageType )
         break;
 
     default:
-        ret = "UNKOWN";
+        ret = "UNKNOWN";
         break;
     }
 
