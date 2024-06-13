@@ -361,7 +361,8 @@ typedef struct WssStatusResponse
 
 /**
  * @ingroup signaling_enum_types
- * @brief The event message structure from websocket secure endpoint.
+ * @brief The event message structure from websocket secure endpoint. Note that when received message is a SDP offer, it might append ICE servers
+ *        configurations in the message. So user can update the server configuration by this information.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis-7.html for more detail.
  */
 typedef struct WssRecvMessage

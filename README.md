@@ -20,7 +20,7 @@ the Signaling Service and to parse responses from the Signaling Service.
 
 1. Use the `Signaling_Construct*` APIs to construct requests to send to the
    Signaling Service.
-    - Ensure authenticate to sign the constructed requests using the Signature
+    - Ensure to authenticate and sign the constructed requests using the Signature
       Version 4 (SigV4) [authentication flow](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)
       before sending them.
 2. Use the `Signaling_Parse*` APIs to parse the responses from the Signaling
