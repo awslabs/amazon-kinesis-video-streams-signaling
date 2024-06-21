@@ -642,11 +642,11 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
         snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                    remainingLength,
                                    "{"
-                                        "\"ChannelName\":\"%.*s\","
-                                        "\"ChannelType\":\"%s\","
-                                        "\"SingleMasterConfiguration\":"
+                                        "\"ChannelName\": \"%.*s\","
+                                        "\"ChannelType\": \"%s\","
+                                        "\"SingleMasterConfiguration\": "
                                         "{"
-                                            "\"MessageTtlSeconds\":%u"
+                                            "\"MessageTtlSeconds\": %u"
                                         "}",
                                    ( int ) pCreateSignalingChannelRequestInfo->channelName.channelNameLength,
                                    pCreateSignalingChannelRequestInfo->channelName.pChannelName,
@@ -668,7 +668,7 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
         snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                    remainingLength,
                                    ","
-                                   "\"Tags\":"
+                                   "\"Tags\": "
                                    "[" );
 
         result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
@@ -687,8 +687,8 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                            remainingLength,
                                            "{"
-                                                "\"Key\":\"%.*s\","
-                                                "\"Value\":\"%.*s\""
+                                                "\"Key\": \"%.*s\","
+                                                "\"Value\": \"%.*s\""
                                            "}",
                                            ( int ) pCreateSignalingChannelRequestInfo->pTags[ i ].nameLength,
                                            pCreateSignalingChannelRequestInfo->pTags[ i ].pName,
@@ -700,8 +700,8 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                            remainingLength,
                                            ",{"
-                                                "\"Key\":\"%.*s\","
-                                                "\"Value\":\"%.*s\""
+                                                "\"Key\": \"%.*s\","
+                                                "\"Value\": \"%.*s\""
                                            "}",
                                            ( int ) pCreateSignalingChannelRequestInfo->pTags[ i ].nameLength,
                                            pCreateSignalingChannelRequestInfo->pTags[ i ].pName,
