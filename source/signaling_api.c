@@ -26,12 +26,6 @@ static SignalingResult_t InterpretSnprintfReturnValue( int snprintfRetVal,
 
 static char * GetStringFromMessageType( SignalingTypeMessage_t messageType );
 
-static SignalingResult_t AppendIceServerList( char * pBuffer,
-                                              size_t * pRemainingLength,
-                                              size_t * pCurrentIndex,
-                                              SignalingIceServer_t * pIceServers,
-                                              size_t numIceServers );
-
 static void ParseUris( const char * pUris,
                        size_t urisLength,
                        SignalingIceServer_t * pIceServer );
@@ -90,151 +84,6 @@ static char * GetStringFromMessageType( SignalingTypeMessage_t messageType )
     }
 
     return ret;
-}
-
-/*-----------------------------------------------------------*/
-
-static SignalingResult_t AppendIceServerList( char * pBuffer,
-                                              size_t * pRemainingLength,
-                                              size_t * pCurrentIndex,
-                                              SignalingIceServer_t * pIceServers,
-                                              size_t numIceServers )
-{
-    SignalingResult_t result = SIGNALING_RESULT_OK;
-    int snprintfRetVal = 0;
-    size_t i, j;
-    size_t remainingLength = *pRemainingLength;
-    size_t currentIndex = *pCurrentIndex;
-
-    snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                               remainingLength,
-                               ","
-                               "\"IceServerList\":[" );
-
-    result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
-
-    if( result == SIGNALING_RESULT_OK )
-    {
-        remainingLength -= snprintfRetVal;
-        currentIndex += snprintfRetVal;
-    }
-
-    /* Append ice server configs. */
-    for( i = 0; ( i < numIceServers ) && ( result == SIGNALING_RESULT_OK ); i++ )
-    {
-        if( pIceServers[ i ].urisNum > SIGNALING_ICE_SERVER_MAX_URIS )
-        {
-            result = SIGNALING_RESULT_INVALID_ICE_SERVER_URIS_COUNT;
-            break;
-        }
-
-        /* Append password, ttl and user name. */
-        if( i == 0 )
-        {
-            snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                                       remainingLength,
-                                       "{"
-                                            "\"Password\":\"%.*s\","
-                                            "\"Ttl\":%u,"
-                                            "\"Username\":\"%.*s\","
-                                            "\"Uris\":[",
-                                       ( int ) pIceServers[ i ].passwordLength,
-                                       pIceServers[ i ].pPassword,
-                                       pIceServers[ i ].messageTtlSeconds,
-                                       ( int ) pIceServers[ i ].userNameLength,
-                                       pIceServers[ i ].pUserName );
-        }
-        else
-        {
-            snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                                       remainingLength,
-                                       ",{"
-                                            "\"Password\":\"%.*s\","
-                                            "\"Ttl\":%u,"
-                                            "\"Username\":\"%.*s\","
-                                            "\"Uris\":[",
-                                       ( int ) pIceServers[ i ].passwordLength,
-                                       pIceServers[ i ].pPassword,
-                                       pIceServers[ i ].messageTtlSeconds,
-                                       ( int ) pIceServers[ i ].userNameLength,
-                                       pIceServers[ i ].pUserName );
-        }
-
-        result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
-
-        if( result == SIGNALING_RESULT_OK )
-        {
-            remainingLength -= snprintfRetVal;
-            currentIndex += snprintfRetVal;
-        }
-
-        /* Append URIs. */
-        for( j = 0; ( j < pIceServers[ i ].urisNum ) && ( result == SIGNALING_RESULT_OK ); j++ )
-        {
-            if( j == 0 )
-            {
-                snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                                           remainingLength,
-                                           "\"%.*s\"",
-                                           ( int ) pIceServers[ i ].urisLength[ j ],
-                                           pIceServers[ i ].pUris[ j ] );
-            }
-            else
-            {
-                snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                                           remainingLength,
-                                           ",\"%.*s\"",
-                                           ( int ) pIceServers[ i ].urisLength[ j ],
-                                           pIceServers[ i ].pUris[ j ] );
-            }
-
-            result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
-
-            if( result == SIGNALING_RESULT_OK )
-            {
-                remainingLength -= snprintfRetVal;
-                currentIndex += snprintfRetVal;
-            }
-        }
-
-        if( result == SIGNALING_RESULT_OK )
-        {
-            snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                                       remainingLength,
-                                       "]}" );
-
-            result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
-
-            if( result == SIGNALING_RESULT_OK )
-            {
-                remainingLength -= snprintfRetVal;
-                currentIndex += snprintfRetVal;
-            }
-        }
-    }
-
-    if( result == SIGNALING_RESULT_OK )
-    {
-        snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
-                                   remainingLength,
-                                   "]" );
-
-        result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
-
-        if( result == SIGNALING_RESULT_OK )
-        {
-            remainingLength -= snprintfRetVal;
-            currentIndex += snprintfRetVal;
-        }
-    }
-
-    if( result == SIGNALING_RESULT_OK )
-    {
-        *pRemainingLength = remainingLength;
-        *pCurrentIndex = currentIndex;
-    }
-
-    return result;
 }
 
 /*-----------------------------------------------------------*/
@@ -1550,9 +1399,7 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
-        ( pWssSendMessage->pRecipientClientId == NULL ) ||
-        ( ( pWssSendMessage->numIceServers > 0 ) &&
-          ( pWssSendMessage->pIceServers == NULL ) ) )
+        ( pWssSendMessage->pRecipientClientId == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1600,18 +1447,6 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
         }
     }
 
-    /* Append ice server list, if the message is SDP_OFFER. */
-    if( ( result == SIGNALING_RESULT_OK ) &&
-        ( pWssSendMessage->messageType == SIGNALING_TYPE_MESSAGE_SDP_OFFER ) &&
-        ( pWssSendMessage->numIceServers > 0 ) )
-    {
-        result = AppendIceServerList( pBuffer,
-                                      &( remainingLength ),
-                                      &( currentIndex ),
-                                      pWssSendMessage->pIceServers,
-                                      pWssSendMessage->numIceServers );
-    }
-
     if( result == SIGNALING_RESULT_OK )
     {
         snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
@@ -1650,9 +1485,7 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
     size_t statusResponseStart = 0, statusResponseNext = 0;
 
     if( ( pMessage == NULL ) ||
-        ( pWssRecvMessage == NULL ) ||
-        ( ( pWssRecvMessage->numIceServers > 0 ) &&
-          ( pWssRecvMessage->pIceServers == NULL ) ) )
+        ( pWssRecvMessage == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1681,7 +1514,6 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
         pWssRecvMessage->pBase64EncodedPayload = NULL;
         pWssRecvMessage->base64EncodedPayloadLength = 0;
         memset( &( pWssRecvMessage->statusResponse ), 0, sizeof( WssStatusResponse_t ) );
-        memset( pWssRecvMessage->pIceServers, 0, sizeof( SignalingIceServer_t ) * pWssRecvMessage->numIceServers );
 
         jsonResult = JSON_Iterate( pMessage, messageLength, &( start ), &( next ), &( pair ) );
 
@@ -1738,20 +1570,6 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
                 else
                 {
                     result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
-                    break;
-                }
-            }
-            else if( ( pair.jsonType == JSONArray ) &&
-                     ( pair.keyLength == strlen( "IceServerList" ) ) &&
-                     ( strncmp( pair.key, "IceServerList", pair.keyLength ) == 0 ) )
-            {
-                result = ParseIceServerList( pair.value,
-                                             pair.valueLength,
-                                             pWssRecvMessage->pIceServers,
-                                             &( pWssRecvMessage->numIceServers ) );
-
-                if( result != SIGNALING_RESULT_OK )
-                {
                     break;
                 }
             }

@@ -338,8 +338,6 @@ typedef struct WssSendMessage
     size_t base64EncodedMessageLength;
     const char * pCorrelationId;
     size_t correlationIdLength;
-    SignalingIceServer_t * pIceServers;
-    size_t numIceServers;
 } WssSendMessage_t;
 
 /**
@@ -373,8 +371,6 @@ typedef struct WssRecvMessage
     const char * pBase64EncodedPayload;
     size_t base64EncodedPayloadLength;
     WssStatusResponse_t statusResponse;
-    SignalingIceServer_t * pIceServers;
-    size_t numIceServers;
 } WssRecvMessage_t;
 
 /*-----------------------------------------------------------*/
