@@ -1,0 +1,4 @@
+[submodule "source/dependency/coreJSON"]
+	path = source/dependency/coreJSON
+	url = https://github.com/FreeRTOS/coreJSON
+	update = none
