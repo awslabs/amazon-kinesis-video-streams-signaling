@@ -2,3 +2,7 @@
 	path = source/dependency/coreJSON
 	url = https://github.com/FreeRTOS/coreJSON
 	update = none
+[submodule "test/CMock"]
+	path = test/CMock
+	url = https://github.com/ThrowTheSwitch/CMock.git
+	update = none
