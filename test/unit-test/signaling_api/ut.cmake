@@ -16,6 +16,7 @@ list(APPEND mock_list
 # List the directories your mocks need.
 list(APPEND mock_include_list
             ${SIGNALING_INCLUDE_PUBLIC_DIRS}
+            ${JSON_INCLUDE_PUBLIC_DIRS}
             ${MODULE_ROOT_DIR}/test/unit-test
         )
 
@@ -34,6 +35,7 @@ list(APPEND real_source_files
 # List the directories the module under test includes.
 list(APPEND real_include_directories
             ${SIGNALING_INCLUDE_PUBLIC_DIRS}
+            ${JSON_INCLUDE_PUBLIC_DIRS}
             ${MODULE_ROOT_DIR}/test/unit-test
             ${CMOCK_DIR}/vendor/unity/src
             ${JSON_SOURCES}
@@ -45,6 +47,7 @@ list(APPEND real_include_directories
 list(APPEND test_include_directories
             ${CMOCK_DIR}/vendor/unity/src
             ${SIGNALING_INCLUDE_PUBLIC_DIRS}
+            ${JSON_INCLUDE_PUBLIC_DIRS}
             ${MODULE_ROOT_DIR}/test/unit-test
         )
 

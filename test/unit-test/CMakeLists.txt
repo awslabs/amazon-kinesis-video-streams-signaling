@@ -43,18 +43,20 @@ message( STATUS ${CMAKE_BINARY_DIR} )
 
 # Include filepaths for source and include.
 include( ${MODULE_ROOT_DIR}/signalingFilePaths.cmake )
+include( ${MODULE_ROOT_DIR}/source/dependency/coreJSON/jsonFilePaths.cmake )
 
 # Target for Coverity analysis that builds the library.
 add_library( coverity_analysis
              ${SIGNALING_SOURCES}
-             ${CORE_JSON_SOURCES}
+             ${JSON_SOURCES}
              ${SIGNALING_INCLUDE_PUBLIC_DIRS}
+             ${JSON_INCLUDE_PUBLIC_DIRS}
              ${MODULE_ROOT_DIR}/test/unit-test )
 
 target_compile_definitions( coverity_analysis PUBLIC NDEBUG=1 )
 
 # Signaling public include path.
-target_include_directories( coverity_analysis PUBLIC ${SIGNALING_INCLUDE_PUBLIC_DIRS} ${MODULE_ROOT_DIR}/test/unit-test )
+target_include_directories( coverity_analysis PUBLIC ${SIGNALING_INCLUDE_PUBLIC_DIRS} ${MODULE_ROOT_DIR}/test/unit-test ${JSON_INCLUDE_PUBLIC_DIRS} )
 
 # ========================= Test Configuration ==============================
 

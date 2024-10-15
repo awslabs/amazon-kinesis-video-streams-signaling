@@ -6,14 +6,14 @@ find_library(COREJSON_LIBRARY NAMES corejson ${coreJSON} REQUIRED)
 include(signalingFilePaths.cmake)
 
 if(BUILD_SHARED_LIBS)
-    add_library(kvssignaling SHARED ${SIGNALING_SOURCES},${CORE_JSON_SOURCES})
+    add_library(kvssignaling SHARED ${SIGNALING_SOURCES})
 else()
-    add_library(kvssignaling STATIC ${SIGNALING_SOURCES},${CORE_JSON_SOURCES})
+    add_library(kvssignaling STATIC ${SIGNALING_SOURCES})
 endif()
 
 target_include_directories(kvssignaling PUBLIC
                            ${SIGNALING_INCLUDE_PUBLIC_DIRS}
-                           ${COREJSON_INCLUDE_DIRS})
+                           ${JSON_INCLUDE_PUBLIC_DIRS})
 
 set_target_properties(kvssignaling PROPERTIES
                       INSTALL_RPATH "${CMAKE_INSTALL_LIBDIR}"
