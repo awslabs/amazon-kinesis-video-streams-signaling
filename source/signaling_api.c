@@ -13,11 +13,11 @@
  * Helper macro to check if the AWS region is China region.
  */
 #define SIGNALING_IS_CHINA_REGION( pAwsRegion )     \
-    ( ( ( pAwsRegion )->awsRegionLength >= 3 ) &&   \
-      ( strncmp( "cn-", ( pAwsRegion )->pAwsRegion, 3 ) == 0 ) )
+        ( ( ( pAwsRegion )->awsRegionLength >= 3 ) &&   \
+          ( strncmp( "cn-", ( pAwsRegion )->pAwsRegion, 3 ) == 0 ) )
 
 /* Longest protocol string is is "WSS","HTTPS","WEBRTC". */
-#define SIGNALING_GET_ENDPOINT_PROTOCOL_MAX_STRING_LENGTH ( 23 ) /* Includes NULL terminator. */
+#define SIGNALING_GET_ENDPOINT_PROTOCOL_MAX_STRING_LENGTH    ( 23 ) /* Includes NULL terminator. */
 
 /*-----------------------------------------------------------*/
 
@@ -46,7 +46,7 @@ static SignalingResult_t InterpretSnprintfReturnValue( int snprintfRetVal,
     {
         result = SIGNALING_RESULT_SNPRINTF_ERROR;
     }
-    else if( snprintfRetVal >= bufferLength )
+    else if( ( size_t ) snprintfRetVal >= bufferLength )
     {
         result = SIGNALING_RESULT_OUT_OF_MEMORY;
     }
@@ -66,21 +66,21 @@ static char * GetStringFromMessageType( SignalingTypeMessage_t messageType )
 
     switch( messageType )
     {
-    case SIGNALING_TYPE_MESSAGE_SDP_OFFER:
-        ret = "SDP_OFFER";
-        break;
+        case SIGNALING_TYPE_MESSAGE_SDP_OFFER:
+            ret = "SDP_OFFER";
+            break;
 
-    case SIGNALING_TYPE_MESSAGE_SDP_ANSWER:
-        ret = "SDP_ANSWER";
-        break;
+        case SIGNALING_TYPE_MESSAGE_SDP_ANSWER:
+            ret = "SDP_ANSWER";
+            break;
 
-    case SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE:
-        ret = "ICE_CANDIDATE";
-        break;
+        case SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE:
+            ret = "ICE_CANDIDATE";
+            break;
 
-    default:
-        ret = "UNKNOWN";
-        break;
+        default:
+            ret = "UNKNOWN";
+            break;
     }
 
     return ret;
@@ -419,7 +419,8 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
                 pChannelInfo->pVersion = pair.value;
                 pChannelInfo->versionLength = pair.valueLength;
             }
-            else {
+            else
+            {
                 /* Skip unknown attributes. */
             }
 
@@ -553,7 +554,8 @@ SignalingResult_t Signaling_ParseDescribeMediaStorageConfigResponse( const char 
                 mediaStorageConfigBufferLength = pair.valueLength;
             }
         }
-        else {
+        else
+        {
             result = SIGNALING_RESULT_INVALID_JSON;
         }
     }
@@ -736,7 +738,6 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
         }
     }
 
-
     if( result == SIGNALING_RESULT_OK )
     {
         snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
@@ -861,7 +862,9 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
     {
         if( ( pGetSignalingChannelEndpointRequestInfo->protocols & SIGNALING_PROTOCOL_WEBSOCKET_SECURE ) != 0 )
         {
-            strncpy( &( protocolsString[ protocolIndex ] ), "\"WSS\"", 5 );
+            memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                    ( const void * ) "\"WSS\"",
+                    5 );
             protocolIndex += 5;
 
             isFirstProtocol = 0;
@@ -871,10 +874,15 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
         {
             if( isFirstProtocol == 0 )
             {
-                strncpy( &( protocolsString[ protocolIndex ] ), ",", 1 );
+                memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                        ( const void * ) ",",
+                        1 );
                 protocolIndex += 1;
             }
-            strncpy( &( protocolsString[ protocolIndex ] ), "\"HTTPS\"", 7 );
+
+            memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                    ( const void * ) "\"HTTPS\"",
+                    8 );
             protocolIndex += 7;
 
             isFirstProtocol = 0;
@@ -884,10 +892,15 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
         {
             if( isFirstProtocol == 0 )
             {
-                strncpy( &( protocolsString[ protocolIndex ] ), ",", 1 );
+                memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                        ( const void * ) ",",
+                        2 );
                 protocolIndex += 1;
             }
-            strncpy( &( protocolsString[ protocolIndex ] ), "\"WEBRTC\"", 8 );
+
+            memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                    ( const void * ) "\"WEBRTC\"",
+                    9 );
             protocolIndex += 8;
 
             isFirstProtocol = 0;
@@ -905,7 +918,7 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
                                             "\"Protocols\":[%.*s],"
                                             "\"Role\":\"%s\""
                                         "}"
-                                    "}",
+                                   "}",
                                    ( int ) pGetSignalingChannelEndpointRequestInfo->channelArn.channelArnLength,
                                    pGetSignalingChannelEndpointRequestInfo->channelArn.pChannelArn,
                                    ( int ) protocolIndex,
@@ -942,7 +955,7 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
     const char * pEndpoint = NULL;
     size_t endpointLength;
     const char * pProtocol = NULL;
-    size_t protocolLength;
+    size_t protocolLength = 0;
 
     if( ( pMessage == NULL ) ||
         ( pSignalingChannelEndpoints == NULL ) )
@@ -1002,6 +1015,7 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
             protocolLength = 0;
 
             jsonResult = JSON_Iterate( pEndpointListBuffer, endpointListBufferLength, &( endpointListStart ), &( endpointListNext ), &( pair ) );
+
             while( jsonResult == JSONSuccess )
             {
                 if( strncmp( pair.key, "Protocol", pair.keyLength ) == 0 )
@@ -1020,20 +1034,20 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
 
             if( ( pEndpoint != NULL ) && ( pProtocol != NULL ) )
             {
-                if( ( strncmp( pProtocol, "WSS", 3 ) == 0 ) ||
-                    ( strncmp( pProtocol, "wss", 3 ) == 0 ) )
+                if( ( protocolLength == 3 ) && ( ( strncmp( pProtocol, "WSS", 3 ) == 0 ) ||
+                                                 ( strncmp( pProtocol, "wss", 3 ) == 0 ) ) )
                 {
                     pSignalingChannelEndpoints->wssEndpoint.pEndpoint = pEndpoint;
                     pSignalingChannelEndpoints->wssEndpoint.endpointLength = endpointLength;
                 }
-                else if( ( strncmp( pProtocol, "HTTPS", 5 ) == 0 ) ||
-                         ( strncmp( pProtocol, "https", 5 ) == 0 ) )
+                else if( ( protocolLength == 5 ) && ( ( strncmp( pProtocol, "HTTPS", 5 ) == 0 ) ||
+                                                      ( strncmp( pProtocol, "https", 5 ) == 0 ) ) )
                 {
                     pSignalingChannelEndpoints->httpsEndpoint.pEndpoint = pEndpoint;
                     pSignalingChannelEndpoints->httpsEndpoint.endpointLength = endpointLength;
                 }
-                else if( ( strncmp( pProtocol, "WEBRTC", 6 ) == 0 ) ||
-                         ( strncmp( pProtocol, "webrtc", 6 ) == 0 ) )
+                else if( ( protocolLength == 6 ) && ( ( strncmp( pProtocol, "WEBRTC", 6 ) == 0 ) ||
+                                                      ( strncmp( pProtocol, "webrtc", 6 ) == 0 ) ) )
                 {
                     pSignalingChannelEndpoints->webrtcEndpoint.pEndpoint = pEndpoint;
                     pSignalingChannelEndpoints->webrtcEndpoint.endpointLength = endpointLength;
@@ -1098,7 +1112,7 @@ SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( SignalingChannel
                                         "\"ChannelARN\":\"%.*s\","
                                         "\"ClientId\":\"%.*s\","
                                         "\"Service\":\"TURN\""
-                                    "}",
+                                   "}",
                                    ( int ) pGetIceServerConfigRequestInfo->channelArn.channelArnLength,
                                    pGetIceServerConfigRequestInfo->channelArn.pChannelArn,
                                    ( int ) pGetIceServerConfigRequestInfo->clientIdLength,
@@ -1218,7 +1232,6 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
 
     if( result == SIGNALING_RESULT_OK )
     {
-
         if( pJoinStorageSessionRequestInfo->role == SIGNALING_ROLE_MASTER )
         {
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
@@ -1307,8 +1320,8 @@ SignalingResult_t Signaling_ConstructDeleteSignalingChannelRequest( SignalingAws
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                        "\"ChannelARN\":\"%.*s\","
-                                        "\"CurrentVersion\":\"%.*s\""
+                                   "\"ChannelARN\":\"%.*s\","
+                                   "\"CurrentVersion\":\"%.*s\""
                                    "}",
                                    ( int ) pDeleteSignalingChannelRequestInfo->channelArn.channelArnLength,
                                    pDeleteSignalingChannelRequestInfo->channelArn.pChannelArn,
