@@ -30,7 +30,7 @@ the Signaling Service and to parse responses from the Signaling Service.
     - Ensure to authenticate and sign the constructed messages using the
       Signature Version 4 (SigV4) [authentication flow](https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)
       before sending them.
-      
+
 ## Building Unit Tests
 
 ### Platform Prerequisites

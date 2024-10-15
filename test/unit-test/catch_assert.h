@@ -1,8 +1,8 @@
 /*
  * How to catch an assert:
- * - save a jump buffer where execution will resume after the assert
- * - setup a handler for the abort signal, call longjmp within
- * - optional - close stderr ( fd 2 ) to discard the assert message
+ * - save a jump buffer where execution will resume after the assert.
+ * - setup a handler for the abort signal, call longjmp within.
+ * - optional - close stderr ( fd 2 ) to discard the assert message.
  *
  * Unity also does a longjmp within its TEST_ASSERT* macros,
  * so the macro below restores stderr and the prior abort handler
