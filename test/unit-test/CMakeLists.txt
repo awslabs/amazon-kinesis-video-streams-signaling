@@ -47,6 +47,7 @@ include( ${MODULE_ROOT_DIR}/signalingFilePaths.cmake )
 # Target for Coverity analysis that builds the library.
 add_library( coverity_analysis
              ${SIGNALING_SOURCES}
+             ${CORE_JSON_SOURCES}
              ${SIGNALING_INCLUDE_PUBLIC_DIRS}
              ${MODULE_ROOT_DIR}/test/unit-test )
 

@@ -7,7 +7,10 @@
 
 # Signaling library source files.
 set( SIGNALING_SOURCES
-     "${CMAKE_CURRENT_LIST_DIR}/source/signaling_api.c" 
+     "${CMAKE_CURRENT_LIST_DIR}/source/signaling_api.c" )
+
+# Core JSON library Souce files
+set(CORE_JSON_SOURCES
      "${CMAKE_CURRENT_LIST_DIR}/source/dependency/coreJSON/source/core_json.c" )
 
 # Signaling library Public Include directories.
