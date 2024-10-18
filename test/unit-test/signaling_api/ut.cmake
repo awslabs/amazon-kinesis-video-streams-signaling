@@ -38,7 +38,6 @@ list(APPEND real_include_directories
             ${JSON_INCLUDE_PUBLIC_DIRS}
             ${MODULE_ROOT_DIR}/test/unit-test
             ${CMOCK_DIR}/vendor/unity/src
-            ${JSON_SOURCES}
         )
 
 # =====================  Create UnitTest Code here (edit)  =====================

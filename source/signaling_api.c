@@ -257,7 +257,7 @@ SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingA
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelName\":\"%.*s\""
+                                        "\"ChannelName\":\"%.*s\""
                                    "}",
                                    ( int ) pChannelName->channelNameLength,
                                    pChannelName->pChannelName );
@@ -488,7 +488,7 @@ SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( Signalin
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\""
+                                        "\"ChannelARN\":\"%.*s\""
                                    "}",
                                    ( int ) pChannelArn->channelArnLength,
                                    pChannelArn->pChannelArn );
@@ -644,12 +644,12 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
         snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                    remainingLength,
                                    "{"
-                                   "\"ChannelName\":\"%.*s\","
-                                   "\"ChannelType\":\"%s\","
-                                   "\"SingleMasterConfiguration\":"
-                                   "{"
-                                   "\"MessageTtlSeconds\":%u"
-                                   "}",
+                                        "\"ChannelName\":\"%.*s\","
+                                        "\"ChannelType\":\"%s\","
+                                        "\"SingleMasterConfiguration\":"
+                                        "{"
+                                            "\"MessageTtlSeconds\":%u"
+                                        "}",
                                    ( int ) pCreateSignalingChannelRequestInfo->channelName.channelNameLength,
                                    pCreateSignalingChannelRequestInfo->channelName.pChannelName,
                                    ( pCreateSignalingChannelRequestInfo->channelType == SIGNALING_TYPE_CHANNEL_SINGLE_MASTER ) ? "SINGLE_MASTER" : "UNKOWN",
@@ -689,8 +689,8 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                            remainingLength,
                                            "{"
-                                           "\"Key\":\"%.*s\","
-                                           "\"Value\":\"%.*s\""
+                                                "\"Key\":\"%.*s\","
+                                                "\"Value\":\"%.*s\""
                                            "}",
                                            ( int ) pCreateSignalingChannelRequestInfo->pTags[ i ].nameLength,
                                            pCreateSignalingChannelRequestInfo->pTags[ i ].pName,
@@ -702,8 +702,8 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
                                            remainingLength,
                                            ",{"
-                                           "\"Key\":\"%.*s\","
-                                           "\"Value\":\"%.*s\""
+                                                "\"Key\":\"%.*s\","
+                                                "\"Value\":\"%.*s\""
                                            "}",
                                            ( int ) pCreateSignalingChannelRequestInfo->pTags[ i ].nameLength,
                                            pCreateSignalingChannelRequestInfo->pTags[ i ].pName,
@@ -862,7 +862,9 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
     {
         if( ( pGetSignalingChannelEndpointRequestInfo->protocols & SIGNALING_PROTOCOL_WEBSOCKET_SECURE ) != 0 )
         {
-            strncpy( &( protocolsString[ protocolIndex ] ), "\"WSS\"", 5 );
+            memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                    ( const void * ) "\"WSS\"",
+                    5 );
             protocolIndex += 5;
 
             isFirstProtocol = 0;
@@ -872,11 +874,15 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
         {
             if( isFirstProtocol == 0 )
             {
-                strncpy( &( protocolsString[ protocolIndex ] ), ",", 1 );
+                memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                        ( const void * ) ",",
+                        1 );
                 protocolIndex += 1;
             }
 
-            strncpy( &( protocolsString[ protocolIndex ] ), "\"HTTPS\"", 7 );
+            memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                    ( const void * ) "\"HTTPS\"",
+                    8 );
             protocolIndex += 7;
 
             isFirstProtocol = 0;
@@ -886,11 +892,15 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
         {
             if( isFirstProtocol == 0 )
             {
-                strncpy( &( protocolsString[ protocolIndex ] ), ",", 1 );
+                memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                        ( const void * ) ",",
+                        2 );
                 protocolIndex += 1;
             }
 
-            strncpy( &( protocolsString[ protocolIndex ] ), "\"WEBRTC\"", 8 );
+            memcpy( ( void * ) &( protocolsString[ protocolIndex ] ),
+                    ( const void * ) "\"WEBRTC\"",
+                    9 );
             protocolIndex += 8;
 
             isFirstProtocol = 0;
@@ -902,12 +912,12 @@ SignalingResult_t Signaling_ConstructGetSignalingChannelEndpointRequest( Signali
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\","
-                                   "\"SingleMasterChannelEndpointConfiguration\":"
-                                   "{"
-                                   "\"Protocols\":[%.*s],"
-                                   "\"Role\":\"%s\""
-                                   "}"
+                                        "\"ChannelARN\":\"%.*s\","
+                                        "\"SingleMasterChannelEndpointConfiguration\":"
+                                        "{"
+                                            "\"Protocols\":[%.*s],"
+                                            "\"Role\":\"%s\""
+                                        "}"
                                    "}",
                                    ( int ) pGetSignalingChannelEndpointRequestInfo->channelArn.channelArnLength,
                                    pGetSignalingChannelEndpointRequestInfo->channelArn.pChannelArn,
@@ -1099,9 +1109,9 @@ SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( SignalingChannel
         snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                    pRequestBuffer->bodyLength,
                                    "{"
-                                   "\"ChannelARN\":\"%.*s\","
-                                   "\"ClientId\":\"%.*s\","
-                                   "\"Service\":\"TURN\""
+                                        "\"ChannelARN\":\"%.*s\","
+                                        "\"ClientId\":\"%.*s\","
+                                        "\"Service\":\"TURN\""
                                    "}",
                                    ( int ) pGetIceServerConfigRequestInfo->channelArn.channelArnLength,
                                    pGetIceServerConfigRequestInfo->channelArn.pChannelArn,
@@ -1227,7 +1237,7 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                        pRequestBuffer->bodyLength,
                                        "{"
-                                       "\"channelArn\":\"%.*s\""
+                                            "\"channelArn\":\"%.*s\""
                                        "}",
                                        ( int ) pJoinStorageSessionRequestInfo->channelArn.channelArnLength,
                                        pJoinStorageSessionRequestInfo->channelArn.pChannelArn );
@@ -1237,8 +1247,8 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                        pRequestBuffer->bodyLength,
                                        "{"
-                                       "\"channelArn\":\"%.*s\","
-                                       "\"clientId\":\"%.*s\""
+                                            "\"channelArn\":\"%.*s\","
+                                            "\"clientId\":\"%.*s\""
                                        "}",
                                        ( int ) pJoinStorageSessionRequestInfo->channelArn.channelArnLength,
                                        pJoinStorageSessionRequestInfo->channelArn.pChannelArn,
@@ -1412,9 +1422,9 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
         snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                    remainingLength,
                                    "{"
-                                   "\"action\":\"%s\","
-                                   "\"RecipientClientId\":\"%.*s\","
-                                   "\"MessagePayload\": \"%.*s\"",
+                                        "\"action\":\"%s\","
+                                        "\"RecipientClientId\":\"%.*s\","
+                                        "\"MessagePayload\": \"%.*s\"",
                                    GetStringFromMessageType( pWssSendMessage->messageType ),
                                    ( int ) pWssSendMessage->recipientClientIdLength,
                                    pWssSendMessage->pRecipientClientId,

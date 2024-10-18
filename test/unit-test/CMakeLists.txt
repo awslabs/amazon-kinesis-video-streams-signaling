@@ -26,7 +26,7 @@ set( MODULE_ROOT_DIR ${__MODULE_ROOT_DIR} CACHE INTERNAL "Signaling repository r
 set( UNIT_TEST_DIR ${MODULE_ROOT_DIR}/test/unit-test CACHE INTERNAL "Unit-test directory." )
 
 # Set the include directories.
-string( APPEND GLOBAL_INCLUDES "-I ${MODULE_ROOT_DIR}/source/include")
+string( APPEND GLOBAL_INCLUDES "-I ${MODULE_ROOT_DIR}/source/include" )
 
 # Configure options to always show in CMake GUI.
 option( BUILD_CLONE_SUBMODULES
@@ -40,23 +40,6 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
 # ===================================== Include the cmake configurations =================================================
 message( STATUS ${CMAKE_BINARY_DIR} )
-
-# Include filepaths for source and include.
-include( ${MODULE_ROOT_DIR}/signalingFilePaths.cmake )
-include( ${MODULE_ROOT_DIR}/source/dependency/coreJSON/jsonFilePaths.cmake )
-
-# Target for Coverity analysis that builds the library.
-add_library( coverity_analysis
-             ${SIGNALING_SOURCES}
-             ${JSON_SOURCES}
-             ${SIGNALING_INCLUDE_PUBLIC_DIRS}
-             ${JSON_INCLUDE_PUBLIC_DIRS}
-             ${MODULE_ROOT_DIR}/test/unit-test )
-
-target_compile_definitions( coverity_analysis PUBLIC NDEBUG=1 )
-
-# Signaling public include path.
-target_include_directories( coverity_analysis PUBLIC ${SIGNALING_INCLUDE_PUBLIC_DIRS} ${MODULE_ROOT_DIR}/test/unit-test ${JSON_INCLUDE_PUBLIC_DIRS} )
 
 # ========================= Test Configuration ==============================
 
@@ -75,11 +58,11 @@ macro( clone_coreJSON )
         message( "Cloning submodule coreJSON." )
         execute_process( COMMAND rm -rf ${coreJSON_DIR}
                          COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive --checkout ${coreJSON_DIR}
-                        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-                        RESULT_VARIABLE STUN_CLONE_RESULT )
+                         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                         RESULT_VARIABLE COREJSON_CLONE_RESULT )
 
-        if( NOT ${STUN_CLONE_RESULT} STREQUAL "0" )
-                message( FATAL_ERROR "Failed to clone coreJSON submodule." )
+        if( NOT ${COREJSON_CLONE_RESULT} STREQUAL "0" )
+            message( FATAL_ERROR "Failed to clone coreJSON submodule." )
         endif()
 endmacro()
 
@@ -97,7 +80,7 @@ endif()
 # Check if the coreJSON source directory exists, and if not present, clone the submodule
 # if BUILD_CLONE_SUBMODULES configuration is enabled.
 if( NOT EXISTS ${coreJSON_DIR}/source )
-    # Attempt to clone StcoreJSONun.
+    # Attempt to clone coreJSON.
     if( ${BUILD_CLONE_SUBMODULES} )
         clone_coreJSON()
     else()
@@ -105,8 +88,12 @@ if( NOT EXISTS ${coreJSON_DIR}/source )
     endif()
 endif()
 
+# Include filepaths for source and include.
+include( ${MODULE_ROOT_DIR}/signalingFilePaths.cmake )
+include( ${MODULE_ROOT_DIR}/source/dependency/coreJSON/jsonFilePaths.cmake )
+
 # Use CTest utility for managing test runs. This has to be added BEFORE
-# defining test targets with add_test()
+# defining test targets with add_test().
 enable_testing()
 
 # Add build targets for CMock and Unit, required for unit testing.
@@ -118,7 +105,20 @@ include( ${MODULE_ROOT_DIR}/test/unit-test/cmock/create_test.cmake )
 # Include unit-test build configuration.
 include( ${UNIT_TEST_DIR}/signaling_api/ut.cmake )
 
+#  ==================================== Coverity Analysis configuration ========================================
+
+# Target for Coverity analysis that builds the library.
+add_library( coverity_analysis
+             ${SIGNALING_SOURCES}
+             ${JSON_SOURCES} )
+
+target_compile_definitions( coverity_analysis PUBLIC NDEBUG=1 )
+
+# Signaling public include path.
+target_include_directories( coverity_analysis PUBLIC ${SIGNALING_INCLUDE_PUBLIC_DIRS} ${MODULE_ROOT_DIR}/test/unit-test ${JSON_INCLUDE_PUBLIC_DIRS} )
+
 #  ==================================== Coverage Analysis configuration ========================================
+
 # Add a target for running coverage on tests.
 add_custom_target( coverage
     COMMAND ${CMAKE_COMMAND} -DCMOCK_DIR=${CMOCK_DIR}

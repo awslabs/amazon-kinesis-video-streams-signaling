@@ -31,35 +31,43 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( NULL,
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     awsRegion.pAwsRegion = NULL;
+
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
+  
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 NULL, &( requestBuffer ) );
+                                                                 NULL,
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), NULL );
+                                                                 &( channelName ),
+                                                                 NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -67,8 +75,10 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BadParams( void )
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
     requestBuffer.pBody = NULL;
+
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
