@@ -1233,7 +1233,7 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                        pRequestBuffer->bodyLength,
                                        "{"
-                                            "\"ChannelARN\":\"%.*s\""
+                                            "\"channelArn\":\"%.*s\""
                                        "}",
                                        ( int ) pJoinStorageSessionRequestInfo->channelArn.channelArnLength,
                                        pJoinStorageSessionRequestInfo->channelArn.pChannelArn );
@@ -1243,8 +1243,8 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
             snprintfRetVal = snprintf( pRequestBuffer->pBody,
                                        pRequestBuffer->bodyLength,
                                        "{"
-                                            "\"ChannelARN\":\"%.*s\","
-                                            "\"ClientId\":\"%.*s\""
+                                            "\"channelArn\":\"%.*s\","
+                                            "\"clientId\":\"%.*s\""
                                        "}",
                                        ( int ) pJoinStorageSessionRequestInfo->channelArn.channelArnLength,
                                        pJoinStorageSessionRequestInfo->channelArn.pChannelArn,
@@ -1502,10 +1502,12 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
     if( result == SIGNALING_RESULT_OK )
     {
         /* Exclude null terminator in messageLength. */
-        
-        if( pMessage[ messageLength - 1 ] == '\0' )
+        if(messageLength > 0 )
         {
-            messageLength--;
+            if( pMessage[ messageLength - 1 ] == '\0' )
+                {
+                    messageLength--;
+                }      
         }
 
         jsonResult = JSON_Validate( pMessage, messageLength );

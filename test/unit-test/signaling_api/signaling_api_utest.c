@@ -2954,7 +2954,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_Master( void )
     SignalingResult_t result;
     const char * pExpectedUrl = "webrtc://example.com/joinStorageSession";
     const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\""
+                                    "\"channelArn\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\""
                                   "}";
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
@@ -3001,8 +3001,8 @@ void test_signaling_ConstructJoinStorageSessionRequest_Viewer( void )
     SignalingResult_t result;
     const char * pExpectedUrl = "webrtc://example.com/joinStorageSession";
     const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"ClientId\":\"TestClient\""
+                                    "\"channelArn\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+                                    "\"clientId\":\"TestClient\""
                                   "}";
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
@@ -4213,6 +4213,25 @@ void test_signaling_ParseWssRecvMessage_InvalidStatusResponse( void )
                                             messageLength, &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_STATUS_RESPONSE,
+                       result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Parse Web-Socket Receive Message functionality.
+ */
+void test_signaling_ParseWssRecvMessage_Empty( void )
+{
+    SignalingResult_t result;
+    WssRecvMessage_t wssRecvMessage = { 0 };
+    const char *message  = "";
+    size_t messageLength = 0;
+
+    result = Signaling_ParseWssRecvMessage( message,
+                                            messageLength, &( wssRecvMessage ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 }
 
