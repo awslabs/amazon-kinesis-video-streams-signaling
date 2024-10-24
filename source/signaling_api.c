@@ -793,6 +793,10 @@ SignalingResult_t Signaling_ParseCreateSignalingChannelResponse( const char * pM
                 pChannelArn->pChannelArn = pair.value;
                 pChannelArn->channelArnLength = pair.valueLength;
             }
+            else
+            {
+                result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
+            }
         }
         else
         {

@@ -1698,7 +1698,7 @@ void test_signaling_ParseCreateSignalingChannelResponse_Unkown( void )
     result = Signaling_ParseCreateSignalingChannelResponse( message,
                                                             messageLength, &( channelArn ) );
 
-    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
     TEST_ASSERT_EQUAL( 0, channelArn.pChannelArn );
     TEST_ASSERT_EQUAL( 0, channelArn.channelArnLength );
