@@ -139,15 +139,15 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_SmallLengthRegion( 
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelName_t channelName = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.ca.amazonaws.com/describeSignalingChannel";
     const char * pExpectedBody = "{"
                                     "\"ChannelName\":\"Test-Channel-China\""
                                   "}";
 
-    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3 */
+    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3. */
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     channelName.pChannelName = "Test-Channel-China";
@@ -159,7 +159,8 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_SmallLengthRegion( 
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
@@ -183,9 +184,9 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_ChinaRegion( void )
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelName_t channelName = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     const char * pExpectedBody = "{"
                                     "\"ChannelName\":\"Test-Channel-China\""
@@ -203,7 +204,8 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_ChinaRegion( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
@@ -222,14 +224,14 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_ChinaRegion( void )
 /**
  * @brief Validate Signaling Construct Describe Channel Request functionality.
  */
-void test_signaling_ConstructDescribeSignalingChannelRequest_URLOutofMemory( void )
+void test_signaling_ConstructDescribeSignalingChannelRequest_UrlOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelName_t channelName = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 69 ];         /* The url buffer is small */
-    char bodyBuffer[ 100 ];
     SignalingResult_t result;
+    char urlBuffer[ 69 ]; /* The url buffer is too small to fit the complete URL. */
+    char bodyBuffer[ 100 ];
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -243,7 +245,8 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_URLOutofMemory( voi
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -259,9 +262,9 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BodyOutofMemory( vo
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelName_t channelName = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 30 ];         /* The body buffer is small */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 30 ]; /* The body buffer is too small to fit the complete body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -275,7 +278,8 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BodyOutofMemory( vo
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
-                                                                 &( channelName ), &( requestBuffer ) );
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -288,19 +292,21 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BodyOutofMemory( vo
  */
 void test_signaling_ParseDescribeSignalingChannelResponse_BadParams( void )
 {
-    const char * message = "Input Message";
-    size_t messageLength = strlen( message );
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
+    const char * message = "Input Message";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( NULL,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, NULL );
+                                                              messageLength,
+                                                              NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -313,55 +319,65 @@ void test_signaling_ParseDescribeSignalingChannelResponse_BadParams( void )
  */
 void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
 {
-    const char * message = "{\"ChannelInfo\": {";        /* Missing Closing Braces */
-    size_t messageLength = strlen( message );
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
+    const char * message = "{\"ChannelInfo\": {"; /* Missing Closing Brace. */
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
     /* <--------------------------------------------------------------------> */
 
-    const char *message2 = "{"
-        "\"ChannelInfo\": {"
-            "\"SingleMasterConfiguration\": {\"MessbkpTtlSeconds\": 60}"        /* The SingleMasterConfiguration Contains Invalid Value */
+    const char *message2 =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
+            "\"SingleMasterConfiguration\":"
+            "{"
+                "\"MessbkpTtlSeconds\": 60" /* Invalid key. */
+            "}"
         "}"
     "}";
     size_t messageLength2 = strlen( message2 );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message2,
-                                                              messageLength2, &( channelInfo ) );
+                                                              messageLength2,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
     /* <--------------------------------------------------------------------> */
 
-    const char *message3 = "{"
-    "}";                                                                   /* Empty Message */
+    const char *message3 = "{}"; /* Empty Message. */
     size_t messageLength3 = strlen( message3 );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message3,
-                                                              messageLength3, &( channelInfo ) );
+                                                              messageLength3,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
     /* <--------------------------------------------------------------------> */
 
-    const char *message4 = "{"
-        "\"ChannelInfo\": {"
-            "\"SingleMasterConfiguration\": {}"                             /* Empty Single Master Configuration */
+    const char *message4 =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
+            "\"SingleMasterConfiguration\": {}" /* Empty Single Master Configuration. */
         "}"
-    "}";                                                              
+    "}";
     size_t messageLength4 = strlen( message4 );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message4,
-                                                              messageLength4, &( channelInfo ) );
+                                                              messageLength4,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -375,43 +391,55 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
  */
 void test_signaling_ParseDescribeSignalingChannelResponse_UnexpectedResponse( void )
 {
-    const char * message = "{"
-        "\"ChannelInfo\": ["                                                                    /* Opening Bracket Not JSON Object Type */
-            "{\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\"}"
-        "]"                                                                                     /* Closing Bracket Not JSON Object Type */  
-    "}";
-    size_t messageLength = strlen( message );
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
+    const char * message =
+    "{"
+        "\"ChannelInfo\":"
+        "[" /* Unexpected JSON array. */
+            "{"
+                "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
+            "}"
+        "]"
+    "}";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message2 = "{"
-        "\"Unkown\": {"                           
+    const char * message2 =
+    "{"
+        "\"Unkown\":" /* Unexpected key. */
+        "{"
             "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
-        "}"                                        
+        "}"
     "}";
     size_t messageLength2 = strlen( message2 );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message2,
-                                                              messageLength2, &( channelInfo ) );
+                                                              messageLength2,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message3 = "{\"ChannelXXXX\": {}}";            /* The Key is not known though the length is same as "ChannelInfo". */
+    const char * message3 =
+    "{"
+        "\"ChannelXXXX\": {}" /* Unexpected key though the length is same as "ChannelInfo". */
+    "}";
     size_t messageLength3 = strlen( message3 );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message3,
-                                                              messageLength3, &( channelInfo ) );
+                                                              messageLength3,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -422,19 +450,25 @@ void test_signaling_ParseDescribeSignalingChannelResponse_UnexpectedResponse( vo
 /**
  * @brief Validate Signaling Parse Describe Response functionality for Invalid TTL.
  */
-void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTTL_Low( void )
+void test_signaling_ParseDescribeSignalingChannelResponse_TttLow( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =  "{"
-        "\"ChannelInfo\": {"
-            "\"SingleMasterConfiguration\": {\"MessageTtlSeconds\": 0}"         /* The Valid Range for message TTL is [ 5-120 ] Seconds */
+    const char *message =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
+            "\"SingleMasterConfiguration\":"
+            "{"
+                "\"MessageTtlSeconds\": 0" /* The valid range for message TTL is [ 5-120 ] seconds. */
+            "}"
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_TTL,
                        result );
@@ -445,19 +479,25 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTTL_Low( void )
 /**
  * @brief Validate Signaling Parse Describe Response functionality for Invalid TTL.
  */
-void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTTL_High( void )
+void test_signaling_ParseDescribeSignalingChannelResponse_TtlHigh( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =  "{"
-        "\"ChannelInfo\": {"
-            "\"SingleMasterConfiguration\": {\"MessageTtlSeconds\": 999}"         /* The Valid Range for message TTL is [ 5-120 ] Seconds  */
+    const char *message =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
+            "\"SingleMasterConfiguration\":"
+            "{"
+                "\"MessageTtlSeconds\": 999" /* The valid range for message TTL is [ 5-120 ] seconds. */
+            "}"
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_TTL,
                        result );
@@ -468,19 +508,25 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTTL_High( void 
 /**
  * @brief Validate Signaling Parse Describe Response functionality for Invalid TTL.
  */
-void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTTL_Buffer( void )
+void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTtl( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =  "{"
-        "\"ChannelInfo\": {"
-            "\"SingleMasterConfiguration\": {\"MessageTtlSeconds\": 9999999}"         /* The Valid Range for message TTL is < SIGNALING_CHANNEL_TTL_SECONDS_BUFFER_MAX ( 5 ), Here is 7  */
+    const char *message =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
+            "\"SingleMasterConfiguration\":"
+            "{"
+                "\"MessageTtlSeconds\": 9999999" /* TTL value length larger than SIGNALING_CHANNEL_TTL_SECONDS_BUFFER_MAX ( 5 ). */
+            "}"
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_TTL,
                        result );
@@ -495,15 +541,18 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidChannel_Type( v
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message = "{"
-        "\"ChannelInfo\": {"
+    const char *message =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
             "\"ChannelType\": \"INVALID_TYPE\""
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_CHANNEL_TYPE,
                        result );
@@ -512,27 +561,32 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidChannel_Type( v
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Describe Response functionality for Invalid Channel Name.
+ * @brief Validate Signaling Parse Describe Response functionality for too long Channel Name.
  */
-void test_signaling_ParseDescribeSignalingChannelResponse_InvalidChannel_Name( void )
+void test_signaling_ParseDescribeSignalingChannelResponse_ChannelNameTooLong( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-
     char longChannelName[ SIGNALING_CHANNEL_NAME_MAX_LEN + 10 ];
+    char message[ 1000 ];
 
     memset( longChannelName, 'a', sizeof( longChannelName ) - 1 );
     longChannelName[ sizeof( longChannelName ) - 1 ] = '\0';
-    char message[ 1000 ];
-    snprintf(message, sizeof(message), "{"
-        "\"ChannelInfo\": {"
-            "\"ChannelName\": \"%s\""
-        "}"
-    "}", longChannelName);
+
+    snprintf( message,
+              sizeof( message ),
+              "{"
+                    "\"ChannelInfo\":"
+                    "{"
+                        "\"ChannelName\": \"%s\""
+                    "}"
+               "}",
+               longChannelName );
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_CHANNEL_NAME,
                        result );
@@ -547,8 +601,10 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message = "{"
-        "\"ChannelInfo\": {"
+    const char *message =
+    "{"
+        "\"ChannelInfo\":"
+        "{"
             "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\","
             "\"ChannelName\": \"test-channel\","
             "\"ChannelStatus\": \"ACTIVE\","
@@ -556,27 +612,42 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
             "\"CreationTime\": \"2023-05-01T12:00:00Z\","
             "\"SingleMasterConfiguration\": {\"MessageTtlSeconds\": 60},"
             "\"Version\": \"1\","
-            "\"Unkown\": \"200\""                       /* Unkown Tag --> Will be skipped */
+            "\"Unkown\": \"200\"" /* Unkown Tag --> Will be skipped. */
         "}"
     "}";
     size_t messageLength = strlen( message );
     const char * pExpectedChannelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
     result = Signaling_ParseDescribeSignalingChannelResponse( message,
-                                                              messageLength, &( channelInfo ) );
+                                                              messageLength,
+                                                              &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
+    TEST_ASSERT_EQUAL( strlen( pExpectedChannelArn ),
+                       channelInfo.channelArn.channelArnLength );
     TEST_ASSERT_EQUAL_STRING_LEN( pExpectedChannelArn,
                                   channelInfo.channelArn.pChannelArn,
-                                  strlen( pExpectedChannelArn ) );
+                                  channelInfo.channelArn.channelArnLength );
+    TEST_ASSERT_EQUAL( strlen( "test-channel" ),
+                       channelInfo.channelName.channelNameLength );
     TEST_ASSERT_EQUAL_STRING_LEN( "test-channel",
                                   channelInfo.channelName.pChannelName,
                                   channelInfo.channelName.channelNameLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( "ACTIVE", channelInfo.pChannelStatus, channelInfo.channelStatusLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_CHANNEL_SINGLE_MASTER, channelInfo.channelType );
-    TEST_ASSERT_EQUAL( 60, channelInfo.messageTtlSeconds );
-    TEST_ASSERT_EQUAL_STRING_LEN( "1", channelInfo.pVersion, channelInfo.versionLength );
+    TEST_ASSERT_EQUAL( strlen( "ACTIVE" ),
+                       channelInfo.channelStatusLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "ACTIVE",
+                                  channelInfo.pChannelStatus,
+                                  channelInfo.channelStatusLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_CHANNEL_SINGLE_MASTER,
+                       channelInfo.channelType );
+    TEST_ASSERT_EQUAL( 60,
+                       channelInfo.messageTtlSeconds );
+    TEST_ASSERT_EQUAL( strlen( "1" ),
+                       channelInfo.versionLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "1",
+                                  channelInfo.pVersion,
+                                  channelInfo.versionLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -592,35 +663,43 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( NULL,
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     awsRegion.pAwsRegion = NULL;
+
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
+
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   NULL, &( requestBuffer ) );
+                                                                   NULL,
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), NULL );
+                                                                   &( channelArn ),
+                                                                   NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -628,8 +707,10 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_BadParams( void )
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
     requestBuffer.pBody = NULL;
+
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -637,8 +718,10 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_BadParams( void )
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
     channelArn.pChannelArn = NULL;
+
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -654,13 +737,14 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest( void )
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelArn_t channelArn = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/describeMediaStorageConfiguration";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\""
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -674,18 +758,21 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength  );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -698,15 +785,16 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_SmallLengthRegion
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelArn_t channelArn = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.ca.amazonaws.com/describeMediaStorageConfiguration";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123\""
+    "}";
 
-    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3 */
+    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3. */
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     channelArn.pChannelArn = "arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123";
@@ -718,18 +806,21 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_SmallLengthRegion
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -742,13 +833,14 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_ChinaRegion( void
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelArn_t channelArn = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.cn-north-1.amazonaws.com.cn/describeMediaStorageConfiguration";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws-cn:kinesisvideo:cn-north-1:123456789012:channel/test-channel/1234567890123\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws-cn:kinesisvideo:cn-north-1:123456789012:channel/test-channel/1234567890123\""
+    "}";
 
     awsRegion.pAwsRegion = "cn-north-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -762,18 +854,21 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_ChinaRegion( void
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -781,14 +876,14 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_ChinaRegion( void
 /**
  * @brief Validate Signaling Construct Describe Media Storage Config Request functionality.
  */
-void test_signaling_ConstructDescribeMediaStorageConfigRequest_URLOutOfMemory( void )
+void test_signaling_ConstructDescribeMediaStorageConfigRequest_UrlOutOfMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelArn_t channelArn = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 78 ];     /* The url buffer is small */
-    char bodyBuffer[ 100 ];
     SignalingResult_t result;
+    char urlBuffer[ 78 ]; /* The url buffer is too small to fit the complete URL. */
+    char bodyBuffer[ 100 ];
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -802,7 +897,8 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_URLOutOfMemory( v
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -818,9 +914,9 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_BodyOutOfMemory( 
     SignalingAwsRegion_t awsRegion = { 0 };
     SignalingChannelArn_t channelArn = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 95 ];       /* The body buffer is small */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 95 ]; /* The body buffer is too small to fit the complete body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -834,7 +930,8 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_BodyOutOfMemory( 
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDescribeMediaStorageConfigRequest( &( awsRegion ),
-                                                                   &( channelArn ), &( requestBuffer ) );
+                                                                   &( channelArn ),
+                                                                   &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -847,19 +944,21 @@ void test_signaling_ConstructDescribeMediaStorageConfigRequest_BodyOutOfMemory( 
  */
 void test_signaling_ParseDescribeMediaStorageConfigResponse_BadParams( void )
 {
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
+    const char * message = "Valid-Message";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( NULL,
-                                                                messageLength, &( mediaStorageConfig ) );
+                                                                messageLength,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
-                                                                messageLength, NULL );
+                                                                messageLength,
+                                                                NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -872,24 +971,26 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_BadParams( void )
  */
 void test_signaling_ParseDescribeMediaStorageConfigResponse_InvalidJson( void )
 {
-    const char * message = "{\"MediaStorageConfiguration\": {";  /* Missing closing brace */
-    size_t messageLength = sizeof( message );
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
+    const char * message = "{\"MediaStorageConfiguration\": {";  /* Missing closing brace. */
+    size_t messageLength = sizeof( message );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
-                                                                messageLength, &( mediaStorageConfig ) );
+                                                                messageLength,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
     /* <--------------------------------------------------------------------> */
-    const char * message2 = "{"                                  /* Empty JSON */
-                            "}";
+
+    const char * message2 = "{}"; /* Empty JSON. */
     size_t messageLength2 = strlen( message2 );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message2,
-                                                                messageLength2, &( mediaStorageConfig ) );
+                                                                messageLength2,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -904,13 +1005,15 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char * message =  \
-        "{"
-            "\"PediaStorageConfiguration\":"               
-           "["                                                                              /* Opening Bracket Not JSON Object Type */
-                "{\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\"}"
-            "]"                                                                             /* Closing Bracket Not JSON Object Type */
-        "}";
+    const char * message =
+    "{"
+        "\"MediaStorageConfiguration\":"
+        "[" /* Unexpected JSON array. */
+            "{"
+                "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
+            "}"
+        "]"
+    "}";
     size_t messageLength = strlen( message );
 
 
@@ -919,38 +1022,42 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
+
     /*<----------------------------------------------------------------->*/
 
-    const char * message2 =  \
+    const char * message2 =
+    "{"
+        "\"Unkown\":" /* Unkown Key. */
         "{"
-            "\"Unkown\":"                    /* Unkown Key */      
-           "{"             
-                "\"Status\": \"ENABLED\","
-                "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
-            "}"          
-        "}";
+            "\"Status\": \"ENABLED\","
+            "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
+        "}"
+    "}";
     size_t messageLength2 = strlen( message2 );
 
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message2,
-                                                                messageLength2, &( mediaStorageConfig ) );
+                                                                messageLength2,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
+
     /*<----------------------------------------------------------------->*/
 
-    const char * message3 =  \
+    const char * message3 =
+    "{"
+        "\"PediaStorageConfiguration\":" /* Unknown key even though length of the key is same as "MediaStorageConfiguration". */
         "{"
-            "\"PediaStorageConfiguration\":"                /* Key is not known, even though length of the key is same as "MediaStorageConfiguration". */
-           "{"
-                "\"Status\": \"ENABLED\","
-                "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
-            "}"
-        "}";
+            "\"Status\": \"ENABLED\","
+            "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
+        "}"
+    "}";
     size_t messageLength3 = strlen( message3 );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message3,
-                                                                messageLength3, &( mediaStorageConfig ) );
+                                                                messageLength3,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -965,21 +1072,30 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_MissingFields( void 
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char *message = "{"
-        "\"MediaStorageConfiguration\": {"
+    const char *message =
+    "{"
+        "\"MediaStorageConfiguration\":"
+        "{"
             "\"Status\": \"ENABLED\""
-            // Missing StreamARN
+            /* Missing StreamARN. */
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
-                                                                messageLength, &( mediaStorageConfig ) );
+                                                                messageLength,
+                                                                &( mediaStorageConfig ) );
 
-    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK, result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "ENABLED", mediaStorageConfig.pStatus, mediaStorageConfig.statusLength );
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+                       result );
+    TEST_ASSERT_EQUAL( strlen( "ENABLED" ),
+                       mediaStorageConfig.statusLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "ENABLED",
+                                  mediaStorageConfig.pStatus,
+                                  mediaStorageConfig.statusLength );
     TEST_ASSERT_NULL( mediaStorageConfig.pStreamArn );
-    TEST_ASSERT_EQUAL( 0, mediaStorageConfig.streamArnLength );
+    TEST_ASSERT_EQUAL( 0,
+                       mediaStorageConfig.streamArnLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -991,24 +1107,29 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse( void )
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char * message =  \
+    const char * message =
+    "{"
+        "\"MediaStorageConfiguration\":"
         "{"
-            "\"MediaStorageConfiguration\":"
-           "{"
-                "\"Status\": \"ENABLED\","
-                "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\","
-                "\"Unkown\": \"Unkown Value\""                  /* This will be ignored. */
-            "}"
-        "}";
+            "\"Status\": \"ENABLED\","
+            "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\","
+            "\"Unkown\": \"Unkown Value\"" /* This will be ignored. */
+        "}"
+    "}";
     size_t messageLength = strlen( message );
     const char * pExpectedStreamArn = "arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123";
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
-                                                                messageLength, &( mediaStorageConfig ) );
+                                                                messageLength,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "ENABLED", mediaStorageConfig.pStatus, mediaStorageConfig.statusLength );
+    TEST_ASSERT_EQUAL( strlen( "ENABLED" ),
+                       mediaStorageConfig.statusLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "ENABLED",
+                                  mediaStorageConfig.pStatus,
+                                  mediaStorageConfig.statusLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedStreamArn ),
                        mediaStorageConfig.streamArnLength );
     TEST_ASSERT_EQUAL_STRING_LEN( pExpectedStreamArn,
@@ -2213,11 +2334,11 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
     /*<----------------------------------------------------------------->*/
 
     const char * message2 = "{"
-        "\"Unkown\": ["                                                                      /* Unkown Key */      
+        "\"Unkown\": ["                                                                      /* Unkown Key */
             "{\"Protocol\": \"WSS\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"HTTPS\", \"ResourceEndpoint\": \"https://example.com\"},"
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
-        "]"                                             
+        "]"
     "}";
     size_t messageLength2 = strlen( message2 );
 
@@ -2675,15 +2796,15 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
     /*<----------------------------------------------------------------->*/
 
     const char * message2 = "{"
-        "\"Unkown\": ["                  /* Unkown Key */  
+        "\"Unkown\": ["                  /* Unkown Key */
             "{"
                 "\"Password\": \"password123\","
                 "\"Ttl\": 300,"
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\""
             "}"
-        "]"     
-    "}";              
+        "]"
+    "}";
     size_t messageLength2 = strlen( message2 );
 
 
