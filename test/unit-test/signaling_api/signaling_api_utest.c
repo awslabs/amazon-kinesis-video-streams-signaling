@@ -1151,35 +1151,43 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructCreateSignalingChannelRequest( NULL,
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     awsRegion.pAwsRegion = NULL;
+
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
+
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               NULL, &( requestBuffer ) );
+                                                               NULL,
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), NULL );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1189,7 +1197,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
     requestBuffer.pBody = NULL;
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1200,15 +1209,18 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
     createSignalingChannelRequestInfo.pTags = NULL;
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     createSignalingChannelRequestInfo.pTags = &( tags[ 0 ] );
     createSignalingChannelRequestInfo.channelName.channelNameLength = SIGNALING_CHANNEL_NAME_MAX_LEN + 1;
+
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1219,14 +1231,14 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_Url_OutofMemory( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_UrlOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 20 ];       /* URL Buffer small */
+    SignalingResult_t result;
+    char urlBuffer[ 20 ]; /* URL buffer too small to fit the complete URL. */
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1244,7 +1256,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_Url_OutofMemory( void
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1255,14 +1268,14 @@ void test_signaling_ConstructCreateSignalingChannelRequest_Url_OutofMemory( void
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_Body_OutofMemory( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_BodyOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 100 ];     /* Body Buffer Small */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 100 ]; /* Body buffer too small to fit the complete body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1280,7 +1293,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_Body_OutofMemory( voi
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1291,14 +1305,14 @@ void test_signaling_ConstructCreateSignalingChannelRequest_Body_OutofMemory( voi
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_Body_RightBracket_OutofMemory( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_BodyClosingBraceOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 113 ];                 /* Body Buffer in-capable of adding the "}" in the Body */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 113 ]; /* Body buffer does not have space for the closing "}" in the body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1316,7 +1330,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_Body_RightBracket_Out
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1332,17 +1347,19 @@ void test_signaling_ConstructCreateSignalingChannelRequest( void )
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/createSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel\","
-                                    "\"ChannelType\":\"SINGLE_MASTER\","
-                                    "\"SingleMasterConfiguration\":{"
-                                        "\"MessageTtlSeconds\":60"
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel\","
+        "\"ChannelType\":\"SINGLE_MASTER\","
+        "\"SingleMasterConfiguration\":"
+        "{"
+            "\"MessageTtlSeconds\":60"
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1360,18 +1377,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -1379,22 +1399,24 @@ void test_signaling_ConstructCreateSignalingChannelRequest( void )
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_Unkown_ChannelType( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_UnkownChannelType( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/createSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel\","
-                                    "\"ChannelType\":\"UNKOWN\","
-                                    "\"SingleMasterConfiguration\":{"
-                                        "\"MessageTtlSeconds\":60"
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel\","
+        "\"ChannelType\":\"UNKOWN\","
+        "\"SingleMasterConfiguration\":"
+        "{"
+            "\"MessageTtlSeconds\":60"
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1412,18 +1434,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest_Unkown_ChannelType( v
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -1436,19 +1461,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest_SmallLengthRegion( vo
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.ca.amazonaws.com/createSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel\","
-                                    "\"ChannelType\":\"SINGLE_MASTER\","
-                                    "\"SingleMasterConfiguration\":{"
-                                        "\"MessageTtlSeconds\":60"
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel\","
+        "\"ChannelType\":\"SINGLE_MASTER\","
+        "\"SingleMasterConfiguration\":"
+        "{"
+            "\"MessageTtlSeconds\":60"
+        "}"
+    "}";
 
-    awsRegion.pAwsRegion = "ca";            /* The Region Length is < 3 */
+    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3. */
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     createSignalingChannelRequestInfo.channelName.pChannelName = "Test-Channel";
@@ -1464,18 +1491,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest_SmallLengthRegion( vo
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -1488,17 +1518,19 @@ void test_signaling_ConstructCreateSignalingChannelRequest_ChinaRegion( void )
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.cn-north-1.amazonaws.com.cn/createSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel\","
-                                    "\"ChannelType\":\"SINGLE_MASTER\","
-                                    "\"SingleMasterConfiguration\":{"
-                                        "\"MessageTtlSeconds\":60"
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel\","
+        "\"ChannelType\":\"SINGLE_MASTER\","
+        "\"SingleMasterConfiguration\":"
+        "{"
+            "\"MessageTtlSeconds\":60"
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "cn-north-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1516,18 +1548,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest_ChinaRegion( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -1535,23 +1570,23 @@ void test_signaling_ConstructCreateSignalingChannelRequest_ChinaRegion( void )
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_LeftArrayBracket_OutofMemory( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsLeftArrayBracketOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingTag_t tags[ 1 ] = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 121 ];         /* Buffer in-capable of adding "[" in the body */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 121 ]; /* Buffer not large enough to contain "[" in the body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
-    tags->pName = "Tag1";
-    tags->nameLength = strlen( tags->pName );
-    tags->pValue = "Value1";
-    tags->valueLength = strlen( tags->pValue );
+    tags[ 0 ].pName = "Tag1";
+    tags[ 0 ].nameLength = strlen( tags->pName );
+    tags[ 0 ].pValue = "Value1";
+    tags[ 0 ].valueLength = strlen( tags->pValue );
 
     createSignalingChannelRequestInfo.channelName.pChannelName = "Test-Channel";
     createSignalingChannelRequestInfo.channelName.channelNameLength = strlen( createSignalingChannelRequestInfo.channelName.pChannelName );
@@ -1566,7 +1601,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_LeftArrayBra
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1577,15 +1613,15 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_LeftArrayBra
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_OutofMemory( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingTag_t tags[ 2 ] = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 170 ];         /* Buffer in-capable of adding Tags in the body */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 170 ]; /* Buffer not large enough to contain tags in the body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1613,7 +1649,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_OutofMemory(
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1624,15 +1661,15 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_OutofMemory(
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_RightArrayBracket_OutofMemory( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsRightArrayBracketOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingTag_t tags[ 2 ] = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 185 ];         /* Buffer in-capable of adding "]" in the body */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 185 ]; /* Buffer not large enough to contain "]" in the body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1660,7 +1697,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags_RightArrayBr
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1677,27 +1715,30 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags( void )
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
     SignalingTag_t tags[ 2 ] = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/createSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel\","
-                                    "\"ChannelType\":\"SINGLE_MASTER\","
-                                    "\"SingleMasterConfiguration\":{"
-                                        "\"MessageTtlSeconds\":60"
-                                    "},"
-                                    "\"Tags\":["
-                                        "{"
-                                            "\"Key\":\"Tag1\","
-                                            "\"Value\":\"Value1\""
-                                        "},"
-                                        "{"
-                                            "\"Key\":\"Tag2\","
-                                            "\"Value\":\"Value2\""
-                                        "}"
-                                    "]"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel\","
+        "\"ChannelType\":\"SINGLE_MASTER\","
+        "\"SingleMasterConfiguration\":"
+        "{"
+            "\"MessageTtlSeconds\":60"
+        "},"
+        "\"Tags\":"
+        "["
+            "{"
+                "\"Key\":\"Tag1\","
+                "\"Value\":\"Value1\""
+            "},"
+            "{"
+                "\"Key\":\"Tag2\","
+                "\"Value\":\"Value2\""
+            "}"
+        "]"
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1725,18 +1766,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
-                                                               &( createSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -1746,19 +1790,21 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTags( void )
  */
 void test_signaling_ParseCreateSignalingChannelResponse_BadParams( void )
 {
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
+    const char * message = "Valid-Message";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseCreateSignalingChannelResponse( NULL,
-                                                            messageLength, &( channelArn ) );
+                                                            messageLength,
+                                                            &( channelArn ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseCreateSignalingChannelResponse( message,
-                                                            messageLength, NULL );
+                                                            messageLength,
+                                                            NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1771,13 +1817,14 @@ void test_signaling_ParseCreateSignalingChannelResponse_BadParams( void )
  */
 void test_signaling_ParseCreateSignalingChannelResponse_InvalidJson( void )
 {
-    const char * message = "{\"ChannelARN\": \"test-arn\"";  /* Missing closing brace */
-    size_t messageLength = strlen( message );
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
+    const char * message = "{\"ChannelARN\": \"test-arn\"";  /* Missing closing brace. */
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseCreateSignalingChannelResponse( message,
-                                                            messageLength, &( channelArn ) );
+                                                            messageLength,
+                                                            &( channelArn ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -1790,13 +1837,14 @@ void test_signaling_ParseCreateSignalingChannelResponse_InvalidJson( void )
  */
 void test_signaling_ParseCreateSignalingChannelResponse_UnexpectedResponse( void )
 {
-    const char * message = "{}";
-    size_t messageLength = strlen( message );
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
+    const char * message = "{}";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseCreateSignalingChannelResponse( message,
-                                                            messageLength, &( channelArn ) );
+                                                            messageLength,
+                                                            &( channelArn ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1807,22 +1855,22 @@ void test_signaling_ParseCreateSignalingChannelResponse_UnexpectedResponse( void
 /**
  * @brief Validate Signaling Parse Create Signaling Channel Response functionality.
  */
-void test_signaling_ParseCreateSignalingChannelResponse_Unkown( void )
+void test_signaling_ParseCreateSignalingChannelResponse_UnkownKey( void )
 {
-    const char * message = "{"
-        "\"Unkown\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""        /* Unkown is ignored */
-    "}";
-    size_t messageLength = strlen( message );
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
+    const char * message =
+    "{"
+        "\"Unkown\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
+    "}";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseCreateSignalingChannelResponse( message,
-                                                            messageLength, &( channelArn ) );
+                                                            messageLength,
+                                                            &( channelArn ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
-    TEST_ASSERT_EQUAL( 0, channelArn.pChannelArn );
-    TEST_ASSERT_EQUAL( 0, channelArn.channelArnLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -1834,18 +1882,21 @@ void test_signaling_ParseCreateSignalingChannelResponse( void )
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
     "}";
     size_t messageLength = strlen( message );
     const char * pExpectedChannelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
     result = Signaling_ParseCreateSignalingChannelResponse( message,
-                                                            messageLength, &( channelArn ) );
+                                                            messageLength,
+                                                            &( channelArn ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( strlen( pExpectedChannelArn ), channelArn.channelArnLength );
+    TEST_ASSERT_EQUAL( strlen( pExpectedChannelArn ),
+                       channelArn.channelArnLength );
     TEST_ASSERT_EQUAL_STRING_LEN( pExpectedChannelArn,
                                   channelArn.pChannelArn,
                                   channelArn.channelArnLength );
@@ -1861,11 +1912,12 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    const char * channelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
     SignalingResult_t result;
+    const char * channelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( NULL,
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1873,7 +1925,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     awsRegion.pAwsRegion = NULL;
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1882,13 +1935,15 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), NULL );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    NULL, &( requestBuffer ) );
+                                                                    NULL,
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1896,7 +1951,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     requestBuffer.pUrl = NULL;
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1906,7 +1962,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     requestBuffer.pBody = NULL;
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1916,7 +1973,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     getSignalingChannelEndPointRequestInfo.channelArn.pChannelArn = NULL;
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1926,7 +1984,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_NONE;
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -1937,14 +1996,14 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
 /**
  * @brief Validate Signaling Construct Get Channel Endpoint Request functionality .
  */
-void test_signaling_ConstructGetSignalingChannelEndpointRequest_URL_OutofMemory( void )
+void test_signaling_ConstructGetSignalingChannelEndpointRequest_UrlOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 72 ];           /* Small URL Buffer */
-    char bodyBuffer[ 500 ];
     SignalingResult_t result;
+    char urlBuffer[ 72 ]; /* Buffer too small to fit the complete URL. */
+    char bodyBuffer[ 500 ];
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1960,7 +2019,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_URL_OutofMemory(
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -1971,14 +2031,14 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_URL_OutofMemory(
 /**
  * @brief Validate Signaling Construct Get Channel Endpoint Request functionality .
  */
-void test_signaling_ConstructGetSignalingChannelEndpointRequest_Body_OutofMemory( void )
+void test_signaling_ConstructGetSignalingChannelEndpointRequest_BodyOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 184 ];         /* Small Body Buffer */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 184 ]; /* Body buffer too small to fit the complete body. */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -1994,7 +2054,8 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_Body_OutofMemory
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -2005,22 +2066,24 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_Body_OutofMemory
 /**
  * @brief Validate Signaling Construct Get Channel Endpoint Request functionality .
  */
-void test_signaling_ConstructGetSignalingChannelEndpointRequest_HTTP( void )
+void test_signaling_ConstructGetSignalingChannelEndpointRequest_Https( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/getSignalingChannelEndpoint";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"SingleMasterChannelEndpointConfiguration\":{"
-                                        "\"Protocols\":[\"HTTPS\"],"
-                                        "\"Role\":\"MASTER\""
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"SingleMasterChannelEndpointConfiguration\":"
+        "{"
+            "\"Protocols\":[\"HTTPS\"],"
+            "\"Role\":\"MASTER\""
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -2036,18 +2099,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_HTTP( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2060,17 +2126,19 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_ChinaRegion( voi
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/getSignalingChannelEndpoint";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws-cn:kinesisvideo:cn-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"SingleMasterChannelEndpointConfiguration\":{"
-                                        "\"Protocols\":[\"WSS\",\"HTTPS\"],"
-                                        "\"Role\":\"VIEWER\""
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws-cn:kinesisvideo:cn-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"SingleMasterChannelEndpointConfiguration\":"
+        "{"
+            "\"Protocols\":[\"WSS\",\"HTTPS\"],"
+            "\"Role\":\"VIEWER\""
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "cn-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -2086,18 +2154,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_ChinaRegion( voi
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2110,19 +2181,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_SmallLengthRegio
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.ca.amazonaws.com/getSignalingChannelEndpoint";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123\","
-                                    "\"SingleMasterChannelEndpointConfiguration\":{"
-                                        "\"Protocols\":[\"WSS\",\"HTTPS\"],"
-                                        "\"Role\":\"MASTER\""
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123\","
+        "\"SingleMasterChannelEndpointConfiguration\":"
+        "{"
+            "\"Protocols\":[\"WSS\",\"HTTPS\"],"
+            "\"Role\":\"MASTER\""
+        "}"
+    "}";
 
-    awsRegion.pAwsRegion = "ca";                /* The Region Length is < 3 */
+    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3. */
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     getSignalingChannelEndPointRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123";
@@ -2136,18 +2209,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_SmallLengthRegio
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2155,22 +2231,24 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_SmallLengthRegio
 /**
  * @brief Validate Signaling Construct Get Channel Endpoint Request functionality .
  */
-void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebSockets_Or_WebRTC( void )
+void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebSocketsOrWebRtc( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/getSignalingChannelEndpoint";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"SingleMasterChannelEndpointConfiguration\":{"
-                                        "\"Protocols\":[\"WSS\",\"WEBRTC\"],"
-                                        "\"Role\":\"MASTER\""
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"SingleMasterChannelEndpointConfiguration\":"
+        "{"
+            "\"Protocols\":[\"WSS\",\"WEBRTC\"],"
+            "\"Role\":\"MASTER\""
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -2186,18 +2264,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebSockets_Or_We
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2205,22 +2286,24 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebSockets_Or_We
 /**
  * @brief Validate Signaling Construct Get Channel Endpoint Request functionality .
  */
-void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebRTC( void )
+void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebRtc( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/getSignalingChannelEndpoint";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"SingleMasterChannelEndpointConfiguration\":{"
-                                        "\"Protocols\":[\"WEBRTC\"],"
-                                        "\"Role\":\"MASTER\""
-                                    "}"
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"SingleMasterChannelEndpointConfiguration\":"
+        "{"
+            "\"Protocols\":[\"WEBRTC\"],"
+            "\"Role\":\"MASTER\""
+        "}"
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -2236,18 +2319,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebRTC( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
-                                                                    &( getSignalingChannelEndPointRequestInfo ), &( requestBuffer ) );
+                                                                    &( getSignalingChannelEndPointRequestInfo ),
+                                                                    &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
