@@ -1250,9 +1250,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_UrlOutofMemory( void 
     createSignalingChannelRequestInfo.numTags = 0;
     createSignalingChannelRequestInfo.pTags = NULL;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
@@ -1287,9 +1287,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BodyOutofMemory( void
     createSignalingChannelRequestInfo.numTags = 0;
     createSignalingChannelRequestInfo.pTags = NULL;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
@@ -1324,9 +1324,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BodyClosingBraceOutof
     createSignalingChannelRequestInfo.numTags = 0;
     createSignalingChannelRequestInfo.pTags = NULL;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
@@ -1595,9 +1595,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsLeftArrayBrac
     createSignalingChannelRequestInfo.numTags = 1;
     createSignalingChannelRequestInfo.pTags = tags;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
@@ -1643,9 +1643,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsOutofMemory( 
     createSignalingChannelRequestInfo.numTags = 2;
     createSignalingChannelRequestInfo.pTags = tags;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
@@ -1691,9 +1691,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsRightArrayBra
     createSignalingChannelRequestInfo.numTags = 2;
     createSignalingChannelRequestInfo.pTags = tags;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
@@ -2013,9 +2013,9 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_UrlOutofMemory( 
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_VIEWER;
     getSignalingChannelEndPointRequestInfo.protocols = SIGNALING_PROTOCOL_WEBRTC | SIGNALING_PROTOCOL_WEBSOCKET_SECURE;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
@@ -2048,9 +2048,9 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BodyOutofMemory(
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_MASTER;
     getSignalingChannelEndPointRequestInfo.protocols = SIGNALING_PROTOCOL_HTTPS | SIGNALING_PROTOCOL_WEBSOCKET_SECURE;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
@@ -2148,9 +2148,9 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_ChinaRegion( voi
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_VIEWER;
     getSignalingChannelEndPointRequestInfo.protocols = SIGNALING_PROTOCOL_HTTPS | SIGNALING_PROTOCOL_WEBSOCKET_SECURE;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
@@ -2203,9 +2203,9 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_SmallLengthRegio
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_MASTER;
     getSignalingChannelEndPointRequestInfo.protocols = SIGNALING_PROTOCOL_WEBSOCKET_SECURE | SIGNALING_PROTOCOL_HTTPS;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
@@ -2258,9 +2258,9 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebSocketsOrWebR
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_MASTER;
     getSignalingChannelEndPointRequestInfo.protocols = SIGNALING_PROTOCOL_WEBRTC | SIGNALING_PROTOCOL_WEBSOCKET_SECURE;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
@@ -2313,9 +2313,9 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebRtc( void )
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_MASTER;
     getSignalingChannelEndPointRequestInfo.protocols = SIGNALING_PROTOCOL_WEBRTC;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( &( awsRegion ),
@@ -2343,19 +2343,21 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_WebRtc( void )
  */
 void test_signaling_ParseGetSignalingChannelEndpointResponse_BadParams( void )
 {
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
+    const char * message = "Valid-Message";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( NULL,
-                                                                 messageLength, &( endpoints ) );
+                                                                 messageLength,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
-                                                                 messageLength, NULL );
+                                                                 messageLength,
+                                                                 NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2368,25 +2370,26 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_BadParams( void )
  */
 void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidJson( void )
 {
-    const char * message = "{\"ResourceEndpointList\": [";  /* Missing closing bracket */
-    size_t messageLength = strlen( message );
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
+    const char * message = "{\"ResourceEndpointList\": [";  /* Missing closing bracket. */
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
-                                                                 messageLength, &( endpoints ) );
+                                                                 messageLength,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
     /* <--------------------------------------------------------------------> */
 
-    const char * message2 = "{"                                  /* Empty JSON */
-                            "}";
+    const char * message2 = "{}"; /* Empty JSON. */
     size_t messageLength2 = strlen( message2 );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message2,
-                                                                 messageLength2, &( endpoints ) );
+                                                                 messageLength2,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -2402,12 +2405,14 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"ResourceEndpointList\": {"                                                   /* Opening Bracket Not JSON Array Type */
+    const char * message =
+    "{"
+        "\"ResourceEndpointList\":"
+        "{" /* Not JSON Array Type. */
             "{\"Protocol\": \"WSS\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"HTTPS\", \"ResourceEndpoint\": \"https://example.com\"},"
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
-        "}"                                                                              /* Closing Bracket not Not JSON Array Type */
+        "}"
     "}";
     size_t messageLength = strlen( message );
 
@@ -2419,8 +2424,10 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message2 = "{"
-        "\"Unkown\": ["                                                                      /* Unkown Key */
+    const char * message2 =
+    "{"
+        "\"Unkown\":" /* Unkown key. */
+        "["
             "{\"Protocol\": \"WSS\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"HTTPS\", \"ResourceEndpoint\": \"https://example.com\"},"
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
@@ -2429,18 +2436,20 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
     size_t messageLength2 = strlen( message2 );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message2,
-                                                                 messageLength2, &( endpoints ) );
+                                                                 messageLength2,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message3 = "{\"ResourceEndpointBist\": []}";                                 /* The Key is not known */
+    const char * message3 = "{\"ResourceEndpointBist\": []}"; /* Unknown key. */
     size_t messageLength3 = strlen( message3 );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message3,
-                                                                 messageLength3, &( endpoints ) );
+                                                                 messageLength3,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -2449,66 +2458,90 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Get Endpoint Response functionality for Unexpected Response.
+ * @brief Validate Signaling Parse Get Endpoint Response functionality for Invalid Protocol.
  */
 void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidProtocol( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"ResourceEndpointList\": ["
-            "{\"Protocol\": \"INVALID\", \"ResourceEndpoint\": \"invalid://example.com\"}"
+    const char * message =
+    "{"
+        "\"ResourceEndpointList\":"
+        "["
+            "{"
+                "\"Protocol\": \"INVALID\","
+                "\"ResourceEndpoint\": \"invalid://example.com\""
+            "}"
         "]"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
-                                                                 messageLength, &( endpoints ) );
+                                                                 messageLength,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message2 = "{"
-        "\"ResourceEndpointList\": ["
-            "{\"Protocol\": \"ABS\", \"ResourceEndpoint\": \"abs://example.com\"}"          /* Protocol length == 3  but protocol != WSS */
+    const char * message2 =
+    "{"
+        "\"ResourceEndpointList\":"
+        "["
+            "{"
+                "\"Protocol\": \"ABS\"," /* Protocol length == 3  but protocol != WSS. */
+                "\"ResourceEndpoint\": \"abs://example.com\""
+            "}"
         "]"
     "}";
     size_t messageLength2 = strlen( message2 );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message2,
-                                                                 messageLength2, &( endpoints ) );
+                                                                 messageLength2,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message3 = "{"
-        "\"ResourceEndpointList\": ["
-            "{\"Protocol\": \"HTTPA\", \"ResourceEndpoint\": \"httpa://example.com\"}"          /* Protocol length == 5  but protocol != HTTPS */
+    const char * message3 =
+    "{"
+        "\"ResourceEndpointList\":"
+        "["
+            "{"
+                "\"Protocol\": \"HTTPA\"," /* Protocol length == 5  but protocol != HTTPS. */
+                "\"ResourceEndpoint\": \"httpa://example.com\""
+            "}"
         "]"
     "}";
     size_t messageLength3 = strlen( message3 );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message3,
-                                                                 messageLength3, &( endpoints ) );
+                                                                 messageLength3,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message4 = "{"
-        "\"ResourceEndpointList\": ["
-            "{\"Protocol\": \"WEBRTA\", \"ResourceEndpoint\": \"webrta://example.com\"}"          /* Protocol length == 6  but protocol != WEBRTC */
+    const char * message4 =
+    "{"
+        "\"ResourceEndpointList\":"
+        "["
+            "{"
+                "\"Protocol\": \"WEBRTA\"," /* Protocol length == 6  but protocol != WEBRTC. */
+                "\"ResourceEndpoint\": \"webrta://example.com\""
+            "}"
         "]"
     "}";
     size_t messageLength4 = strlen( message4 );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message4,
-                                                                 messageLength4, &( endpoints ) );
+                                                                 messageLength4,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
@@ -2523,34 +2556,43 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char *message = "{"
-        "\"ResourceEndpointList\": ["
+    const char *message =
+    "{"
+        "\"ResourceEndpointList\":"
+        "["
             "{\"Protocol\": \"WSS\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"HTTPS\", \"ResourceEndpoint\": \"https://example.com\"},"
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"},"
-            "{\"Unkown\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"},"      /* Unkown Tag is ignored */
-            "{\"Protocol\": \"WEBRTC\", \"Unkown\": \"webrtc://example.com\"}"               /* Unkown Tag is ignored */
+            "{\"Unkown\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"},"      /* Unkown Tag is ignored. */
+            "{\"Protocol\": \"WEBRTC\", \"Unkown\": \"webrtc://example.com\"}"               /* Unkown Tag is ignored. */
         "]"
     "}";
     size_t messageLength = strlen( message );
-    const char * wssURL = "wss://example.com";
-    const char * httpsURL = "https://example.com";
-    const char * webrtcURL = "webrtc://example.com";
+    const char * expectedWssURL = "wss://example.com";
+    const char * expectedHttpsURL = "https://example.com";
+    const char * expectedWebrtcURL = "webrtc://example.com";
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
-                                                                 messageLength, &( endpoints ) );
+                                                                 messageLength,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( strlen( wssURL ),
+    TEST_ASSERT_EQUAL( strlen( expectedWssURL ),
                        endpoints.wssEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( wssURL, endpoints.wssEndpoint.pEndpoint, strlen( wssURL ) );
-    TEST_ASSERT_EQUAL( strlen( httpsURL ),
+    TEST_ASSERT_EQUAL_STRING_LEN( expectedWssURL,
+                                  endpoints.wssEndpoint.pEndpoint,
+                                   endpoints.wssEndpoint.endpointLength );
+    TEST_ASSERT_EQUAL( strlen( expectedHttpsURL ),
                        endpoints.httpsEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( httpsURL, endpoints.httpsEndpoint.pEndpoint, strlen( httpsURL ) );
-    TEST_ASSERT_EQUAL( strlen( webrtcURL ),
+    TEST_ASSERT_EQUAL_STRING_LEN( expectedHttpsURL,
+                                  endpoints.httpsEndpoint.pEndpoint,
+                                  endpoints.httpsEndpoint.endpointLength );
+    TEST_ASSERT_EQUAL( strlen( expectedWebrtcURL ),
                        endpoints.webrtcEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( webrtcURL, endpoints.webrtcEndpoint.pEndpoint, strlen( webrtcURL ) );
+    TEST_ASSERT_EQUAL_STRING_LEN( expectedWebrtcURL,
+                                  endpoints.webrtcEndpoint.pEndpoint,
+                                  endpoints.webrtcEndpoint.endpointLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2562,33 +2604,41 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_SmallCaps( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char *message = "{"
-        "\"ResourceEndpointList\": ["
+    const char *message =
+    "{"
+        "\"ResourceEndpointList\":"
+        "["
             "{\"Protocol\": \"wss\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"https\", \"ResourceEndpoint\": \"https://example.com\"},"
             "{\"Protocol\": \"webrtc\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
         "]"
     "}";
-
     size_t messageLength = strlen( message );
-    const char * wssURL = "wss://example.com";
-    const char * httpsURL = "https://example.com";
-    const char * webrtcURL = "webrtc://example.com";
+    const char * expectedWssURL = "wss://example.com";
+    const char * expectedHttpsURL = "https://example.com";
+    const char * expectedWebrtcURL = "webrtc://example.com";
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
-                                                                 messageLength, &( endpoints ) );
+                                                                 messageLength,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( strlen( wssURL ),
+    TEST_ASSERT_EQUAL( strlen( expectedWssURL ),
                        endpoints.wssEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( wssURL, endpoints.wssEndpoint.pEndpoint, strlen( wssURL ) );
-    TEST_ASSERT_EQUAL( strlen( httpsURL ),
+    TEST_ASSERT_EQUAL_STRING_LEN( expectedWssURL,
+                                  endpoints.wssEndpoint.pEndpoint,
+                                  endpoints.wssEndpoint.endpointLength );
+    TEST_ASSERT_EQUAL( strlen( expectedHttpsURL ),
                        endpoints.httpsEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( httpsURL, endpoints.httpsEndpoint.pEndpoint, strlen( httpsURL ) );
-    TEST_ASSERT_EQUAL( strlen( webrtcURL ),
+    TEST_ASSERT_EQUAL_STRING_LEN( expectedHttpsURL,
+                                  endpoints.httpsEndpoint.pEndpoint,
+                                  endpoints.httpsEndpoint.endpointLength );
+    TEST_ASSERT_EQUAL( strlen( expectedWebrtcURL ),
                        endpoints.webrtcEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( webrtcURL, endpoints.webrtcEndpoint.pEndpoint, strlen( webrtcURL ) );
+    TEST_ASSERT_EQUAL_STRING_LEN( expectedWebrtcURL,
+                                  endpoints.webrtcEndpoint.pEndpoint,
+                                  endpoints.webrtcEndpoint.endpointLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2604,7 +2654,8 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructGetIceServerConfigRequest( NULL,
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2614,7 +2665,8 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     endpoint.pEndpoint = NULL;
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2624,7 +2676,8 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     endpoint.pEndpoint = "https://example.com";
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), NULL );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2632,15 +2685,19 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     /*      <------------------------------------------------------------------------------------------>      */
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           NULL, &( requestBuffer ) );
+                                                           NULL,
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     /*      <------------------------------------------------------------------------------------------>      */
+
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2650,8 +2707,10 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
     requestBuffer.pBody = NULL;
+
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2661,8 +2720,10 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
     iceServerConfigRequestInfo.pClientId = NULL;
+
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2678,9 +2739,9 @@ void test_signaling_ConstructGetIceServerConfigRequest_URLOutofMemory( void )
     SignalingChannelEndpoint_t endpoint = { 0 };
     GetIceServerConfigRequestInfo_t iceServerConfigRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 20 ];                                       /* The url buffer is small */
-    char bodyBuffer[ 500 ];
     SignalingResult_t result;
+    char urlBuffer[ 20 ]; /* The url buffer is too small to fit the complete URL. */
+    char bodyBuffer[ 500 ];
 
     endpoint.pEndpoint = "https://example.com";
     endpoint.endpointLength = strlen( endpoint.pEndpoint );
@@ -2690,13 +2751,14 @@ void test_signaling_ConstructGetIceServerConfigRequest_URLOutofMemory( void )
     iceServerConfigRequestInfo.pClientId = "Test-Client-Id";
     iceServerConfigRequestInfo.clientIdLength = strlen( iceServerConfigRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -2712,9 +2774,9 @@ void test_signaling_ConstructGetIceServerConfigRequest_BodyOutofMemory( void )
     SignalingChannelEndpoint_t endpoint = { 0 };
     GetIceServerConfigRequestInfo_t iceServerConfigRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 10 ];           /* The body buffer is small */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 10 ]; /* The body buffer is too small to fit the complete body. */
 
     endpoint.pEndpoint = "https://example.com";
     endpoint.endpointLength = strlen( endpoint.pEndpoint );
@@ -2724,13 +2786,14 @@ void test_signaling_ConstructGetIceServerConfigRequest_BodyOutofMemory( void )
     iceServerConfigRequestInfo.pClientId = "Test-Client-Id";
     iceServerConfigRequestInfo.clientIdLength = strlen( iceServerConfigRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -2746,15 +2809,16 @@ void test_signaling_ConstructGetIceServerConfigRequest( void )
     SignalingChannelEndpoint_t endpoint = { 0 };
     GetIceServerConfigRequestInfo_t iceServerConfigRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://example.com/v1/get-ice-server-config";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"ClientId\":\"Test-Client-Id\","
-                                    "\"Service\":\"TURN\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"ClientId\":\"Test-Client-Id\","
+        "\"Service\":\"TURN\""
+    "}";
 
     endpoint.pEndpoint = "https://example.com";
     endpoint.endpointLength = strlen( endpoint.pEndpoint );
@@ -2764,24 +2828,27 @@ void test_signaling_ConstructGetIceServerConfigRequest( void )
     iceServerConfigRequestInfo.pClientId = "Test-Client-Id";
     iceServerConfigRequestInfo.clientIdLength = strlen( iceServerConfigRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
-                                                           &( iceServerConfigRequestInfo ), &( requestBuffer ) );
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -2791,26 +2858,32 @@ void test_signaling_ConstructGetIceServerConfigRequest( void )
  */
 void test_signaling_ParseGetIceServerConfigResponse_BadParams( void )
 {
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
     SignalingIceServer_t iceServers;
     size_t numIceServers;
     SignalingResult_t result;
+    const char * message = "Valid-Message";
+    size_t messageLength = strlen( message );
 
     result = Signaling_ParseGetIceServerConfigResponse( NULL,
-                                                        messageLength, &( iceServers ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, NULL, &( numIceServers ) );
+                                                        messageLength,
+                                                        NULL,
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers ), NULL );
+                                                        messageLength,
+                                                        &( iceServers ),
+                                                        NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -2826,25 +2899,27 @@ void test_signaling_ParseGetIceServerConfigResponse_InvalidJson( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{\"IceServerList\": [";             /* Missing closing bracket */
+    const char * message = "{\"IceServerList\": ["; /* Missing closing bracket. */
     size_t messageLength = strlen( message );
 
 
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message2 = "{"                      /* Empty JSON */
-                            "}";
+    const char * message2 = "{}"; /* Empty JSON. */
     size_t messageLength2 = strlen( message2 );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message2,
-                                                        messageLength2, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength2,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -2860,29 +2935,34 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"IceServerList\": {"          /* Opening Bracket Not JSON Array Type */
+    const char * message =
+    "{"
+        "\"IceServerList\":"
+        "{" /* Not JSON Array Type. */
             "{"
                 "\"Password\": \"password123\","
                 "\"Ttl\": 300,"
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\""
             "}"
-        "}"                             /* Closing Bracket not Not JSON Array Type */
+        "}"
     "}";
     size_t messageLength = strlen( message );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message2 = "{"
-        "\"Unkown\": ["                  /* Unkown Key */
+    const char * message2 =
+    "{"
+        "\"Unkown\":" /* Unkown key. */
+        "["
             "{"
                 "\"Password\": \"password123\","
                 "\"Ttl\": 300,"
@@ -2893,21 +2973,23 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
     "}";
     size_t messageLength2 = strlen( message2 );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message2,
-                                                        messageLength2, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength2,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message3 = "{\"UnexpectedKey\": []}";               /* Unkown Key Though the length of "IceServerList" == "UnexpectedKey" */
+    const char * message3 = "{\"UnexpectedKey\": []}"; /* Unkown Key Though the length of "IceServerList" == "UnexpectedKey". */
     size_t messageLength3 = strlen( message3 );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message3,
-                                                        messageLength3, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength3,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -2918,16 +3000,18 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
 /**
  * @brief Validate Signaling Parse Ice Server Config Response functionality.
  */
-void test_signaling_ParseGetIceServerConfigResponse_Parsing_InvalidTTL( void )
+void test_signaling_ParseGetIceServerConfigResponse_InvalidTtl( void )
 {
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"IceServerList\": ["
+    const char * message =
+    "{"
+        "\"IceServerList\":"
+        "["
             "{"
                 "\"Password\": \"password123\","
-                "\"Ttl\": 30000000,"                                /* TTL value length > SIGNALING_ICE_SERVER_TTL_SECONDS_BUFFER_MAX ( 7 ) */
+                "\"Ttl\": 30000000," /* TTL value length > SIGNALING_ICE_SERVER_TTL_SECONDS_BUFFER_MAX ( 7 ). */
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\""
             "}"
@@ -2935,9 +3019,10 @@ void test_signaling_ParseGetIceServerConfigResponse_Parsing_InvalidTTL( void )
     "}";
     size_t messageLength = strlen( message );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_TTL,
                        result );
@@ -2948,16 +3033,18 @@ void test_signaling_ParseGetIceServerConfigResponse_Parsing_InvalidTTL( void )
 /**
  * @brief Validate Signaling Parse Ice Server Config Response functionality.
  */
-void test_signaling_ParseGetIceServerConfigResponse_Parsing_LowTTL( void )
+void test_signaling_ParseGetIceServerConfigResponse_LowTtl( void )
 {
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"IceServerList\": ["
+    const char * message =
+    "{"
+        "\"IceServerList\":"
+        "["
             "{"
                 "\"Password\": \"password123\","
-                "\"Ttl\": 15,"                                    /* TTL value < SIGNALING_ICE_SERVER_TTL_SECONDS_MIN (30) */
+                "\"Ttl\": 15," /* TTL value < SIGNALING_ICE_SERVER_TTL_SECONDS_MIN (30). */
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\""
             "}"
@@ -2965,9 +3052,10 @@ void test_signaling_ParseGetIceServerConfigResponse_Parsing_LowTTL( void )
     "}";
     size_t messageLength = strlen( message );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_TTL,
                        result );
@@ -2978,16 +3066,18 @@ void test_signaling_ParseGetIceServerConfigResponse_Parsing_LowTTL( void )
 /**
  * @brief Validate Signaling Parse Ice Server Config Response functionality.
  */
-void test_signaling_ParseGetIceServerConfigResponse_Parsing_HighTTL( void )
+void test_signaling_ParseGetIceServerConfigResponse_HighTtl( void )
 {
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"IceServerList\": ["
+    const char * message =
+    "{"
+        "\"IceServerList\":"
+        "["
             "{"
                 "\"Password\": \"password123\","
-                "\"Ttl\": 86411,"                                   /* TTL value > SIGNALING_ICE_SERVER_TTL_SECONDS_MAX ( 86400 ) */
+                "\"Ttl\": 86411," /* TTL value > SIGNALING_ICE_SERVER_TTL_SECONDS_MAX ( 86400 ). */
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\""
             "}"
@@ -2995,9 +3085,10 @@ void test_signaling_ParseGetIceServerConfigResponse_Parsing_HighTTL( void )
     "}";
     size_t messageLength = strlen( message );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_TTL,
                        result );
@@ -3013,31 +3104,49 @@ void test_signaling_ParseGetIceServerConfigResponse( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"IceServerList\": ["
+    const char * message =
+    "{"
+        "\"IceServerList\":"
+        "["
             "{"
                 "\"Password\": \"password123\","
                 "\"Ttl\": 300,"
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\","
-                "\"Unkown\": \"Unkown-Value\""              /* This Unkown Tag will be ignored. */
+                "\"Unkown\": \"Unkown-Value\"" /* This Unkown Tag will be ignored. */
             "}"
         "]"
     "}";
     size_t messageLength = strlen( message );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( 1, numIceServers );
-    TEST_ASSERT_EQUAL_STRING_LEN( "password123", iceServers[ 0 ].pPassword, iceServers[ 0 ].passwordLength );
-    TEST_ASSERT_EQUAL( 300, iceServers[ 0 ].messageTtlSeconds );
-    TEST_ASSERT_EQUAL( 1, iceServers[ 0 ].urisNum );
-    TEST_ASSERT_EQUAL_STRING_LEN( "turn:example.com:3478", iceServers[ 0 ].pUris[ 0 ], iceServers[ 0 ].urisLength[ 0 ] );
-    TEST_ASSERT_EQUAL_STRING_LEN( "username123", iceServers[ 0 ].pUserName, iceServers[ 0 ].userNameLength );
+    TEST_ASSERT_EQUAL( 1,
+                       numIceServers );
+    TEST_ASSERT_EQUAL( strlen( "password123" ),
+                       iceServers[ 0 ].passwordLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "password123",
+                                  iceServers[ 0 ].pPassword,
+                                  iceServers[ 0 ].passwordLength );
+    TEST_ASSERT_EQUAL( 300,
+                       iceServers[ 0 ].messageTtlSeconds );
+    TEST_ASSERT_EQUAL( 1,
+                        iceServers[ 0 ].urisNum );
+    TEST_ASSERT_EQUAL( strlen( "turn:example.com:3478" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:example.com:3478",
+                                  iceServers[ 0 ].pUris[ 0 ],
+                                  iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL( strlen( "username123" ),
+                       iceServers[ 0 ].userNameLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "username123",
+                                  iceServers[ 0 ].pUserName,
+                                  iceServers[ 0 ].userNameLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3050,19 +3159,24 @@ void test_signaling_ParseGetIceServerConfigResponse_Empty( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{"
-        "\"IceServerList\": ["
-                                /* Empty Buffer will be ignored. */
+    const char * message =
+    "{"
+        "\"IceServerList\":"
+        "["
+            /* Empty Buffer will be ignored. */
         "]"
     "}";
     size_t messageLength = strlen( message );
 
-
     result = Signaling_ParseGetIceServerConfigResponse( message,
-                                                        messageLength, &( iceServers[ 0 ] ), &( numIceServers ) );
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
+    TEST_ASSERT_EQUAL( 0,
+                       numIceServers );
 }
 
 /*-----------------------------------------------------------*/
@@ -3078,7 +3192,8 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructJoinStorageSessionRequest( NULL,
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3086,8 +3201,10 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     /*      <------------------------------------------------------------------------------------------>      */
 
     webrtcEndpoint.pEndpoint = NULL;
+
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3098,7 +3215,8 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     webrtcEndpoint.endpointLength = strlen( webrtcEndpoint.pEndpoint );
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), NULL );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3108,15 +3226,19 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
 
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           NULL, &( requestBuffer ) );
+                                                           NULL,
+                                                           &( requestBuffer ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     /*      <------------------------------------------------------------------------------------------>      */
 
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3128,7 +3250,8 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     requestBuffer.pBody = NULL;
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3140,7 +3263,8 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     joinStorageSessionRequestInfo.channelArn.pChannelArn = NULL;
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3156,13 +3280,14 @@ void test_signaling_ConstructJoinStorageSessionRequest_Master( void )
     SignalingChannelEndpoint_t webrtcEndpoint = { 0 };
     JoinStorageSessionRequestInfo_t joinStorageSessionRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "webrtc://example.com/joinStorageSession";
-    const char * pExpectedBody = "{"
-                                    "\"channelArn\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"channelArn\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\""
+    "}";
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
     webrtcEndpoint.endpointLength = strlen( webrtcEndpoint.pEndpoint );
@@ -3173,24 +3298,28 @@ void test_signaling_ConstructJoinStorageSessionRequest_Master( void )
     joinStorageSessionRequestInfo.clientIdLength = 0;
     joinStorageSessionRequestInfo.role = SIGNALING_ROLE_MASTER;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
-    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK, result );
-    TEST_ASSERT_TRUE( strstr( requestBuffer.pBody, "\"clientId\"" ) == NULL );
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+                       result );
+    TEST_ASSERT_NULL( strstr( requestBuffer.pBody, "\"clientId\"" ) );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3203,14 +3332,15 @@ void test_signaling_ConstructJoinStorageSessionRequest_Viewer( void )
     SignalingChannelEndpoint_t webrtcEndpoint = { 0 };
     JoinStorageSessionRequestInfo_t joinStorageSessionRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "webrtc://example.com/joinStorageSession";
-    const char * pExpectedBody = "{"
-                                    "\"channelArn\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"clientId\":\"TestClient\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"channelArn\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"clientId\":\"TestClient\""
+    "}";
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
     webrtcEndpoint.endpointLength = strlen( webrtcEndpoint.pEndpoint );
@@ -3221,23 +3351,27 @@ void test_signaling_ConstructJoinStorageSessionRequest_Viewer( void )
     joinStorageSessionRequestInfo.clientIdLength = strlen( joinStorageSessionRequestInfo.pClientId );
     joinStorageSessionRequestInfo.role = SIGNALING_ROLE_VIEWER;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
-    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK, result );
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+                       result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3245,14 +3379,14 @@ void test_signaling_ConstructJoinStorageSessionRequest_Viewer( void )
 /**
  * @brief Validate Signaling Construct Join Storage Session Request functionality.
  */
-void test_signaling_ConstructJoinStorageSessionRequest_URLOutofMemory( void )
+void test_signaling_ConstructJoinStorageSessionRequest_UrlOutofMemory( void )
 {
     SignalingChannelEndpoint_t webrtcEndpoint = { 0 };
     JoinStorageSessionRequestInfo_t joinStorageSessionRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 10 ];                    /* The url buffer is small */
-    char bodyBuffer[ 500 ];
     SignalingResult_t result;
+    char urlBuffer[ 10 ]; /* The url buffer is too small to fit the complete URL. */
+    char bodyBuffer[ 500 ];
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
     webrtcEndpoint.endpointLength = strlen( webrtcEndpoint.pEndpoint );
@@ -3262,13 +3396,14 @@ void test_signaling_ConstructJoinStorageSessionRequest_URLOutofMemory( void )
     joinStorageSessionRequestInfo.pClientId = "TestClient";
     joinStorageSessionRequestInfo.clientIdLength = strlen( joinStorageSessionRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY, result );
 }
@@ -3283,9 +3418,9 @@ void test_signaling_ConstructJoinStorageSessionRequest_BodyOutofMemory( void )
     SignalingChannelEndpoint_t webrtcEndpoint = { 0 };
     JoinStorageSessionRequestInfo_t joinStorageSessionRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 200 ];
-    char bodyBuffer[ 10 ];                      /* The body buffer is small */
     SignalingResult_t result;
+    char urlBuffer[ 200 ];
+    char bodyBuffer[ 10 ]; /* The body buffer is too small to fit the complete body. */
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
     webrtcEndpoint.endpointLength = strlen( webrtcEndpoint.pEndpoint );
@@ -3295,15 +3430,17 @@ void test_signaling_ConstructJoinStorageSessionRequest_BodyOutofMemory( void )
     joinStorageSessionRequestInfo.pClientId = "TestClient";
     joinStorageSessionRequestInfo.clientIdLength = strlen( joinStorageSessionRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
-                                                           &( joinStorageSessionRequestInfo ), &( requestBuffer ) );
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
 
-    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY, result );
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
+                       result );
 }
 
 /*-----------------------------------------------------------*/
@@ -3319,7 +3456,8 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( NULL,
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3327,8 +3465,10 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     /*      <------------------------------------------------------------------------------------------>      */
 
     awsRegion.pAwsRegion = NULL;
+
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3339,25 +3479,28 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), NULL );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     /*      <------------------------------------------------------------------------------------------>      */
 
-
-
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               NULL, &( requestBuffer ) );
+                                                               NULL,
+                                                               &( requestBuffer ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     /*      <------------------------------------------------------------------------------------------>      */
 
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3369,7 +3512,8 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     requestBuffer.pBody = NULL;
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3381,7 +3525,8 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     deleteSignalingChannelRequestInfo.channelArn.pChannelArn = NULL;
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3393,7 +3538,8 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     deleteSignalingChannelRequestInfo.pVersion = NULL;
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3426,9 +3572,9 @@ void test_signaling_ConstructDeleteSignalingChannelRequest( void )
     deleteSignalingChannelRequestInfo.pVersion = "1.0.0";
     deleteSignalingChannelRequestInfo.versionLength = strlen( deleteSignalingChannelRequestInfo.pVersion );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
@@ -3473,9 +3619,9 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_ChinaRegion( void )
     deleteSignalingChannelRequestInfo.pVersion = "2.0.0";
     deleteSignalingChannelRequestInfo.versionLength = strlen( deleteSignalingChannelRequestInfo.pVersion );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
@@ -3520,9 +3666,9 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_SmallLengthRegion( vo
     deleteSignalingChannelRequestInfo.pVersion = "2.0.0";
     deleteSignalingChannelRequestInfo.versionLength = strlen( deleteSignalingChannelRequestInfo.pVersion );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
@@ -3562,9 +3708,9 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_URL_OutofMemory( void
     deleteSignalingChannelRequestInfo.pVersion = "2.0.0";
     deleteSignalingChannelRequestInfo.versionLength = strlen( deleteSignalingChannelRequestInfo.pVersion );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
@@ -3596,9 +3742,9 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_Body_OutofMemory( voi
     deleteSignalingChannelRequestInfo.pVersion = "2.0.0";
     deleteSignalingChannelRequestInfo.versionLength = strlen( deleteSignalingChannelRequestInfo.pVersion );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
-    requestBuffer.pBody = bodyBuffer;
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
@@ -3723,7 +3869,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_Master( void )
     connectWssEndpointRequestInfo.pClientId = NULL;
     connectWssEndpointRequestInfo.clientIdLength = 0;
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
     requestBuffer.pBody = NULL;
     requestBuffer.bodyLength = 0;
@@ -3763,7 +3909,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_Viewer( void )
     connectWssEndpointRequestInfo.pClientId = "TestClient";
     connectWssEndpointRequestInfo.clientIdLength = strlen( connectWssEndpointRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
     requestBuffer.pBody = NULL;
     requestBuffer.bodyLength = 0;
@@ -3802,7 +3948,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_Url_OutofMemory( void )
     connectWssEndpointRequestInfo.pClientId = "TestClient";
     connectWssEndpointRequestInfo.clientIdLength = strlen( connectWssEndpointRequestInfo.pClientId );
 
-    requestBuffer.pUrl = urlBuffer;
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
     requestBuffer.pBody = NULL;
     requestBuffer.bodyLength = 0;
