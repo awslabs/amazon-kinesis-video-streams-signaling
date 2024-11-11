@@ -415,7 +415,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_UnexpectedResponse( vo
 
     const char * message2 =
     "{"
-        "\"Unkown\":" /* Unexpected key. */
+        "\"Unknown\":" /* Unexpected key. */
         "{"
             "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
         "}"
@@ -612,7 +612,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
             "\"CreationTime\": \"2023-05-01T12:00:00Z\","
             "\"SingleMasterConfiguration\": {\"MessageTtlSeconds\": 60},"
             "\"Version\": \"1\","
-            "\"Unkown\": \"200\"" /* Unkown Tag --> Will be skipped. */
+            "\"Unknown\": \"200\"" /* Unknown Tag --> Will be skipped. */
         "}"
     "}";
     size_t messageLength = strlen( message );
@@ -1027,7 +1027,7 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
 
     const char * message2 =
     "{"
-        "\"Unkown\":" /* Unkown Key. */
+        "\"Unknown\":" /* Unknown Key. */
         "{"
             "\"Status\": \"ENABLED\","
             "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
@@ -1113,7 +1113,7 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse( void )
         "{"
             "\"Status\": \"ENABLED\","
             "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\","
-            "\"Unkown\": \"Unkown Value\"" /* This will be ignored. */
+            "\"Unknown\": \"Unknown Value\"" /* This will be ignored. */
         "}"
     "}";
     size_t messageLength = strlen( message );
@@ -1399,7 +1399,7 @@ void test_signaling_ConstructCreateSignalingChannelRequest( void )
 /**
  * @brief Validate Signaling Construct Channel Request functionality.
  */
-void test_signaling_ConstructCreateSignalingChannelRequest_UnkownChannelType( void )
+void test_signaling_ConstructCreateSignalingChannelRequest_UnknownChannelType( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
@@ -1855,13 +1855,13 @@ void test_signaling_ParseCreateSignalingChannelResponse_UnexpectedResponse( void
 /**
  * @brief Validate Signaling Parse Create Signaling Channel Response functionality.
  */
-void test_signaling_ParseCreateSignalingChannelResponse_UnkownKey( void )
+void test_signaling_ParseCreateSignalingChannelResponse_UnknownKey( void )
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
     const char * message =
     "{"
-        "\"Unkown\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
+        "\"Unknown\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
     "}";
     size_t messageLength = strlen( message );
 
@@ -2426,7 +2426,7 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
 
     const char * message2 =
     "{"
-        "\"Unkown\":" /* Unkown key. */
+        "\"Unknown\":" /* Unknown key. */
         "["
             "{\"Protocol\": \"WSS\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"HTTPS\", \"ResourceEndpoint\": \"https://example.com\"},"
@@ -2563,8 +2563,8 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse( void )
             "{\"Protocol\": \"WSS\", \"ResourceEndpoint\": \"wss://example.com\"},"
             "{\"Protocol\": \"HTTPS\", \"ResourceEndpoint\": \"https://example.com\"},"
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"},"
-            "{\"Unkown\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"},"      /* Unkown Tag is ignored. */
-            "{\"Protocol\": \"WEBRTC\", \"Unkown\": \"webrtc://example.com\"}"               /* Unkown Tag is ignored. */
+            "{\"Unknown\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"},"      /* Unknown Tag is ignored. */
+            "{\"Protocol\": \"WEBRTC\", \"Unknown\": \"webrtc://example.com\"}"               /* Unknown Tag is ignored. */
         "]"
     "}";
     size_t messageLength = strlen( message );
@@ -2961,7 +2961,7 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
 
     const char * message2 =
     "{"
-        "\"Unkown\":" /* Unkown key. */
+        "\"Unknown\":" /* Unknown key. */
         "["
             "{"
                 "\"Password\": \"password123\","
@@ -2983,7 +2983,7 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
 
     /*<----------------------------------------------------------------->*/
 
-    const char * message3 = "{\"UnexpectedKey\": []}"; /* Unkown Key Though the length of "IceServerList" == "UnexpectedKey". */
+    const char * message3 = "{\"UnexpectedKey\": []}"; /* Unknown Key Though the length of "IceServerList" == "UnexpectedKey". */
     size_t messageLength3 = strlen( message3 );
 
     result = Signaling_ParseGetIceServerConfigResponse( message3,
@@ -3113,7 +3113,7 @@ void test_signaling_ParseGetIceServerConfigResponse( void )
                 "\"Ttl\": 300,"
                 "\"Uris\": [\"turn:example.com:3478\"],"
                 "\"Username\": \"username123\","
-                "\"Unkown\": \"Unkown-Value\"" /* This Unkown Tag will be ignored. */
+                "\"Unknown\": \"Unknown-Value\"" /* This Unknown Tag will be ignored. */
             "}"
         "]"
     "}";
@@ -3555,14 +3555,15 @@ void test_signaling_ConstructDeleteSignalingChannelRequest( void )
     SignalingAwsRegion_t awsRegion = { 0 };
     DeleteSignalingChannelRequestInfo_t deleteSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/deleteSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"CurrentVersion\":\"1.0.0\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123\","
+        "\"CurrentVersion\":\"1.0.0\""
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -3578,18 +3579,21 @@ void test_signaling_ConstructDeleteSignalingChannelRequest( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3602,14 +3606,15 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_ChinaRegion( void )
     SignalingAwsRegion_t awsRegion = { 0 };
     DeleteSignalingChannelRequestInfo_t deleteSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.cn-north-1.amazonaws.com.cn/deleteSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws-cn:kinesisvideo:cn-north-1:123456789012:channel/test-channel/1234567890123\","
-                                    "\"CurrentVersion\":\"2.0.0\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws-cn:kinesisvideo:cn-north-1:123456789012:channel/test-channel/1234567890123\","
+        "\"CurrentVersion\":\"2.0.0\""
+    "}";
 
     awsRegion.pAwsRegion = "cn-north-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -3625,18 +3630,21 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_ChinaRegion( void )
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3649,16 +3657,17 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_SmallLengthRegion( vo
     SignalingAwsRegion_t awsRegion = { 0 };
     DeleteSignalingChannelRequestInfo_t deleteSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
     char urlBuffer[ 200 ];
     char bodyBuffer[ 500 ];
-    SignalingResult_t result;
     const char * pExpectedUrl = "https://kinesisvideo.ca.amazonaws.com/deleteSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelARN\":\"arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123\","
-                                    "\"CurrentVersion\":\"2.0.0\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelARN\":\"arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123\","
+        "\"CurrentVersion\":\"2.0.0\""
+    "}";
 
-    awsRegion.pAwsRegion = "ca";            /* The Region Length is < 3 */
+    awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3. */
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     deleteSignalingChannelRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:ca:123456789012:channel/test-channel/1234567890123";
@@ -3672,18 +3681,21 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_SmallLengthRegion( vo
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3691,14 +3703,14 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_SmallLengthRegion( vo
 /**
  * @brief Validate Signaling Construct Delete Signaling Channel Request functionality.
  */
-void test_signaling_ConstructDeleteSignalingChannelRequest_URL_OutofMemory( void )
+void test_signaling_ConstructDeleteSignalingChannelRequest_UrlOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     DeleteSignalingChannelRequestInfo_t deleteSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 20 ];                   /* The url buffer is small */
-    char bodyBuffer[ 500 ];
     SignalingResult_t result;
+    char urlBuffer[ 20 ]; /* The url buffer is too small to fit the complete URL. */
+    char bodyBuffer[ 500 ];
 
     awsRegion.pAwsRegion = "cn-north-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -3714,7 +3726,8 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_URL_OutofMemory( void
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -3725,13 +3738,13 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_URL_OutofMemory( void
 /**
  * @brief Validate Signaling Construct Delete Signaling Channel Request functionality.
  */
-void test_signaling_ConstructDeleteSignalingChannelRequest_Body_OutofMemory( void )
+void test_signaling_ConstructDeleteSignalingChannelRequest_BodyOutofMemory( void )
 {
     SignalingAwsRegion_t awsRegion = { 0 };
     DeleteSignalingChannelRequestInfo_t deleteSignalingChannelRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
     char urlBuffer[ 200 ];
-    char bodyBuffer[ 50 ];              /* The body buffer is small */
+    char bodyBuffer[ 50 ]; /* The body buffer is too small to fit the complete body. */
     SignalingResult_t result;
 
     awsRegion.pAwsRegion = "cn-north-1";
@@ -3748,7 +3761,8 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_Body_OutofMemory( voi
     requestBuffer.bodyLength = sizeof( bodyBuffer );
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
-                                                               &( deleteSignalingChannelRequestInfo ), &( requestBuffer ) );
+                                                               &( deleteSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -3767,7 +3781,8 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ConstructConnectWssEndpointRequest( NULL,
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3775,8 +3790,10 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     /*      <------------------------------------------------------------------------------------------>      */
 
     wssEndpoint.pEndpoint = NULL;
+
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3787,7 +3804,8 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     wssEndpoint.endpointLength = strlen( wssEndpoint.pEndpoint );
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), NULL );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3797,15 +3815,19 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
 
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           NULL, &( requestBuffer ) );
+                                                           NULL,
+                                                           &( requestBuffer ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     /*      <------------------------------------------------------------------------------------------>      */
 
     requestBuffer.pUrl = NULL;
+
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3817,7 +3839,8 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     connectWssEndpointRequestInfo.channelArn.pChannelArn = NULL;
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3829,7 +3852,8 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     connectWssEndpointRequestInfo.role = SIGNALING_ROLE_NONE;
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3840,7 +3864,8 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     connectWssEndpointRequestInfo.pClientId = NULL;
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3849,15 +3874,15 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Construct Connect Web-Sockets Endpoint Request fail functionality for Bad Parameters.
+ * @brief Validate Signaling Construct Connect Web-Sockets Endpoint Request functionality for Master.
  */
 void test_signaling_ConstructConnectWssEndpointRequest_Master( void )
 {
     SignalingChannelEndpoint_t wssEndpoint = { 0 };
     ConnectWssEndpointRequestInfo_t connectWssEndpointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 300 ];
     SignalingResult_t result;
+    char urlBuffer[ 300 ];
     const char * pExpectedUrl = "wss://example.com?X-Amz-ChannelARN=arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
     wssEndpoint.pEndpoint = "wss://example.com";
@@ -3875,29 +3900,31 @@ void test_signaling_ConstructConnectWssEndpointRequest_Master( void )
     requestBuffer.bodyLength = 0;
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_TRUE( strstr( requestBuffer.pUrl, "X-Amz-ClientId" ) == NULL );
+    TEST_ASSERT_NULL( strstr( requestBuffer.pUrl, "X-Amz-ClientId" ) );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
 }
 
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Construct Connect Web-Sockets Endpoint Request fail functionality for Bad Parameters.
+ * @brief Validate Signaling Construct Connect Web-Sockets Endpoint Request functionality for Viewer.
  */
 void test_signaling_ConstructConnectWssEndpointRequest_Viewer( void )
 {
     SignalingChannelEndpoint_t wssEndpoint = { 0 };
     ConnectWssEndpointRequestInfo_t connectWssEndpointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 300 ];
     SignalingResult_t result;
+    char urlBuffer[ 300 ];
     const char * pExpectedUrl = "wss://example.com?X-Amz-ChannelARN=arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123&X-Amz-ClientId=TestClient";
 
     wssEndpoint.pEndpoint = "wss://example.com";
@@ -3915,15 +3942,17 @@ void test_signaling_ConstructConnectWssEndpointRequest_Viewer( void )
     requestBuffer.bodyLength = 0;
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_TRUE( strstr( requestBuffer.pUrl, "X-Amz-ClientId=TestClient" ) != NULL );
+    TEST_ASSERT_NOT_NULL( strstr( requestBuffer.pUrl, "X-Amz-ClientId=TestClient" ) );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                   requestBuffer.urlLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -3931,13 +3960,13 @@ void test_signaling_ConstructConnectWssEndpointRequest_Viewer( void )
 /**
  * @brief Validate Signaling Construct Connect Web-Sockets Endpoint Request fail functionality for Bad Parameters.
  */
-void test_signaling_ConstructConnectWssEndpointRequest_Url_OutofMemory( void )
+void test_signaling_ConstructConnectWssEndpointRequest_UrlOutofMemory( void )
 {
     SignalingChannelEndpoint_t wssEndpoint = { 0 };
     ConnectWssEndpointRequestInfo_t connectWssEndpointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
-    char urlBuffer[ 30 ];                     /* The url buffer is small */
     SignalingResult_t result;
+    char urlBuffer[ 30 ]; /* The url buffer is too small to fit the complete URL. */
 
     wssEndpoint.pEndpoint = "wss://example.com";
     wssEndpoint.endpointLength = strlen( wssEndpoint.pEndpoint );
@@ -3954,7 +3983,8 @@ void test_signaling_ConstructConnectWssEndpointRequest_Url_OutofMemory( void )
     requestBuffer.bodyLength = 0;
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
-                                                           &( connectWssEndpointRequestInfo ), &( requestBuffer ) );
+                                                           &( connectWssEndpointRequestInfo ),
+                                                           &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -3968,12 +3998,13 @@ void test_signaling_ConstructConnectWssEndpointRequest_Url_OutofMemory( void )
 void test_signaling_ConstructWssMessage_BadParams( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
+    SignalingResult_t result;
     char messageBuffer[ 300 ];
     size_t messageBufferLength = sizeof( messageBuffer );
-    SignalingResult_t result;
 
     result = Signaling_ConstructWssMessage( NULL,
-                                            &( messageBuffer[ 0 ] ), &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3981,7 +4012,8 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     /*      <------------------------------------------------------------------------------------------>      */
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            NULL, &( messageBufferLength ) );
+                                            NULL,
+                                            &( messageBufferLength ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -3991,7 +4023,8 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     wssSendMessage.pBase64EncodedMessage = NULL;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            &( messageBuffer[ 0 ] ), &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -4003,7 +4036,9 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     wssSendMessage.pRecipientClientId = NULL;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            &( messageBuffer[ 0 ] ), &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 }
@@ -4016,15 +4051,16 @@ void test_signaling_ConstructWssMessage_BadParams( void )
 void test_signaling_ConstructWssMessage_SdpOffer( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
+    SignalingResult_t result;
     char messageBuffer[ 300 ];
     size_t messageBufferLength = sizeof( messageBuffer );
-    SignalingResult_t result;
-    const char * pExpectedMessage = "{"
-                                        "\"action\":\"SDP_OFFER\","
-                                        "\"RecipientClientId\":\"TestClientId\","
-                                        "\"MessagePayload\":\"base64encodedmessage\","
-                                        "\"CorrelationId\":\"TestCorrelationId\""
-                                    "}";
+    const char * pExpectedMessage =
+    "{"
+        "\"action\":\"SDP_OFFER\","
+        "\"RecipientClientId\":\"TestClientId\","
+        "\"MessagePayload\":\"base64encodedmessage\","
+        "\"CorrelationId\":\"TestCorrelationId\""
+    "}";
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_SDP_OFFER;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4035,13 +4071,16 @@ void test_signaling_ConstructWssMessage_SdpOffer( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedMessage ),
-                       strlen( messageBuffer ) );
-    TEST_ASSERT_EQUAL_STRING( pExpectedMessage,
-                              messageBuffer );
+                       messageBufferLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedMessage,
+                                  &( messageBuffer [ 0 ] ),
+                                  messageBufferLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4052,15 +4091,16 @@ void test_signaling_ConstructWssMessage_SdpOffer( void )
 void test_signaling_ConstructWssMessage_SdpAnswer( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
+    SignalingResult_t result;
     char messageBuffer[ 300 ];
     size_t messageBufferLength = sizeof( messageBuffer );
-    SignalingResult_t result;
-    const char * pExpectedMessage = "{"
-                                        "\"action\":\"SDP_ANSWER\","
-                                        "\"RecipientClientId\":\"TestClientId\","
-                                        "\"MessagePayload\":\"base64encodedmessage\","
-                                        "\"CorrelationId\":\"TestCorrelationId\""
-                                    "}";
+    const char * pExpectedMessage =
+    "{"
+        "\"action\":\"SDP_ANSWER\","
+        "\"RecipientClientId\":\"TestClientId\","
+        "\"MessagePayload\":\"base64encodedmessage\","
+        "\"CorrelationId\":\"TestCorrelationId\""
+    "}";
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_SDP_ANSWER;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4071,13 +4111,16 @@ void test_signaling_ConstructWssMessage_SdpAnswer( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedMessage ),
-                       strlen( messageBuffer ) );
-    TEST_ASSERT_EQUAL_STRING( pExpectedMessage,
-                              messageBuffer );
+                       messageBufferLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedMessage,
+                                  messageBuffer,
+                                  messageBufferLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4091,12 +4134,13 @@ void test_signaling_ConstructWssMessage_IceCandidate( void )
     char messageBuffer[ 300 ];
     size_t messageBufferLength = sizeof( messageBuffer );
     SignalingResult_t result;
-    const char * pExpectedMessage = "{"
-                                        "\"action\":\"ICE_CANDIDATE\","
-                                        "\"RecipientClientId\":\"TestClientId\","
-                                        "\"MessagePayload\":\"base64encodedmessage\","
-                                        "\"CorrelationId\":\"TestCorrelationId\""
-                                    "}";
+    const char * pExpectedMessage =
+    "{"
+        "\"action\":\"ICE_CANDIDATE\","
+        "\"RecipientClientId\":\"TestClientId\","
+        "\"MessagePayload\":\"base64encodedmessage\","
+        "\"CorrelationId\":\"TestCorrelationId\""
+    "}";
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4107,13 +4151,15 @@ void test_signaling_ConstructWssMessage_IceCandidate( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedMessage ),
-                       strlen( messageBuffer ) );
-    TEST_ASSERT_EQUAL_STRING( pExpectedMessage,
-                              messageBuffer );
+                       messageBufferLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedMessage,
+                                  &( messageBuffer[ 0 ] ),
+                                  messageBufferLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4121,18 +4167,19 @@ void test_signaling_ConstructWssMessage_IceCandidate( void )
 /**
  * @brief Validate Signaling Construct Web-Socket Message functionality.
  */
-void test_signaling_ConstructWssMessage_Unkown( void )
+void test_signaling_ConstructWssMessage_Unknown( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
+    SignalingResult_t result;
     char messageBuffer[ 300 ];
     size_t messageBufferLength = sizeof( messageBuffer );
-    SignalingResult_t result;
-    const char * pExpectedMessage = "{"
-                                        "\"action\":\"UNKNOWN\","
-                                        "\"RecipientClientId\":\"TestClientId\","
-                                        "\"MessagePayload\":\"base64encodedmessage\","
-                                        "\"CorrelationId\":\"TestCorrelationId\""
-                                    "}";
+    const char * pExpectedMessage =
+    "{"
+        "\"action\":\"UNKNOWN\","
+        "\"RecipientClientId\":\"TestClientId\","
+        "\"MessagePayload\":\"base64encodedmessage\","
+        "\"CorrelationId\":\"TestCorrelationId\""
+    "}";
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_UNKNOWN;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4143,13 +4190,16 @@ void test_signaling_ConstructWssMessage_Unkown( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedMessage ),
-                       strlen( messageBuffer ) );
-    TEST_ASSERT_EQUAL_STRING( pExpectedMessage,
-                              messageBuffer );
+                       messageBufferLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedMessage,
+                                  &( messageBuffer[ 0 ] ),
+                                  messageBufferLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4160,9 +4210,9 @@ void test_signaling_ConstructWssMessage_Unkown( void )
 void test_signaling_ConstructWssMessage_OutofMemory( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
-    char messageBuffer[ 100 ];                  /* Correlation ID is not added in the buffer properly */
-    size_t messageBufferLength = sizeof( messageBuffer );
     SignalingResult_t result;
+    char messageBuffer[ 100 ]; /* Buffer not large enough to contains Correlation ID. */
+    size_t messageBufferLength = sizeof( messageBuffer );
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_SDP_OFFER;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4173,7 +4223,9 @@ void test_signaling_ConstructWssMessage_OutofMemory( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            messageBuffer,
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
 }
@@ -4183,10 +4235,10 @@ void test_signaling_ConstructWssMessage_OutofMemory( void )
 /**
  * @brief Validate Signaling Construct Web-Socket Message functionality.
  */
-void test_signaling_ConstructWssMessage_OutofMemory_ClosingBracket( void )
+void test_signaling_ConstructWssMessage_OutofMemoryClosingBracket( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
-    char messageBuffer[ 133 ];                  /* Closing is not added in the buffer properly */
+    char messageBuffer[ 133 ]; /* Buffer not large enough to contains closing bracket. */
     size_t messageBufferLength = sizeof( messageBuffer );
     SignalingResult_t result;
 
@@ -4199,7 +4251,9 @@ void test_signaling_ConstructWssMessage_OutofMemory_ClosingBracket( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            messageBuffer,
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
 }
@@ -4212,14 +4266,15 @@ void test_signaling_ConstructWssMessage_OutofMemory_ClosingBracket( void )
 void test_signaling_ConstructWssMessage_NoCorrelationId( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
+    SignalingResult_t result;
     char messageBuffer[ 300 ];
     size_t messageBufferLength = sizeof( messageBuffer );
-    SignalingResult_t result;
-    const char * pExpectedMessage = "{"
-                                        "\"action\":\"SDP_OFFER\","
-                                        "\"RecipientClientId\":\"TestClientId\","
-                                        "\"MessagePayload\":\"base64encodedmessage\""
-                                    "}";
+    const char * pExpectedMessage =
+    "{"
+        "\"action\":\"SDP_OFFER\","
+        "\"RecipientClientId\":\"TestClientId\","
+        "\"MessagePayload\":\"base64encodedmessage\""
+    "}";
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_SDP_OFFER;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4230,13 +4285,16 @@ void test_signaling_ConstructWssMessage_NoCorrelationId( void )
     wssSendMessage.correlationIdLength = 0;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedMessage ),
-                       strlen( messageBuffer ) );
-    TEST_ASSERT_EQUAL_STRING( pExpectedMessage,
-                              messageBuffer );
+                       messageBufferLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedMessage,
+                                  &( messageBuffer[ 0 ] ),
+                                  messageBufferLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4247,9 +4305,9 @@ void test_signaling_ConstructWssMessage_NoCorrelationId( void )
 void test_signaling_ConstructWssMessage_SmallBuffer( void )
 {
     WssSendMessage_t wssSendMessage = { 0 };
-    char messageBuffer[ 10 ];                           /* A small Message Buffer */
-    size_t messageBufferLength = sizeof( messageBuffer );
     SignalingResult_t result;
+    char messageBuffer[ 10 ]; /* A small Message Buffer. */
+    size_t messageBufferLength = sizeof( messageBuffer );
 
     wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_SDP_OFFER;
     wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
@@ -4260,7 +4318,9 @@ void test_signaling_ConstructWssMessage_SmallBuffer( void )
     wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
-                                            messageBuffer, &( messageBufferLength ) );
+                                            messageBuffer,
+                                            &( messageBufferLength ) );
+
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
 }
@@ -4277,7 +4337,8 @@ void test_signaling_ParseWssRecvMessage_BadParams( void )
     SignalingResult_t result;
 
     result = Signaling_ParseWssRecvMessage( NULL,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -4285,7 +4346,8 @@ void test_signaling_ParseWssRecvMessage_BadParams( void )
     /*      <------------------------------------------------------------------------------------------>      */
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, NULL );
+                                            messageLength,
+                                            NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -4296,11 +4358,12 @@ void test_signaling_ParseWssRecvMessage_BadParams( void )
 /**
  * @brief Validate Signaling Parse Web-Socket Receive Message functionality.
  */
-void test_signaling_ParseWssRecvMessage_Sdp_Offer( void )
+void test_signaling_ParseWssRecvMessage_SdpOffer( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char * message = "{"
+    const char * message =
+    "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"SDP_OFFER\","
         "\"messagePayload\":\"base64encodedpayload\""
@@ -4308,13 +4371,23 @@ void test_signaling_ParseWssRecvMessage_Sdp_Offer( void )
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "sender123", wssRecvMessage.pSenderClientId, wssRecvMessage.senderClientIdLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_SDP_OFFER, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload", wssRecvMessage.pBase64EncodedPayload, wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL( strlen( "sender123" ),
+                       wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "sender123",
+                                   wssRecvMessage.pSenderClientId,
+                                   wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_SDP_OFFER,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "base64encodedpayload" ),
+                       wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload",
+                                  wssRecvMessage.pBase64EncodedPayload,
+                                  wssRecvMessage.base64EncodedPayloadLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4322,11 +4395,12 @@ void test_signaling_ParseWssRecvMessage_Sdp_Offer( void )
 /**
  * @brief Validate Signaling Parse Web-Socket Receive Message functionality.
  */
-void test_signaling_ParseWssRecvMessage_Sdp_Answer( void )
+void test_signaling_ParseWssRecvMessage_SdpAnswer( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"SDP_ANSWER\","
         "\"messagePayload\":\"base64encodedpayload\""
@@ -4334,13 +4408,23 @@ void test_signaling_ParseWssRecvMessage_Sdp_Answer( void )
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "sender123", wssRecvMessage.pSenderClientId, wssRecvMessage.senderClientIdLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_SDP_ANSWER, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload", wssRecvMessage.pBase64EncodedPayload, wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL( strlen( "sender123" ),
+                       wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "sender123",
+                                  wssRecvMessage.pSenderClientId,
+                                  wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_SDP_ANSWER,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "base64encodedpayload" ),
+                       wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload",
+                                  wssRecvMessage.pBase64EncodedPayload,
+                                  wssRecvMessage.base64EncodedPayloadLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4352,7 +4436,8 @@ void test_signaling_ParseWssRecvMessage_IceCandidate( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"ICE_CANDIDATE\","
         "\"messagePayload\":\"base64encodedpayload\""
@@ -4360,13 +4445,23 @@ void test_signaling_ParseWssRecvMessage_IceCandidate( void )
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "sender123", wssRecvMessage.pSenderClientId, wssRecvMessage.senderClientIdLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload", wssRecvMessage.pBase64EncodedPayload, wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL( strlen( "sender123" ),
+                       wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "sender123",
+                                  wssRecvMessage.pSenderClientId,
+                                  wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "base64encodedpayload" ),
+                       wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload",
+                                  wssRecvMessage.pBase64EncodedPayload,
+                                  wssRecvMessage.base64EncodedPayloadLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4378,7 +4473,8 @@ void test_signaling_ParseWssRecvMessage_GoAway( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"GO_AWAY\","
         "\"messagePayload\":\"base64encodedpayload\""
@@ -4386,13 +4482,23 @@ void test_signaling_ParseWssRecvMessage_GoAway( void )
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "sender123", wssRecvMessage.pSenderClientId, wssRecvMessage.senderClientIdLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_GO_AWAY, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload", wssRecvMessage.pBase64EncodedPayload, wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL( strlen( "sender123" ),
+                       wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "sender123",
+                                  wssRecvMessage.pSenderClientId,
+                                  wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_GO_AWAY,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "base64encodedpayload" ),
+                       wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload",
+                                  wssRecvMessage.pBase64EncodedPayload,
+                                  wssRecvMessage.base64EncodedPayloadLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4404,21 +4510,32 @@ void test_signaling_ParseWssRecvMessage_ExcludeNullTerminator( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"RECONNECT_ICE_SERVER\","
         "\"messagePayload\":\"base64encodedpayload\""
-    "}\0";          // Explicitly include null terminator
-    size_t messageLength = strlen(message) + 1 ;                 // Length including null terminator
+    "}";
+    size_t messageLength = strlen( message ) + 1 ; /* Length including null terminator. */
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "sender123", wssRecvMessage.pSenderClientId, wssRecvMessage.senderClientIdLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload", wssRecvMessage.pBase64EncodedPayload, wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL( strlen( "sender123" ),
+                       wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "sender123",
+                                  wssRecvMessage.pSenderClientId,
+                                  wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "base64encodedpayload" ),
+                       wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload",
+                                  wssRecvMessage.pBase64EncodedPayload,
+                                  wssRecvMessage.base64EncodedPayloadLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4430,7 +4547,8 @@ void test_signaling_ParseWssRecvMessage_ReconnectIceServer( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"RECONNECT_ICE_SERVER\","
         "\"messagePayload\":\"base64encodedpayload\""
@@ -4442,9 +4560,18 @@ void test_signaling_ParseWssRecvMessage_ReconnectIceServer( void )
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL_STRING_LEN( "sender123", wssRecvMessage.pSenderClientId, wssRecvMessage.senderClientIdLength );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload", wssRecvMessage.pBase64EncodedPayload, wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL( strlen( "sender123" ),
+                       wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "sender123",
+                                  wssRecvMessage.pSenderClientId,
+                                  wssRecvMessage.senderClientIdLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_RECONNECT_ICE_SERVER,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "base64encodedpayload" ),
+                       wssRecvMessage.base64EncodedPayloadLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "base64encodedpayload",
+                                  wssRecvMessage.pBase64EncodedPayload,
+                                  wssRecvMessage.base64EncodedPayloadLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4456,28 +4583,48 @@ void test_signaling_ParseWssRecvMessage_StatusResponse( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message = "{"
+    const char *message =
+    "{"
         "\"messageType\":\"STATUS_RESPONSE\","
-        "\"statusResponse\":{"
+        "\"statusResponse\":"
+        "{"
             "\"correlationId\":\"corr123\","
             "\"errorType\":\"None\","
             "\"statusCode\":\"200\","
             "\"description\":\"OK\","
-            "\"Unkown\":\"value\""                   /* Unkown Tags are ignored. */
+            "\"Unknown\":\"value\"" /* Unknown Tags are ignored. */
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_STATUS_RESPONSE, wssRecvMessage.messageType );
-    TEST_ASSERT_EQUAL_STRING_LEN( "corr123", wssRecvMessage.statusResponse.pCorrelationId, wssRecvMessage.statusResponse.correlationIdLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( "None", wssRecvMessage.statusResponse.pErrorType, wssRecvMessage.statusResponse.errorTypeLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( "200", wssRecvMessage.statusResponse.pStatusCode, wssRecvMessage.statusResponse.statusCodeLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( "OK", wssRecvMessage.statusResponse.pDescription, wssRecvMessage.statusResponse.descriptionLength );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_STATUS_RESPONSE,
+                       wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( strlen( "corr123" ),
+                       wssRecvMessage.statusResponse.correlationIdLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "corr123",
+                                  wssRecvMessage.statusResponse.pCorrelationId,
+                                  wssRecvMessage.statusResponse.correlationIdLength );
+    TEST_ASSERT_EQUAL( strlen( "None" ),
+                       wssRecvMessage.statusResponse.errorTypeLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "None",
+                                  wssRecvMessage.statusResponse.pErrorType,
+                                  wssRecvMessage.statusResponse.errorTypeLength );
+    TEST_ASSERT_EQUAL( strlen( "200" ),
+                       wssRecvMessage.statusResponse.statusCodeLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "200",
+                                  wssRecvMessage.statusResponse.pStatusCode,
+                                  wssRecvMessage.statusResponse.statusCodeLength );
+    TEST_ASSERT_EQUAL( strlen( "OK" ),
+                       wssRecvMessage.statusResponse.descriptionLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "OK",
+                                  wssRecvMessage.statusResponse.pDescription,
+                                  wssRecvMessage.statusResponse.descriptionLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4489,11 +4636,14 @@ void test_signaling_ParseWssRecvMessage_InvalidJson( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char * message = "{\"senderClientId\":\"sender123\",";  /* Missing closing brace */
+    const char * message =
+    "{"
+        "\"senderClientId\":\"sender123\",";  /* Missing closing brace. */
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -4504,24 +4654,27 @@ void test_signaling_ParseWssRecvMessage_InvalidJson( void )
 /**
  * @brief Validate Signaling Parse Web-Socket Receive Message functionality.
  */
-void test_signaling_ParseWssRecvMessage_UnkownMessageType( void )
+void test_signaling_ParseWssRecvMessage_UnknownMessageType( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  = "{"
+    const char *message  =
+    "{"
         "\"senderClientId\":\"sender123\","
-        "\"messageType\":\"UNKNOWN_TYPE\","                 /* Unkown Message Type */
+        "\"messageType\":\"UNKNOWN_TYPE\"," /* Unknown Message Type. */
         "\"messagePayload\":\"base64encodedpayload\","
-        "\"Unkown\":\"unkown-value\""                       /* This Unkown Tag is ignored */
+        "\"Unknown\":\"unknown-value\"" /* This Unknown Tag is ignored. */
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_UNKNOWN, wssRecvMessage.messageType );
+    TEST_ASSERT_EQUAL( SIGNALING_TYPE_MESSAGE_UNKNOWN,
+                       wssRecvMessage.messageType );
 }
 
 /*-----------------------------------------------------------*/
@@ -4533,14 +4686,16 @@ void test_signaling_ParseWssRecvMessage_UnexpectedStatusResponse( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  = "{"
+    const char *message  =
+    "{"
         "\"messageType\":\"STATUS_RESPONSE\","
-        "\"statusResponse\":\"invalid\""            /* Invalid Status Response */
+        "\"statusResponse\":\"invalid\"" /* Invalid Status Response. */
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -4555,15 +4710,19 @@ void test_signaling_ParseWssRecvMessage_InvalidStatusResponse( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  = "{"
+    const char *message  =
+    "{"
         "\"messageType\":\"STATUS_RESPONSE\","
-        "\"statusResponse\":{"                                      /* Empty Status Response */
+        "\"statusResponse\":"
+        "{"
+            /* Empty Status Response. */
         "}"
     "}";
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_STATUS_RESPONSE,
                        result );
@@ -4582,7 +4741,8 @@ void test_signaling_ParseWssRecvMessage_Empty( void )
     size_t messageLength = 0;
 
     result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
