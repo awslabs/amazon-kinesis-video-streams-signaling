@@ -42,10 +42,12 @@ static SignalingResult_t InterpretSnprintfReturnValue( int snprintfRetVal,
 {
     SignalingResult_t result;
 
+    /* LCOV_EXCL_START */
     if( snprintfRetVal < 0 )
     {
         result = SIGNALING_RESULT_SNPRINTF_ERROR;
     }
+    /* LCOV_EXCL_STOP  */
     else if( ( size_t ) snprintfRetVal >= bufferLength )
     {
         result = SIGNALING_RESULT_OUT_OF_MEMORY;
@@ -124,12 +126,6 @@ static SignalingResult_t ParseIceServerList( const char * pIceServerListBuffer,
     size_t iceServerStart = 0, iceServerNext = 0;
     char ttlSecondsBuffer[ SIGNALING_ICE_SERVER_TTL_SECONDS_BUFFER_MAX ] = { 0 };
     size_t iceServerCount = 0;
-
-    if( ( pIceServerListBuffer == NULL ) ||
-        ( pIceServers == NULL ) )
-    {
-        result = SIGNALING_RESULT_BAD_PARAM;
-    }
 
     while( ( result == SIGNALING_RESULT_OK ) &&
            ( iceServerCount < *pNumIceServers ) )
@@ -797,6 +793,10 @@ SignalingResult_t Signaling_ParseCreateSignalingChannelResponse( const char * pM
                 pChannelArn->pChannelArn = pair.value;
                 pChannelArn->channelArnLength = pair.valueLength;
             }
+            else
+            {
+                result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
+            }
         }
         else
         {
@@ -1424,7 +1424,7 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
                                    "{"
                                         "\"action\":\"%s\","
                                         "\"RecipientClientId\":\"%.*s\","
-                                        "\"MessagePayload\": \"%.*s\"",
+                                        "\"MessagePayload\":\"%.*s\"",
                                    GetStringFromMessageType( pWssSendMessage->messageType ),
                                    ( int ) pWssSendMessage->recipientClientIdLength,
                                    pWssSendMessage->pRecipientClientId,
@@ -1503,14 +1503,17 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
-    /* Exclude null terminator in messageLength. */
-    if( pMessage[ messageLength - 1 ] == '\0' )
-    {
-        messageLength--;
-    }
-
     if( result == SIGNALING_RESULT_OK )
     {
+        /* Exclude null terminator in messageLength. */
+        if(messageLength > 0 )
+        {
+            if( pMessage[ messageLength - 1 ] == '\0' )
+                {
+                    messageLength--;
+                }      
+        }
+
         jsonResult = JSON_Validate( pMessage, messageLength );
 
         if( jsonResult != JSONSuccess )
