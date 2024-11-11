@@ -98,9 +98,10 @@ void test_signaling_ConstructDescribeSignalingChannelRequest( void )
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
     const char * pExpectedUrl = "https://kinesisvideo.us-east-1.amazonaws.com/describeSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel\""
+    "}";
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -121,12 +122,14 @@ void test_signaling_ConstructDescribeSignalingChannelRequest( void )
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -143,9 +146,10 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_SmallLengthRegion( 
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
     const char * pExpectedUrl = "https://kinesisvideo.ca.amazonaws.com/describeSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel-China\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel-China\""
+    "}";
 
     awsRegion.pAwsRegion = "ca"; /* The Region Length is < 3. */
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -166,12 +170,14 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_SmallLengthRegion( 
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -188,9 +194,10 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_ChinaRegion( void )
     char urlBuffer[ 200 ];
     char bodyBuffer[ 100 ];
     const char * pExpectedUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
-    const char * pExpectedBody = "{"
-                                    "\"ChannelName\":\"Test-Channel-China\""
-                                  "}";
+    const char * pExpectedBody =
+    "{"
+        "\"ChannelName\":\"Test-Channel-China\""
+    "}";
 
     awsRegion.pAwsRegion = "cn-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -211,12 +218,14 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_ChinaRegion( void )
                        result );
     TEST_ASSERT_EQUAL( strlen( pExpectedUrl ),
                        requestBuffer.urlLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedUrl,
-                              requestBuffer.pUrl );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
+                                  requestBuffer.pUrl,
+                                  requestBuffer.urlLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedBody ),
                        requestBuffer.bodyLength );
-    TEST_ASSERT_EQUAL_STRING( pExpectedBody,
-                              requestBuffer.pBody );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedBody,
+                                  requestBuffer.pBody,
+                                  requestBuffer.bodyLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -294,8 +303,8 @@ void test_signaling_ParseDescribeSignalingChannelResponse_BadParams( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char * message = "Input Message";
-    size_t messageLength = strlen( message );
+    const char * pMessage = "Input Message";
+    size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseDescribeSignalingChannelResponse( NULL,
                                                               messageLength,
@@ -304,7 +313,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               NULL );
 
@@ -321,10 +330,10 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char * message = "{\"ChannelInfo\": {"; /* Missing Closing Brace. */
-    size_t messageLength = strlen( message );
+    const char * pMessage = "{\"ChannelInfo\": {"; /* Missing Closing Brace. */
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -333,7 +342,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
 
     /* <--------------------------------------------------------------------> */
 
-    const char *message2 =
+    const char * pMessage2 =
     "{"
         "\"ChannelInfo\":"
         "{"
@@ -343,9 +352,9 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
             "}"
         "}"
     "}";
-    size_t messageLength2 = strlen( message2 );
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message2,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage2,
                                                               messageLength2,
                                                               &( channelInfo ) );
 
@@ -354,10 +363,10 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
 
     /* <--------------------------------------------------------------------> */
 
-    const char *message3 = "{}"; /* Empty Message. */
-    size_t messageLength3 = strlen( message3 );
+    const char * pMessage3 = "{}"; /* Empty Message. */
+    size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message3,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage3,
                                                               messageLength3,
                                                               &( channelInfo ) );
 
@@ -366,16 +375,16 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidJson( void )
 
     /* <--------------------------------------------------------------------> */
 
-    const char *message4 =
+    const char * pMessage4 =
     "{"
         "\"ChannelInfo\":"
         "{"
             "\"SingleMasterConfiguration\": {}" /* Empty Single Master Configuration. */
         "}"
     "}";
-    size_t messageLength4 = strlen( message4 );
+    size_t messageLength4 = strlen( pMessage4 );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message4,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage4,
                                                               messageLength4,
                                                               &( channelInfo ) );
 
@@ -393,7 +402,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_UnexpectedResponse( vo
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"ChannelInfo\":"
         "[" /* Unexpected JSON array. */
@@ -402,42 +411,42 @@ void test_signaling_ParseDescribeSignalingChannelResponse_UnexpectedResponse( vo
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message2 =
+    const char * pMessage2 =
     "{"
         "\"Unknown\":" /* Unexpected key. */
         "{"
             "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
         "}"
     "}";
-    size_t messageLength2 = strlen( message2 );
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message2,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage2,
                                                               messageLength2,
                                                               &( channelInfo ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message3 =
+    const char * pMessage3 =
     "{"
         "\"ChannelXXXX\": {}" /* Unexpected key though the length is same as "ChannelInfo". */
     "}";
-    size_t messageLength3 = strlen( message3 );
+    size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message3,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage3,
                                                               messageLength3,
                                                               &( channelInfo ) );
 
@@ -450,11 +459,11 @@ void test_signaling_ParseDescribeSignalingChannelResponse_UnexpectedResponse( vo
 /**
  * @brief Validate Signaling Parse Describe Response functionality for Invalid TTL.
  */
-void test_signaling_ParseDescribeSignalingChannelResponse_TttLow( void )
+void test_signaling_ParseDescribeSignalingChannelResponse_TtlLow( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ChannelInfo\":"
         "{"
@@ -464,9 +473,9 @@ void test_signaling_ParseDescribeSignalingChannelResponse_TttLow( void )
             "}"
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -483,7 +492,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_TtlHigh( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ChannelInfo\":"
         "{"
@@ -493,9 +502,9 @@ void test_signaling_ParseDescribeSignalingChannelResponse_TtlHigh( void )
             "}"
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -512,7 +521,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTtl( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ChannelInfo\":"
         "{"
@@ -522,9 +531,9 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTtl( void )
             "}"
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -537,20 +546,20 @@ void test_signaling_ParseDescribeSignalingChannelResponse_InvalidTtl( void )
 /**
  * @brief Validate Signaling Parse Describe Response functionality for Invalid Channel Type.
  */
-void test_signaling_ParseDescribeSignalingChannelResponse_InvalidChannel_Type( void )
+void test_signaling_ParseDescribeSignalingChannelResponse_InvalidChannelType( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ChannelInfo\":"
         "{"
             "\"ChannelType\": \"INVALID_TYPE\""
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -570,10 +579,10 @@ void test_signaling_ParseDescribeSignalingChannelResponse_ChannelNameTooLong( vo
     char longChannelName[ SIGNALING_CHANNEL_NAME_MAX_LEN + 10 ];
     char message[ 1000 ];
 
-    memset( longChannelName, 'a', sizeof( longChannelName ) - 1 );
+    memset( &( longChannelName[ 0 ] ), 'a', sizeof( longChannelName ) - 1 );
     longChannelName[ sizeof( longChannelName ) - 1 ] = '\0';
 
-    snprintf( message,
+    snprintf( &( message[ 0 ] ),
               sizeof( message ),
               "{"
                     "\"ChannelInfo\":"
@@ -584,7 +593,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse_ChannelNameTooLong( vo
                longChannelName );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( &( message[ 0 ] ),
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -601,7 +610,7 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
 {
     SignalingChannelInfo_t channelInfo;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ChannelInfo\":"
         "{"
@@ -615,10 +624,10 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
             "\"Unknown\": \"200\"" /* Unknown Tag --> Will be skipped. */
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
     const char * pExpectedChannelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
-    result = Signaling_ParseDescribeSignalingChannelResponse( message,
+    result = Signaling_ParseDescribeSignalingChannelResponse( pMessage,
                                                               messageLength,
                                                               &( channelInfo ) );
 
@@ -946,8 +955,8 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_BadParams( void )
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
+    const char * pMessage = "Valid-Message";
+    size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseDescribeMediaStorageConfigResponse( NULL,
                                                                 messageLength,
@@ -956,7 +965,7 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage,
                                                                 messageLength,
                                                                 NULL );
 
@@ -973,10 +982,10 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_InvalidJson( void )
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char * message = "{\"MediaStorageConfiguration\": {";  /* Missing closing brace. */
-    size_t messageLength = sizeof( message );
+    const char * pMessage = "{\"MediaStorageConfiguration\": {";  /* Missing closing brace. */
+    size_t messageLength = sizeof( pMessage );
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage,
                                                                 messageLength,
                                                                 &( mediaStorageConfig ) );
 
@@ -985,10 +994,10 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_InvalidJson( void )
 
     /* <--------------------------------------------------------------------> */
 
-    const char * message2 = "{}"; /* Empty JSON. */
-    size_t messageLength2 = strlen( message2 );
+    const char * pMessage2 = "{}"; /* Empty JSON. */
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message2,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage2,
                                                                 messageLength2,
                                                                 &( mediaStorageConfig ) );
 
@@ -1005,7 +1014,7 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"MediaStorageConfiguration\":"
         "[" /* Unexpected JSON array. */
@@ -1014,18 +1023,19 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
-                                                                messageLength, &( mediaStorageConfig ) );
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage,
+                                                                messageLength,
+                                                                &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message2 =
+    const char * pMessage2 =
     "{"
         "\"Unknown\":" /* Unknown Key. */
         "{"
@@ -1033,19 +1043,19 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
             "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
         "}"
     "}";
-    size_t messageLength2 = strlen( message2 );
+    size_t messageLength2 = strlen( pMessage2 );
 
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message2,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage2,
                                                                 messageLength2,
                                                                 &( mediaStorageConfig ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message3 =
+    const char * pMessage3 =
     "{"
         "\"PediaStorageConfiguration\":" /* Unknown key even though length of the key is same as "MediaStorageConfiguration". */
         "{"
@@ -1053,9 +1063,9 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_UnexpectedResponse( 
             "\"StreamARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123\""
         "}"
     "}";
-    size_t messageLength3 = strlen( message3 );
+    size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message3,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage3,
                                                                 messageLength3,
                                                                 &( mediaStorageConfig ) );
 
@@ -1072,7 +1082,7 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_MissingFields( void 
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"MediaStorageConfiguration\":"
         "{"
@@ -1080,9 +1090,9 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse_MissingFields( void 
             /* Missing StreamARN. */
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage,
                                                                 messageLength,
                                                                 &( mediaStorageConfig ) );
 
@@ -1107,7 +1117,7 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse( void )
 {
     SignalingMediaStorageConfig_t mediaStorageConfig;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"MediaStorageConfiguration\":"
         "{"
@@ -1116,10 +1126,10 @@ void test_signaling_ParseDescribeMediaStorageConfigResponse( void )
             "\"Unknown\": \"Unknown Value\"" /* This will be ignored. */
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
     const char * pExpectedStreamArn = "arn:aws:kinesisvideo:us-west-2:123456789012:stream/test-stream/1234567890123";
 
-    result = Signaling_ParseDescribeMediaStorageConfigResponse( message,
+    result = Signaling_ParseDescribeMediaStorageConfigResponse( pMessage,
                                                                 messageLength,
                                                                 &( mediaStorageConfig ) );
 
@@ -1584,9 +1594,9 @@ void test_signaling_ConstructCreateSignalingChannelRequest_WithTagsLeftArrayBrac
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
 
     tags[ 0 ].pName = "Tag1";
-    tags[ 0 ].nameLength = strlen( tags->pName );
+    tags[ 0 ].nameLength = strlen( tags[ 0 ].pName);
     tags[ 0 ].pValue = "Value1";
-    tags[ 0 ].valueLength = strlen( tags->pValue );
+    tags[ 0 ].valueLength = strlen( tags[ 0 ].pValue );
 
     createSignalingChannelRequestInfo.channelName.pChannelName = "Test-Channel";
     createSignalingChannelRequestInfo.channelName.channelNameLength = strlen( createSignalingChannelRequestInfo.channelName.pChannelName );
@@ -1792,8 +1802,8 @@ void test_signaling_ParseCreateSignalingChannelResponse_BadParams( void )
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
+    const char * pMessage = "Valid-Message";
+    size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseCreateSignalingChannelResponse( NULL,
                                                             messageLength,
@@ -1802,7 +1812,7 @@ void test_signaling_ParseCreateSignalingChannelResponse_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseCreateSignalingChannelResponse( message,
+    result = Signaling_ParseCreateSignalingChannelResponse( pMessage,
                                                             messageLength,
                                                             NULL );
 
@@ -1819,10 +1829,10 @@ void test_signaling_ParseCreateSignalingChannelResponse_InvalidJson( void )
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
-    const char * message = "{\"ChannelARN\": \"test-arn\"";  /* Missing closing brace. */
-    size_t messageLength = strlen( message );
+    const char * pMessage = "{\"ChannelARN\": \"test-arn\"";  /* Missing closing brace. */
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseCreateSignalingChannelResponse( message,
+    result = Signaling_ParseCreateSignalingChannelResponse( pMessage,
                                                             messageLength,
                                                             &( channelArn ) );
 
@@ -1839,10 +1849,10 @@ void test_signaling_ParseCreateSignalingChannelResponse_UnexpectedResponse( void
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
-    const char * message = "{}";
-    size_t messageLength = strlen( message );
+    const char * pMessage = "{}";
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseCreateSignalingChannelResponse( message,
+    result = Signaling_ParseCreateSignalingChannelResponse( pMessage,
                                                             messageLength,
                                                             &( channelArn ) );
 
@@ -1859,13 +1869,13 @@ void test_signaling_ParseCreateSignalingChannelResponse_UnknownKey( void )
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"Unknown\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseCreateSignalingChannelResponse( message,
+    result = Signaling_ParseCreateSignalingChannelResponse( pMessage,
                                                             messageLength,
                                                             &( channelArn ) );
 
@@ -1882,14 +1892,14 @@ void test_signaling_ParseCreateSignalingChannelResponse( void )
 {
     SignalingChannelArn_t channelArn = { 0 };
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ChannelARN\": \"arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
     const char * pExpectedChannelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
-    result = Signaling_ParseCreateSignalingChannelResponse( message,
+    result = Signaling_ParseCreateSignalingChannelResponse( pMessage,
                                                             messageLength,
                                                             &( channelArn ) );
 
@@ -1913,7 +1923,7 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     GetSignalingChannelEndpointRequestInfo_t getSignalingChannelEndPointRequestInfo = { 0 };
     SignalingRequest_t requestBuffer = { 0 };
     SignalingResult_t result;
-    const char * channelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
+    const char * pChannelArn = "arn:aws:kinesisvideo:us-west-2:123456789012:channel/test-channel/1234567890123";
 
     result = Signaling_ConstructGetSignalingChannelEndpointRequest( NULL,
                                                                     &( getSignalingChannelEndPointRequestInfo ),
@@ -1979,7 +1989,7 @@ void test_signaling_ConstructGetSignalingChannelEndpointRequest_BadParams( void 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    getSignalingChannelEndPointRequestInfo.channelArn.pChannelArn = channelArn;
+    getSignalingChannelEndPointRequestInfo.channelArn.pChannelArn = pChannelArn;
     getSignalingChannelEndPointRequestInfo.channelArn.channelArnLength = strlen( getSignalingChannelEndPointRequestInfo.channelArn.pChannelArn );
     getSignalingChannelEndPointRequestInfo.role = SIGNALING_ROLE_NONE;
 
@@ -2345,8 +2355,8 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_BadParams( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
+    const char * pMessage = "Valid-Message";
+    size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseGetSignalingChannelEndpointResponse( NULL,
                                                                  messageLength,
@@ -2355,7 +2365,7 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage,
                                                                  messageLength,
                                                                  NULL );
 
@@ -2372,10 +2382,10 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidJson( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char * message = "{\"ResourceEndpointList\": [";  /* Missing closing bracket. */
-    size_t messageLength = strlen( message );
+    const char * pMessage = "{\"ResourceEndpointList\": [";  /* Missing closing bracket. */
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage,
                                                                  messageLength,
                                                                  &( endpoints ) );
 
@@ -2384,10 +2394,10 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidJson( void )
 
     /* <--------------------------------------------------------------------> */
 
-    const char * message2 = "{}"; /* Empty JSON. */
-    size_t messageLength2 = strlen( message2 );
+    const char * pMessage2 = "{}"; /* Empty JSON. */
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message2,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage2,
                                                                  messageLength2,
                                                                  &( endpoints ) );
 
@@ -2405,7 +2415,7 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"ResourceEndpointList\":"
         "{" /* Not JSON Array Type. */
@@ -2414,17 +2424,18 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
-                                                                 messageLength, &( endpoints ) );
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage,
+                                                                 messageLength,
+                                                                 &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message2 =
+    const char * pMessage2 =
     "{"
         "\"Unknown\":" /* Unknown key. */
         "["
@@ -2433,21 +2444,21 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_UnexpectedResponse(
             "{\"Protocol\": \"WEBRTC\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
         "]"
     "}";
-    size_t messageLength2 = strlen( message2 );
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message2,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage2,
                                                                  messageLength2,
                                                                  &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message3 = "{\"ResourceEndpointBist\": []}"; /* Unknown key. */
-    size_t messageLength3 = strlen( message3 );
+    const char * pMessage3 = "{\"ResourceEndpointBist\": []}"; /* Unknown key. */
+    size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message3,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage3,
                                                                  messageLength3,
                                                                  &( endpoints ) );
 
@@ -2464,7 +2475,7 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidProtocol( vo
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"ResourceEndpointList\":"
         "["
@@ -2474,18 +2485,18 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidProtocol( vo
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage,
                                                                  messageLength,
                                                                  &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message2 =
+    const char * pMessage2 =
     "{"
         "\"ResourceEndpointList\":"
         "["
@@ -2495,18 +2506,18 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidProtocol( vo
             "}"
         "]"
     "}";
-    size_t messageLength2 = strlen( message2 );
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message2,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage2,
                                                                  messageLength2,
                                                                  &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message3 =
+    const char * pMessage3 =
     "{"
         "\"ResourceEndpointList\":"
         "["
@@ -2516,18 +2527,18 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidProtocol( vo
             "}"
         "]"
     "}";
-    size_t messageLength3 = strlen( message3 );
+    size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message3,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage3,
                                                                  messageLength3,
                                                                  &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_PROTOCOL,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message4 =
+    const char * pMessage4 =
     "{"
         "\"ResourceEndpointList\":"
         "["
@@ -2537,9 +2548,9 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_InvalidProtocol( vo
             "}"
         "]"
     "}";
-    size_t messageLength4 = strlen( message4 );
+    size_t messageLength4 = strlen( pMessage4 );
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message4,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage4,
                                                                  messageLength4,
                                                                  &( endpoints ) );
 
@@ -2556,7 +2567,7 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ResourceEndpointList\":"
         "["
@@ -2567,30 +2578,30 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse( void )
             "{\"Protocol\": \"WEBRTC\", \"Unknown\": \"webrtc://example.com\"}"               /* Unknown Tag is ignored. */
         "]"
     "}";
-    size_t messageLength = strlen( message );
-    const char * expectedWssURL = "wss://example.com";
-    const char * expectedHttpsURL = "https://example.com";
-    const char * expectedWebrtcURL = "webrtc://example.com";
+    size_t messageLength = strlen( pMessage );
+    const char * pExpectedWssURL = "wss://example.com";
+    const char * pExpectedHttpsURL = "https://example.com";
+    const char * pExpectedWebrtcURL = "webrtc://example.com";
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage,
                                                                  messageLength,
                                                                  &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( strlen( expectedWssURL ),
+    TEST_ASSERT_EQUAL( strlen( pExpectedWssURL ),
                        endpoints.wssEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( expectedWssURL,
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedWssURL,
                                   endpoints.wssEndpoint.pEndpoint,
                                    endpoints.wssEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL( strlen( expectedHttpsURL ),
+    TEST_ASSERT_EQUAL( strlen( pExpectedHttpsURL ),
                        endpoints.httpsEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( expectedHttpsURL,
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedHttpsURL,
                                   endpoints.httpsEndpoint.pEndpoint,
                                   endpoints.httpsEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL( strlen( expectedWebrtcURL ),
+    TEST_ASSERT_EQUAL( strlen( pExpectedWebrtcURL ),
                        endpoints.webrtcEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( expectedWebrtcURL,
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedWebrtcURL,
                                   endpoints.webrtcEndpoint.pEndpoint,
                                   endpoints.webrtcEndpoint.endpointLength );
 }
@@ -2604,7 +2615,7 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_SmallCaps( void )
 {
     SignalingChannelEndpoints_t endpoints;
     SignalingResult_t result;
-    const char *message =
+    const char * pMessage =
     "{"
         "\"ResourceEndpointList\":"
         "["
@@ -2613,30 +2624,30 @@ void test_signaling_ParseGetSignalingChannelEndpointResponse_SmallCaps( void )
             "{\"Protocol\": \"webrtc\", \"ResourceEndpoint\": \"webrtc://example.com\"}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
-    const char * expectedWssURL = "wss://example.com";
-    const char * expectedHttpsURL = "https://example.com";
-    const char * expectedWebrtcURL = "webrtc://example.com";
+    size_t messageLength = strlen( pMessage );
+    const char * pExpectedWssURL = "wss://example.com";
+    const char * pExpectedHttpsURL = "https://example.com";
+    const char * pExpectedWebrtcURL = "webrtc://example.com";
 
-    result = Signaling_ParseGetSignalingChannelEndpointResponse( message,
+    result = Signaling_ParseGetSignalingChannelEndpointResponse( pMessage,
                                                                  messageLength,
                                                                  &( endpoints ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
-    TEST_ASSERT_EQUAL( strlen( expectedWssURL ),
+    TEST_ASSERT_EQUAL( strlen( pExpectedWssURL ),
                        endpoints.wssEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( expectedWssURL,
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedWssURL,
                                   endpoints.wssEndpoint.pEndpoint,
                                   endpoints.wssEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL( strlen( expectedHttpsURL ),
+    TEST_ASSERT_EQUAL( strlen( pExpectedHttpsURL ),
                        endpoints.httpsEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( expectedHttpsURL,
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedHttpsURL,
                                   endpoints.httpsEndpoint.pEndpoint,
                                   endpoints.httpsEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL( strlen( expectedWebrtcURL ),
+    TEST_ASSERT_EQUAL( strlen( pExpectedWebrtcURL ),
                        endpoints.webrtcEndpoint.endpointLength );
-    TEST_ASSERT_EQUAL_STRING_LEN( expectedWebrtcURL,
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedWebrtcURL,
                                   endpoints.webrtcEndpoint.pEndpoint,
                                   endpoints.webrtcEndpoint.endpointLength );
 }
@@ -2660,7 +2671,7 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     endpoint.pEndpoint = NULL;
 
@@ -2671,7 +2682,7 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     endpoint.pEndpoint = "https://example.com";
 
@@ -2682,7 +2693,7 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
                                                            NULL,
@@ -2691,7 +2702,7 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = NULL;
 
@@ -2702,7 +2713,7 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
@@ -2715,7 +2726,7 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
@@ -2861,8 +2872,8 @@ void test_signaling_ParseGetIceServerConfigResponse_BadParams( void )
     SignalingIceServer_t iceServers;
     size_t numIceServers;
     SignalingResult_t result;
-    const char * message = "Valid-Message";
-    size_t messageLength = strlen( message );
+    const char * pMessage = "Valid-Message";
+    size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseGetIceServerConfigResponse( NULL,
                                                         messageLength,
@@ -2872,7 +2883,7 @@ void test_signaling_ParseGetIceServerConfigResponse_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         NULL,
                                                         &( numIceServers ) );
@@ -2880,7 +2891,7 @@ void test_signaling_ParseGetIceServerConfigResponse_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers ),
                                                         NULL );
@@ -2899,11 +2910,11 @@ void test_signaling_ParseGetIceServerConfigResponse_InvalidJson( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message = "{\"IceServerList\": ["; /* Missing closing bracket. */
-    size_t messageLength = strlen( message );
+    const char * pMessage = "{\"IceServerList\": ["; /* Missing closing bracket. */
+    size_t messageLength = strlen( pMessage );
 
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -2911,12 +2922,12 @@ void test_signaling_ParseGetIceServerConfigResponse_InvalidJson( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message2 = "{}"; /* Empty JSON. */
-    size_t messageLength2 = strlen( message2 );
+    const char * pMessage2 = "{}"; /* Empty JSON. */
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message2,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage2,
                                                         messageLength2,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -2935,7 +2946,7 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"IceServerList\":"
         "{" /* Not JSON Array Type. */
@@ -2947,9 +2958,9 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
             "}"
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -2957,9 +2968,9 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message2 =
+    const char * pMessage2 =
     "{"
         "\"Unknown\":" /* Unknown key. */
         "["
@@ -2971,9 +2982,9 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
             "}"
         "]"
     "}";
-    size_t messageLength2 = strlen( message2 );
+    size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message2,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage2,
                                                         messageLength2,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -2981,12 +2992,12 @@ void test_signaling_ParseGetIceServerConfigResponse_UnexpectedResponse( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
 
-    /*<----------------------------------------------------------------->*/
+    /* <--------------------------------------------------------------------> */
 
-    const char * message3 = "{\"UnexpectedKey\": []}"; /* Unknown Key Though the length of "IceServerList" == "UnexpectedKey". */
-    size_t messageLength3 = strlen( message3 );
+    const char * pMessage3 = "{\"UnexpectedKey\": []}"; /* Unknown Key Though the length of "IceServerList" == "UnexpectedKey". */
+    size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message3,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage3,
                                                         messageLength3,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -3005,7 +3016,7 @@ void test_signaling_ParseGetIceServerConfigResponse_InvalidTtl( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"IceServerList\":"
         "["
@@ -3017,9 +3028,9 @@ void test_signaling_ParseGetIceServerConfigResponse_InvalidTtl( void )
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -3038,7 +3049,7 @@ void test_signaling_ParseGetIceServerConfigResponse_LowTtl( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"IceServerList\":"
         "["
@@ -3050,9 +3061,9 @@ void test_signaling_ParseGetIceServerConfigResponse_LowTtl( void )
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -3071,7 +3082,7 @@ void test_signaling_ParseGetIceServerConfigResponse_HighTtl( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"IceServerList\":"
         "["
@@ -3083,9 +3094,9 @@ void test_signaling_ParseGetIceServerConfigResponse_HighTtl( void )
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -3104,7 +3115,7 @@ void test_signaling_ParseGetIceServerConfigResponse( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"IceServerList\":"
         "["
@@ -3117,9 +3128,9 @@ void test_signaling_ParseGetIceServerConfigResponse( void )
             "}"
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -3159,16 +3170,16 @@ void test_signaling_ParseGetIceServerConfigResponse_Empty( void )
     SignalingIceServer_t iceServers[ 1 ];
     size_t numIceServers = 1;
     SignalingResult_t result;
-    const char * message =
+    const char * pMessage =
     "{"
         "\"IceServerList\":"
         "["
             /* Empty Buffer will be ignored. */
         "]"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseGetIceServerConfigResponse( message,
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
                                                         messageLength,
                                                         &( iceServers[ 0 ] ),
                                                         &( numIceServers ) );
@@ -3198,7 +3209,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     webrtcEndpoint.pEndpoint = NULL;
 
@@ -3209,7 +3220,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     webrtcEndpoint.pEndpoint = "webrtc://example.com";
     webrtcEndpoint.endpointLength = strlen( webrtcEndpoint.pEndpoint );
@@ -3221,7 +3232,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
 
 
@@ -3232,7 +3243,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = NULL;
 
@@ -3243,7 +3254,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
@@ -3256,7 +3267,7 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
@@ -3462,7 +3473,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     awsRegion.pAwsRegion = NULL;
 
@@ -3473,7 +3484,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     awsRegion.pAwsRegion = "us-east-1";
     awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
@@ -3485,7 +3496,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     result = Signaling_ConstructDeleteSignalingChannelRequest( &( awsRegion ),
                                                                NULL,
@@ -3494,7 +3505,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = NULL;
 
@@ -3505,7 +3516,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
@@ -3518,7 +3529,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
@@ -3531,7 +3542,7 @@ void test_signaling_ConstructDeleteSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     deleteSignalingChannelRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123";
     deleteSignalingChannelRequestInfo.channelArn.channelArnLength = strlen( deleteSignalingChannelRequestInfo.channelArn.pChannelArn );
@@ -3787,7 +3798,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     wssEndpoint.pEndpoint = NULL;
 
@@ -3798,7 +3809,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     wssEndpoint.pEndpoint = "wss://example.com";
     wssEndpoint.endpointLength = strlen( wssEndpoint.pEndpoint );
@@ -3810,9 +3821,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
-
-
+    /* <--------------------------------------------------------------------> */
 
     result = Signaling_ConstructConnectWssEndpointRequest( &( wssEndpoint ),
                                                            NULL,
@@ -3821,7 +3830,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = NULL;
 
@@ -3832,7 +3841,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
     requestBuffer.urlLength = strlen( requestBuffer.pUrl );
@@ -3845,7 +3854,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     connectWssEndpointRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123";
     connectWssEndpointRequestInfo.channelArn.channelArnLength = strlen( connectWssEndpointRequestInfo.channelArn.pChannelArn );
@@ -3858,7 +3867,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     connectWssEndpointRequestInfo.role = SIGNALING_ROLE_VIEWER;
     connectWssEndpointRequestInfo.pClientId = NULL;
@@ -3952,7 +3961,7 @@ void test_signaling_ConstructConnectWssEndpointRequest_Viewer( void )
                        requestBuffer.urlLength );
     TEST_ASSERT_EQUAL_STRING_LEN( pExpectedUrl,
                                   requestBuffer.pUrl,
-                                   requestBuffer.urlLength );
+                                  requestBuffer.urlLength );
 }
 
 /*-----------------------------------------------------------*/
@@ -4009,7 +4018,7 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
                                             NULL,
@@ -4018,7 +4027,7 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     wssSendMessage.pBase64EncodedMessage = NULL;
 
@@ -4029,7 +4038,7 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
     wssSendMessage.pBase64EncodedMessage = "TestMessage";
     wssSendMessage.base64EncodedMessageLength = strlen( wssSendMessage.pBase64EncodedMessage );
@@ -4343,9 +4352,9 @@ void test_signaling_ParseWssRecvMessage_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    /*      <------------------------------------------------------------------------------------------>      */
+    /* <--------------------------------------------------------------------> */
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( &( message[ 0 ] ),
                                             messageLength,
                                             NULL );
 
@@ -4362,15 +4371,15 @@ void test_signaling_ParseWssRecvMessage_SdpOffer( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char * message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"SDP_OFFER\","
         "\"messagePayload\":\"base64encodedpayload\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4399,15 +4408,15 @@ void test_signaling_ParseWssRecvMessage_SdpAnswer( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"SDP_ANSWER\","
         "\"messagePayload\":\"base64encodedpayload\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4436,15 +4445,15 @@ void test_signaling_ParseWssRecvMessage_IceCandidate( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"ICE_CANDIDATE\","
         "\"messagePayload\":\"base64encodedpayload\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4473,15 +4482,15 @@ void test_signaling_ParseWssRecvMessage_GoAway( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"GO_AWAY\","
         "\"messagePayload\":\"base64encodedpayload\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4510,15 +4519,15 @@ void test_signaling_ParseWssRecvMessage_ExcludeNullTerminator( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"RECONNECT_ICE_SERVER\","
         "\"messagePayload\":\"base64encodedpayload\""
     "}";
-    size_t messageLength = strlen( message ) + 1 ; /* Length including null terminator. */
+    size_t messageLength = strlen( pMessage ) + 1 ; /* Length including null terminator. */
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4547,16 +4556,17 @@ void test_signaling_ParseWssRecvMessage_ReconnectIceServer( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"RECONNECT_ICE_SERVER\","
         "\"messagePayload\":\"base64encodedpayload\""
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
-                                            messageLength, &( wssRecvMessage ) );
+    result = Signaling_ParseWssRecvMessage( pMessage,
+                                            messageLength,
+                                            &( wssRecvMessage ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
@@ -4583,7 +4593,7 @@ void test_signaling_ParseWssRecvMessage_StatusResponse( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message =
+    const char * pMessage =
     "{"
         "\"messageType\":\"STATUS_RESPONSE\","
         "\"statusResponse\":"
@@ -4595,9 +4605,9 @@ void test_signaling_ParseWssRecvMessage_StatusResponse( void )
             "\"Unknown\":\"value\"" /* Unknown Tags are ignored. */
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4636,12 +4646,12 @@ void test_signaling_ParseWssRecvMessage_InvalidJson( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char * message =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\",";  /* Missing closing brace. */
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4658,16 +4668,16 @@ void test_signaling_ParseWssRecvMessage_UnknownMessageType( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  =
+    const char * pMessage =
     "{"
         "\"senderClientId\":\"sender123\","
         "\"messageType\":\"UNKNOWN_TYPE\"," /* Unknown Message Type. */
         "\"messagePayload\":\"base64encodedpayload\","
         "\"Unknown\":\"unknown-value\"" /* This Unknown Tag is ignored. */
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4686,14 +4696,14 @@ void test_signaling_ParseWssRecvMessage_UnexpectedStatusResponse( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  =
+    const char * pMessage  =
     "{"
         "\"messageType\":\"STATUS_RESPONSE\","
         "\"statusResponse\":\"invalid\"" /* Invalid Status Response. */
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4710,7 +4720,7 @@ void test_signaling_ParseWssRecvMessage_InvalidStatusResponse( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  =
+    const char * pMessage =
     "{"
         "\"messageType\":\"STATUS_RESPONSE\","
         "\"statusResponse\":"
@@ -4718,9 +4728,9 @@ void test_signaling_ParseWssRecvMessage_InvalidStatusResponse( void )
             /* Empty Status Response. */
         "}"
     "}";
-    size_t messageLength = strlen( message );
+    size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
@@ -4737,10 +4747,10 @@ void test_signaling_ParseWssRecvMessage_Empty( void )
 {
     SignalingResult_t result;
     WssRecvMessage_t wssRecvMessage = { 0 };
-    const char *message  = "";
+    const char * pMessage = "";
     size_t messageLength = 0;
 
-    result = Signaling_ParseWssRecvMessage( message,
+    result = Signaling_ParseWssRecvMessage( pMessage,
                                             messageLength,
                                             &( wssRecvMessage ) );
 
