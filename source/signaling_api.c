@@ -434,6 +434,171 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
 
 /*-----------------------------------------------------------*/
 
+SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest( char * endpoint,
+                                                                     char * roleAlias,
+                                                                     SignalingRequest_t * pRequestBuffer )
+{
+    SignalingResult_t result = SIGNALING_RESULT_OK;
+    int snprintfRetVal = 0;
+
+    if( ( endpoint == NULL ) ||
+        ( roleAlias == NULL ) ||
+        ( pRequestBuffer == NULL ) ||
+        ( pRequestBuffer->pUrl == NULL ) )
+    {
+        result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        snprintfRetVal = snprintf( pRequestBuffer->pUrl,
+                                   pRequestBuffer->urlLength,
+                                   "https://%s/role-aliases/%s/credentials",
+                                   endpoint,
+                                   roleAlias );
+
+        result = InterpretSnprintfReturnValue( snprintfRetVal,
+                                               pRequestBuffer->urlLength );
+
+        if( result == SIGNALING_RESULT_OK )
+        {
+            pRequestBuffer->urlLength = snprintfRetVal;
+        }
+    }
+
+    return result;
+}
+
+/*-----------------------------------------------------------*/
+
+SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * pMessage,
+                                                                   size_t messageLength,
+                                                                 SignalingCredential_t *pCredentials)
+{
+    SignalingResult_t result = SIGNALING_RESULT_OK;
+    JSONStatus_t jsonResult;
+    size_t start = 0, next = 0;
+    JSONPair_t pair = { 0 };
+    const char * pCredentialsBuffer = NULL;
+    size_t credentialsBufferLength;
+    size_t credentialsStart = 0, credentialsNext = 0;
+
+    if( ( pMessage == NULL ) ||
+        ( pCredentials == NULL ))
+    {
+        result = SIGNALING_RESULT_BAD_PARAM;
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        jsonResult = JSON_Validate( pMessage, messageLength );
+
+        if( jsonResult != JSONSuccess )
+        {
+            result = SIGNALING_RESULT_INVALID_JSON;
+        }
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        memset( pCredentials, 0, sizeof( SignalingCredential_t ) );
+
+        jsonResult = JSON_Iterate( pMessage, messageLength, &( start ), &( next ), &( pair ) );
+
+        if( jsonResult == JSONSuccess )
+        {
+            if( ( pair.jsonType != JSONObject ) ||
+                ( pair.keyLength != strlen( "credentials" ) ) ||
+                ( strncmp( pair.key, "credentials", pair.keyLength ) != 0 ) )
+            {
+                result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
+            }
+            else
+            {
+                pCredentialsBuffer = pair.value;
+                credentialsBufferLength = pair.valueLength;
+            }
+        }
+        else
+        {
+            result = SIGNALING_RESULT_INVALID_JSON;
+        }
+    }
+
+    if( result == SIGNALING_RESULT_OK )
+    {
+        jsonResult = JSON_Iterate( pCredentialsBuffer, credentialsBufferLength, &( credentialsStart ), &( credentialsNext ), &( pair ) );
+
+        while( jsonResult == JSONSuccess )
+        {
+            if( strncmp( pair.key, "accessKeyId", pair.keyLength ) == 0 )
+            {
+                if( pair.valueLength < MAX_ACCESS_KEY_LEN )
+                {
+                    pCredentials->pAccessKeyId = pair.value;
+                    pCredentials->accessKeyIdLength = pair.valueLength;
+                }
+                else
+                {
+                    result = SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE;
+                }
+                
+            }
+            else if( strncmp( pair.key, "secretAccessKey", pair.keyLength ) == 0 )
+            {
+                if( pair.valueLength < MAX_SECRET_KEY_LEN )
+                {
+                    pCredentials->pSecretAccessKey = pair.value;
+                    pCredentials->secretAccessKeyLength = pair.valueLength;
+                }
+                else
+                {
+                    result = SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE;
+                }
+            }
+            else if( strncmp( pair.key, "sessionToken", pair.keyLength ) == 0 )
+            {
+                if( pair.valueLength < MAX_SESSION_TOKEN_LEN )
+                {
+                    pCredentials->sessionToken = pair.value;
+                    pCredentials->sessionTokenLength = pair.valueLength;
+                }
+                else
+                {
+                    result = SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE;
+                }
+            }
+            else if( strncmp( pair.key, "expiration", pair.keyLength ) == 0 )
+            {
+                if( pair.valueLength < MAX_EXPIRATION_LEN )
+                {
+                    pCredentials->expiration = pair.value;
+                    pCredentials->expirationLength = pair.valueLength;
+                }
+                else
+                {
+                    result = SIGNALING_RESULT_EXPIRATION_LENGTH_TOO_LARGE;
+                }
+            }
+            else
+            {
+                /* Skip unknown attributes. */
+            }
+
+            if( result != SIGNALING_RESULT_OK )
+            {
+                break;
+            }
+
+            jsonResult = JSON_Iterate( pCredentialsBuffer, credentialsBufferLength, &( credentialsStart ), &( credentialsNext ), &( pair ) );
+        }
+    }
+
+    return result;
+}
+
+/*-----------------------------------------------------------*/
+
 SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( SignalingAwsRegion_t * pAwsRegion,
                                                                         SignalingChannelArn_t * pChannelArn,
                                                                         SignalingRequest_t * pRequestBuffer )

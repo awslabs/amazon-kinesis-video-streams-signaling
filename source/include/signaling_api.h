@@ -76,6 +76,43 @@ SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( Signalin
                                                                         SignalingRequest_t * pRequestBuffer );
 
 /**
+ * @brief This function is used to construct request to query the Session Token Temporary Credentials.
+ *
+ * @param[in] pEndpoint The AWS Endpoint.
+ * @param[in] pRoleAlias The Role Alias associated with the Role that is used to authentication.
+ * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
+ *
+ * @return Returns one of the following:
+ * - #SIGNALING_RESULT_OK, if initialization was performed without error.
+ * - #SIGNALING_RESULT_BAD_PARAM, if any mandatory parameters is NULL.
+ * - #SIGNALING_RESULT_SNPRINTF_ERROR, if snprintf returns negative value.
+ * - #SIGNALING_RESULT_OUT_OF_MEMORY, if buffer is not enough to store constructed message.
+ *
+ * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-iot.html for details.
+ */
+SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest(  char * pEndpoint, char * pRoleAlias, 
+                                                                      SignalingRequest_t * pRequestBuffer );
+
+/**
+ * @brief This function is used to parse response of describe media storage configurations.
+ *
+ * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
+ * @param[in] messageLength Length of raw message.
+ * @param[out] pCredentials The output structure includes accessKey, SecretAccessKey, SessionToken, Expiration.
+ *
+ * @return Returns one of the following:
+ * - #SIGNALING_RESULT_OK, if initialization was performed without error.
+ * - #SIGNALING_RESULT_BAD_PARAM, if any mandatory parameters is NULL.
+ * - #SIGNALING_RESULT_INVALID_JSON, if raw message is not a valid JSON message.
+ * - #SIGNALING_RESULT_UNEXPECTED_RESPONSE, if the message isn't the expected one.
+ *
+ * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-iot.html for details.
+ */
+SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * pMessage,
+                                                                   size_t messageLength,
+                                                                    SignalingCredential_t *pCredentials);
+
+/**
  * @brief This function is used to parse response of describe media storage configurations.
  *
  * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
@@ -106,6 +143,10 @@ SignalingResult_t Signaling_ParseDescribeMediaStorageConfigResponse( const char 
  * - #SIGNALING_RESULT_BAD_PARAM, if any mandatory parameters is NULL.
  * - #SIGNALING_RESULT_SNPRINTF_ERROR, if snprintf returns negative value.
  * - #SIGNALING_RESULT_OUT_OF_MEMORY, if buffer is not enough to store constructed message.
+ * - #SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE, if accessKey overflows.
+ * - #SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE, if secret acessKey overflows.
+ * - #SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE, if session Token overflows.
+ * - #SIGNALING_RESULT_EXPIRATION_LENGTH_TOO_LARGE, if expiration overflows.
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_CreateSignalingChannel.html for details.
  */

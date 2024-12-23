@@ -17,6 +17,26 @@
  */
 #define SIGNALING_CHANNEL_NAME_MAX_LEN ( 256 )
 
+/**
+ * Maximum length of a Access Key.
+ */
+#define MAX_ACCESS_KEY_LEN ( 128 )
+
+/**
+ * Maximum length of a Secret Access Key.
+ */
+#define MAX_SECRET_KEY_LEN ( 128 )
+
+/**
+ * Maximum length of a Session Token.
+ */
+#define MAX_SESSION_TOKEN_LEN ( 2048 ) 
+
+/**
+ * Maximum length of a Expiration.
+ */
+#define MAX_EXPIRATION_LEN ( 128 )  
+
 /*-----------------------------------------------------------*/
 
 /**
@@ -58,6 +78,10 @@ typedef enum SignalingResult
     SIGNALING_RESULT_INVALID_ICE_SERVER_URIS_COUNT,
     SIGNALING_RESULT_INVALID_STATUS_RESPONSE,
     SIGNALING_RESULT_REGION_LENGTH_TOO_LARGE,
+    SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE,
+    SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE,
+    SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE,
+    SIGNALING_RESULT_EXPIRATION_LENGTH_TOO_LARGE,
 } SignalingResult_t;
 
 /**
@@ -160,6 +184,27 @@ typedef struct SignalingChannelArn
     const char * pChannelArn;
     size_t channelArnLength;
 } SignalingChannelArn_t;
+
+/**
+ * @ingroup signaling_enum_types
+ * @brief Basic format of the Session Token Credentials
+ */
+typedef struct SignalingCredential
+{
+
+    const char* pAccessKeyId;
+    size_t accessKeyIdLength;
+
+    const char* pSecretAccessKey;
+    size_t secretAccessKeyLength;
+
+    const char* sessionToken;
+    size_t sessionTokenLength;
+
+    const char* expiration;
+    size_t expirationLength;
+
+} SignalingCredential_t;
 
 /**
  * @ingroup signaling_enum_types
