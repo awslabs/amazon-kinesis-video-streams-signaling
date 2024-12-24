@@ -473,7 +473,7 @@ SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ParseTemporaryCredentialsResponse( const char * pMessage,
+SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char * pMessage,
                                                                    size_t messageLength,
                                                                  SignalingCredential_t *pCredentials)
 {
