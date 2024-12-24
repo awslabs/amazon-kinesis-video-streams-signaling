@@ -676,33 +676,41 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest_BadParams( void )
     SignalingResult_t result;
 
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( NULL, endpointLength,
-                                                                ( pRoleAlias ), roleAliasLength,
-                                                                &( requestBuffer ) );
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( NULL,
+                                                                 endpointLength,
+                                                                 ( pRoleAlias ),
+                                                                 roleAliasLength,
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
-                                                                NULL,  roleAliasLength,
-                                                                &( requestBuffer ) );
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
+                                                                 endpointLength,
+                                                                 NULL,
+                                                                 roleAliasLength,
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
-                                                                ( pRoleAlias ), roleAliasLength,
-                                                                NULL );
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
+                                                                 endpointLength,
+                                                                 ( pRoleAlias ),
+                                                                 roleAliasLength,
+                                                                 NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     requestBuffer.pUrl = NULL;
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
-                                                                ( pRoleAlias ), roleAliasLength,
-                                                                &( requestBuffer ) );
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
+                                                                 endpointLength,
+                                                                 ( pRoleAlias ),
+                                                                 roleAliasLength,
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -727,9 +735,11 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest_UrlOutOfMemory( voi
     requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
-                                                                ( pRoleAlias ), roleAliasLength,
-                                                                &( requestBuffer ) );
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
+                                                                 endpointLength,
+                                                                 ( pRoleAlias ),
+                                                                 roleAliasLength,
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -754,9 +764,11 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest( void )
     requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
-                                                                ( pRoleAlias ), roleAliasLength,
-                                                                &( requestBuffer ) );
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
+                                                                 endpointLength,
+                                                                 ( pRoleAlias ),
+                                                                 roleAliasLength,
+                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
@@ -780,15 +792,15 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_BadParams( void )
     size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( NULL,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             NULL );
+                                                               messageLength,
+                                                               NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -807,8 +819,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_InvalidJson( void )
     size_t messageLength = sizeof( pMessage );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -819,8 +831,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_InvalidJson( void )
     size_t messageLength2 = strlen( pMessage2 );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage2,
-                                                             messageLength2,
-                                                             &( credentials ) );
+                                                               messageLength2,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -847,8 +859,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
     size_t messageLength = strlen( pMessage );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -865,8 +877,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
     size_t messageLength2 = strlen( pMessage2 );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage2,
-                                                             messageLength2,
-                                                             &( credentials ) );
+                                                               messageLength2,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -880,8 +892,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
     size_t messageLength3 = strlen( pMessage3 );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage3,
-                                                             messageLength3,
-                                                             &( credentials ) );
+                                                               messageLength3,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -916,8 +928,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_AccessKeyTooLong( voi
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE,
                        result );
@@ -953,8 +965,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_SecretAccessKeyTooLon
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE,
                        result );
@@ -991,8 +1003,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_SessionTokenTooLong( 
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE,
                        result );
@@ -1030,8 +1042,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_ExpirationTooLong( vo
     size_t messageLength = strlen( message );
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_EXPIRATION_LENGTH_TOO_LARGE,
                        result );
@@ -1058,8 +1070,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoAccessKey( void )
     "}";
     size_t messageLength = strlen( pMessage );
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1086,8 +1098,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSecretAccessKey( vo
     "}";
     size_t messageLength = strlen( pMessage );
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1114,8 +1126,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSessionToken( void 
     "}";
     size_t messageLength = strlen( pMessage );
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1142,8 +1154,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoExpiration( void )
     "}";
     size_t messageLength = strlen( pMessage );
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1176,8 +1188,8 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse( void )
     const char * pExpectedExpiration = "2024-12-23T18:26:52Z";
 
     result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                             messageLength,
-                                                             &( credentials ) );
+                                                               messageLength,
+                                                               &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );

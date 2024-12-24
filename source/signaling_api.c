@@ -434,9 +434,11 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char * pEndpoint, size_t endpointLength, 
-                                                                     const char * pRoleAlias, size_t roleAliasLength, 
-                                                                     SignalingRequest_t * pRequestBuffer )
+SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char * pEndpoint,
+                                                                      size_t endpointLength,
+                                                                      const char * pRoleAlias,
+                                                                      size_t roleAliasLength,
+                                                                      SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
@@ -474,8 +476,8 @@ SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char
 /*-----------------------------------------------------------*/
 
 SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char * pMessage,
-                                                                   size_t messageLength,
-                                                                 SignalingCredential_t *pCredentials)
+                                                                    size_t messageLength,
+                                                                    SignalingCredential_t * pCredentials )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
@@ -490,14 +492,15 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
     bool hasExpiration = false;
 
     if( ( pMessage == NULL ) ||
-        ( pCredentials == NULL ))
+        ( pCredentials == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
     if( result == SIGNALING_RESULT_OK )
     {
-        jsonResult = JSON_Validate( pMessage, messageLength );
+        jsonResult = JSON_Validate( pMessage,
+                                    messageLength );
 
         if( jsonResult != JSONSuccess )
         {
@@ -537,7 +540,9 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
 
         while( jsonResult == JSONSuccess )
         {
-            if( strncmp( pair.key, "accessKeyId", pair.keyLength ) == 0 )
+            if( strncmp( pair.key,
+                         "accessKeyId",
+                         pair.keyLength ) == 0 )
             {
                 if( pair.valueLength < MAX_ACCESS_KEY_LEN )
                 {
@@ -549,9 +554,11 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                 {
                     result = SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE;
                 }
-                
+
             }
-            else if( strncmp( pair.key, "secretAccessKey", pair.keyLength ) == 0 )
+            else if( strncmp( pair.key,
+                              "secretAccessKey",
+                              pair.keyLength ) == 0 )
             {
                 if( pair.valueLength < MAX_SECRET_KEY_LEN )
                 {
@@ -564,7 +571,9 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                     result = SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE;
                 }
             }
-            else if( strncmp( pair.key, "sessionToken", pair.keyLength ) == 0 )
+            else if( strncmp( pair.key,
+                              "sessionToken",
+                              pair.keyLength ) == 0 )
             {
                 if( pair.valueLength < MAX_SESSION_TOKEN_LEN )
                 {
@@ -577,7 +586,9 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                     result = SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE;
                 }
             }
-            else if( strncmp( pair.key, "expiration", pair.keyLength ) == 0 )
+            else if( strncmp( pair.key,
+                              "expiration",
+                              pair.keyLength ) == 0 )
             {
                 if( pair.valueLength < MAX_EXPIRATION_LEN )
                 {
@@ -605,7 +616,8 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
         }
     }
 
-    if (result == SIGNALING_RESULT_OK && (!hasAccessKeyId || !hasSecretKey || !hasSessionToken || !hasExpiration)) {
+    if( ( result == SIGNALING_RESULT_OK ) && ( !hasAccessKeyId || !hasSecretKey || !hasSessionToken || !hasExpiration ) )
+    {
         result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
     }
 
