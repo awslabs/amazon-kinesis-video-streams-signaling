@@ -434,15 +434,15 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest( char * endpoint,
-                                                                     char * roleAlias,
+SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char * pEndpoint, size_t endpointLength, 
+                                                                     const char * pRoleAlias, size_t roleAliasLength, 
                                                                      SignalingRequest_t * pRequestBuffer )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( endpoint == NULL ) ||
-        ( roleAlias == NULL ) ||
+    if( ( pEndpoint == NULL ) ||
+        ( pRoleAlias == NULL ) ||
         ( pRequestBuffer == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) )
     {
@@ -453,9 +453,11 @@ SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest( char * endp
     {
         snprintfRetVal = snprintf( pRequestBuffer->pUrl,
                                    pRequestBuffer->urlLength,
-                                   "https://%s/role-aliases/%s/credentials",
-                                   endpoint,
-                                   roleAlias );
+                                   "https://%.*s/role-aliases/%.*s/credentials",
+                                   ( int ) endpointLength,
+                                   pEndpoint,
+                                   ( int ) roleAliasLength,
+                                   pRoleAlias );
 
         result = InterpretSnprintfReturnValue( snprintfRetVal,
                                                pRequestBuffer->urlLength );
@@ -471,7 +473,7 @@ SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest( char * endp
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * pMessage,
+SignalingResult_t Signaling_ParseTemporaryCredentialsResponse( const char * pMessage,
                                                                    size_t messageLength,
                                                                  SignalingCredential_t *pCredentials)
 {
@@ -482,6 +484,10 @@ SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * p
     const char * pCredentialsBuffer = NULL;
     size_t credentialsBufferLength;
     size_t credentialsStart = 0, credentialsNext = 0;
+    bool hasAccessKeyId = false;
+    bool hasSecretKey = false;
+    bool hasSessionToken = false;
+    bool hasExpiration = false;
 
     if( ( pMessage == NULL ) ||
         ( pCredentials == NULL ))
@@ -537,6 +543,7 @@ SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * p
                 {
                     pCredentials->pAccessKeyId = pair.value;
                     pCredentials->accessKeyIdLength = pair.valueLength;
+                    hasAccessKeyId = true;
                 }
                 else
                 {
@@ -550,6 +557,7 @@ SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * p
                 {
                     pCredentials->pSecretAccessKey = pair.value;
                     pCredentials->secretAccessKeyLength = pair.valueLength;
+                    hasSecretKey = true;
                 }
                 else
                 {
@@ -562,6 +570,7 @@ SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * p
                 {
                     pCredentials->sessionToken = pair.value;
                     pCredentials->sessionTokenLength = pair.valueLength;
+                    hasSessionToken = true;
                 }
                 else
                 {
@@ -574,6 +583,8 @@ SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * p
                 {
                     pCredentials->expiration = pair.value;
                     pCredentials->expirationLength = pair.valueLength;
+                    hasExpiration = true;
+
                 }
                 else
                 {
@@ -592,6 +603,10 @@ SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * p
 
             jsonResult = JSON_Iterate( pCredentialsBuffer, credentialsBufferLength, &( credentialsStart ), &( credentialsNext ), &( pair ) );
         }
+    }
+
+    if (result == SIGNALING_RESULT_OK && (!hasAccessKeyId || !hasSecretKey || !hasSessionToken || !hasExpiration)) {
+        result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
     }
 
     return result;

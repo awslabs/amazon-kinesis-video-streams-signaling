@@ -191,7 +191,6 @@ typedef struct SignalingChannelArn
  */
 typedef struct SignalingCredential
 {
-
     const char* pAccessKeyId;
     size_t accessKeyIdLength;
 

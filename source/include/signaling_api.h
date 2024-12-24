@@ -90,8 +90,9 @@ SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( Signalin
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-iot.html for details.
  */
-SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest(  char * pEndpoint, char * pRoleAlias, 
-                                                                      SignalingRequest_t * pRequestBuffer );
+SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest(  const char * pEndpoint, size_t endpointLength,
+                                                                       const char * pRoleAlias, size_t roleAliasLength, 
+                                                                       SignalingRequest_t * pRequestBuffer );
 
 /**
  * @brief This function is used to parse response of describe media storage configurations.
@@ -108,7 +109,7 @@ SignalingResult_t Signaling_ConstructSessionTokenCredentialsRequest(  char * pEn
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-iot.html for details.
  */
-SignalingResult_t Signaling_ParseSessionTokenCredentialsResponse( const char * pMessage,
+SignalingResult_t Signaling_ParseTemporaryCredentialsResponse( const char * pMessage,
                                                                    size_t messageLength,
                                                                     SignalingCredential_t *pCredentials);
 

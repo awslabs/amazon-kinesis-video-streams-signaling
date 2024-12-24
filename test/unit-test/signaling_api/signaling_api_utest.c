@@ -666,40 +666,42 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
 /**
  * @brief Validate Signaling Construct Session Token Credentials Request fail functionality for Bad Parameters.
  */
-void test_signaling_ConstructSessionTokenCredentialsRequest_BadParams( void )
+void test_signaling_ConstructFetchTemporaryCredentialRequest_BadParams( void )
 {
-    char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
-    char * pRoleAlias = "TestRoleAlias";
+    const char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
+    size_t endpointLength = strlen( pEndpoint );
+    const char * pRoleAlias = "TestRoleAlias";
+    size_t roleAliasLength = strlen( pRoleAlias );
     SignalingRequest_t requestBuffer = { 0 };
     SignalingResult_t result;
 
 
-    result = Signaling_ConstructSessionTokenCredentialsRequest( NULL,
-                                                                ( pRoleAlias ),
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( NULL, endpointLength,
+                                                                ( pRoleAlias ), roleAliasLength,
                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
 
-    result = Signaling_ConstructSessionTokenCredentialsRequest( ( pEndpoint ),
-                                                                NULL,
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
+                                                                NULL,  roleAliasLength,
                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
 
-    result = Signaling_ConstructSessionTokenCredentialsRequest( ( pEndpoint ),
-                                                                ( pRoleAlias ),
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
+                                                                ( pRoleAlias ), roleAliasLength,
                                                                 NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     requestBuffer.pUrl = NULL;
-    result = Signaling_ConstructSessionTokenCredentialsRequest( ( pEndpoint ),
-                                                                ( pRoleAlias ),
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
+                                                                ( pRoleAlias ), roleAliasLength,
                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
@@ -712,10 +714,12 @@ void test_signaling_ConstructSessionTokenCredentialsRequest_BadParams( void )
 /**
  * @brief Validate Signaling Construct Describe Media Storage Config Request functionality.
  */
-void test_signaling_ConstructSessionTokenCredentialsRequest_UrlOutOfMemory( void )
+void test_signaling_ConstructFetchTemporaryCredentialRequest_UrlOutOfMemory( void )
 {
-    char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
-    char * pRoleAlias = "TestRoleAlias";
+    const char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
+    size_t endpointLength = strlen( pEndpoint );
+    const char * pRoleAlias = "TestRoleAlias";
+    size_t roleAliasLength = strlen( pRoleAlias );
     SignalingRequest_t requestBuffer = { 0 };
     SignalingResult_t result;
     char urlBuffer[ 50 ];/* The url buffer is too small to fit the complete URL. */
@@ -723,8 +727,8 @@ void test_signaling_ConstructSessionTokenCredentialsRequest_UrlOutOfMemory( void
     requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
 
-    result = Signaling_ConstructSessionTokenCredentialsRequest( ( pEndpoint ),
-                                                                ( pRoleAlias ),
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
+                                                                ( pRoleAlias ), roleAliasLength,
                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
@@ -736,10 +740,12 @@ void test_signaling_ConstructSessionTokenCredentialsRequest_UrlOutOfMemory( void
 /**
  * @brief Validate Signaling Construct Session Token Credentials Request functionality.
  */
-void test_signaling_ConstructSessionTokenCredentialsRequest( void )
+void test_signaling_ConstructFetchTemporaryCredentialRequest( void )
 {
-    char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
-    char * pRoleAlias = "TestRoleAlias";
+    const char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
+    size_t endpointLength = strlen( pEndpoint );
+    const char * pRoleAlias = "TestRoleAlias";
+    size_t roleAliasLength = strlen( pRoleAlias );
     SignalingRequest_t requestBuffer = { 0 };
     SignalingResult_t result;
     char urlBuffer[ 200 ];
@@ -748,8 +754,8 @@ void test_signaling_ConstructSessionTokenCredentialsRequest( void )
     requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
 
-    result = Signaling_ConstructSessionTokenCredentialsRequest( ( pEndpoint ),
-                                                                ( pRoleAlias ),
+    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ), endpointLength,
+                                                                ( pRoleAlias ), roleAliasLength,
                                                                 &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
@@ -766,21 +772,21 @@ void test_signaling_ConstructSessionTokenCredentialsRequest( void )
 /**
  * @brief Validate Signaling Parse Session Token Credentials fail functionality for Bad Parameters.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_BadParams( void )
+void test_signaling_ParseTemporaryCredentialsResponse_BadParams( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage = "Valid-Message";
     size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( NULL,
+    result = Signaling_ParseTemporaryCredentialsResponse( NULL,
                                                              messageLength,
                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
                                                              messageLength,
                                                              NULL );
 
@@ -793,14 +799,14 @@ void test_signaling_ParseSessionTokenCredentialsResponse_BadParams( void )
 /**
  * @brief Validate Signaling Parse Session Token Credentials functionality.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_InvalidJson( void )
+void test_signaling_ParseTemporaryCredentialsResponse_InvalidJson( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage = "{\"credentials\": {";  /* Missing closing brace. */
     size_t messageLength = sizeof( pMessage );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
                                                              messageLength,
                                                              &( credentials ) );
 
@@ -812,7 +818,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_InvalidJson( void )
     const char * pMessage2 = "{}"; /* Empty JSON. */
     size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage2,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage2,
                                                              messageLength2,
                                                              &( credentials ) );
 
@@ -825,7 +831,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_InvalidJson( void )
 /**
  * @brief Validate Signaling Parse Describe Response functionality for Unexpected Response.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_UnexpectedResponse( void )
+void test_signaling_ParseTemporaryCredentialsResponse_UnexpectedResponse( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -840,7 +846,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_UnexpectedResponse( voi
     "}";
     size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
                                                              messageLength,
                                                              &( credentials ) );
 
@@ -858,7 +864,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_UnexpectedResponse( voi
     "}";
     size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage2,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage2,
                                                              messageLength2,
                                                              &( credentials ) );
 
@@ -873,7 +879,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_UnexpectedResponse( voi
     "}";
     size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage3,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage3,
                                                              messageLength3,
                                                              &( credentials ) );
 
@@ -886,7 +892,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_UnexpectedResponse( voi
 /**
  * @brief Validate Signaling Parse Session Token Response functionality for too long Access Key.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_AccessKeyTooLong( void )
+void test_signaling_ParseTemporaryCredentialsResponse_AccessKeyTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -909,7 +915,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_AccessKeyTooLong( void 
                longAccessKey );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( &( message[ 0 ] ),
+    result = Signaling_ParseTemporaryCredentialsResponse( &( message[ 0 ] ),
                                                              messageLength,
                                                              &( credentials ) );
 
@@ -922,7 +928,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_AccessKeyTooLong( void 
 /**
  * @brief Validate Signaling Parse Session Token Response functionality for too long Secret Access Key.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_SecretAccessKeyTooLong( void )
+void test_signaling_ParseTemporaryCredentialsResponse_SecretAccessKeyTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -946,7 +952,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_SecretAccessKeyTooLong(
                longSecretAccessKey );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( &( message[ 0 ] ),
+    result = Signaling_ParseTemporaryCredentialsResponse( &( message[ 0 ] ),
                                                              messageLength,
                                                              &( credentials ) );
 
@@ -959,7 +965,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_SecretAccessKeyTooLong(
 /**
  * @brief Validate Signaling Parse Session Token Response functionality for too long Session Token.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_SessionTokenTooLong( void )
+void test_signaling_ParseTemporaryCredentialsResponse_SessionTokenTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -984,7 +990,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_SessionTokenTooLong( vo
                longSessionToken );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( &( message[ 0 ] ),
+    result = Signaling_ParseTemporaryCredentialsResponse( &( message[ 0 ] ),
                                                              messageLength,
                                                              &( credentials ) );
 
@@ -997,7 +1003,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_SessionTokenTooLong( vo
 /**
  * @brief Validate Signaling Parse Session Token Response functionality for too long Expiration.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse_ExpirationTooLong( void )
+void test_signaling_ParseTemporaryCredentialsResponse_ExpirationTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -1023,7 +1029,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse_ExpirationTooLong( void
                longExpiration );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( &( message[ 0 ] ),
+    result = Signaling_ParseTemporaryCredentialsResponse( &( message[ 0 ] ),
                                                              messageLength,
                                                              &( credentials ) );
 
@@ -1034,9 +1040,121 @@ void test_signaling_ParseSessionTokenCredentialsResponse_ExpirationTooLong( void
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Describe Response functionality.
+ * @brief Validate Signaling Parse Temporary Credential Response functionality.
  */
-void test_signaling_ParseSessionTokenCredentialsResponse( void )
+void test_signaling_ParseTemporaryCredentialsResponse_NoAccessKey( void )
+{
+    SignalingCredential_t credentials;
+    SignalingResult_t result;
+    const char * pMessage =
+    "{"
+        "\"credentials\":"
+        "{"                                                     /* No Access Key */
+            "\"secretAccessKey\": \"test-e/I5Zjd72kMzF/Ys20Le9wyxH3\","
+            "\"sessionToken\": \"IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=\","
+            "\"expiration\": \"2024-12-23T18:26:52Z\","
+            "\"Unknown\": \"200\"" /* Unknown Tag --> Will be skipped. */
+        "}"
+    "}";
+    size_t messageLength = strlen( pMessage );
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
+                                                             messageLength,
+                                                             &( credentials ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
+                       result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ */
+void test_signaling_ParseTemporaryCredentialsResponse_NoSecretAccessKey( void )
+{
+    SignalingCredential_t credentials;
+    SignalingResult_t result;
+    const char * pMessage =
+    "{"
+        "\"credentials\":"
+        "{"                                                     /* No SecretAccess Key */
+            "\"accessKeyId\": \"ASIASWNFWKDLG25\","
+            "\"sessionToken\": \"IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=\","
+            "\"expiration\": \"2024-12-23T18:26:52Z\","
+            "\"Unknown\": \"200\"" /* Unknown Tag --> Will be skipped. */
+        "}"
+    "}";
+    size_t messageLength = strlen( pMessage );
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
+                                                             messageLength,
+                                                             &( credentials ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
+                       result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ */
+void test_signaling_ParseTemporaryCredentialsResponse_NoSessionToken( void )
+{
+    SignalingCredential_t credentials;
+    SignalingResult_t result;
+    const char * pMessage =
+    "{"
+        "\"credentials\":"
+        "{"                                                     /* No Session Token  */
+            "\"accessKeyId\": \"ASIASWNFWKDLG25\","
+            "\"secretAccessKey\": \"test-e/I5Zjd72kMzF/Ys20Le9wyxH3\","
+            "\"expiration\": \"2024-12-23T18:26:52Z\","
+            "\"Unknown\": \"200\"" /* Unknown Tag --> Will be skipped. */
+        "}"
+    "}";
+    size_t messageLength = strlen( pMessage );
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
+                                                             messageLength,
+                                                             &( credentials ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
+                       result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ */
+void test_signaling_ParseTemporaryCredentialsResponse_NoExpiration( void )
+{
+    SignalingCredential_t credentials;
+    SignalingResult_t result;
+    const char * pMessage =
+    "{"
+        "\"credentials\":"
+        "{"                                                     /* No Expiration  */
+            "\"accessKeyId\": \"ASIASWNFWKDLG25\","
+            "\"secretAccessKey\": \"test-e/I5Zjd72kMzF/Ys20Le9wyxH3\","
+            "\"sessionToken\": \"IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=\","
+            "\"Unknown\": \"200\"" /* Unknown Tag --> Will be skipped. */
+        "}"
+    "}";
+    size_t messageLength = strlen( pMessage );
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
+                                                             messageLength,
+                                                             &( credentials ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
+                       result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ */
+void test_signaling_ParseTemporaryCredentialsResponse( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -1057,7 +1175,7 @@ void test_signaling_ParseSessionTokenCredentialsResponse( void )
     const char * pExpectedSessionToken = "IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=";
     const char * pExpectedExpiration = "2024-12-23T18:26:52Z";
 
-    result = Signaling_ParseSessionTokenCredentialsResponse( pMessage,
+    result = Signaling_ParseTemporaryCredentialsResponse( pMessage,
                                                              messageLength,
                                                              &( credentials ) );
 
