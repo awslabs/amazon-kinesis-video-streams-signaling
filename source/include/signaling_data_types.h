@@ -197,10 +197,10 @@ typedef struct SignalingCredential
     const char* pSecretAccessKey;
     size_t secretAccessKeyLength;
 
-    const char* sessionToken;
+    const char* pSessionToken;
     size_t sessionTokenLength;
 
-    const char* expiration;
+    const char* pExpiration;
     size_t expirationLength;
 
 } SignalingCredential_t;

@@ -577,7 +577,7 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
             {
                 if( pair.valueLength < MAX_SESSION_TOKEN_LEN )
                 {
-                    pCredentials->sessionToken = pair.value;
+                    pCredentials->pSessionToken = pair.value;
                     pCredentials->sessionTokenLength = pair.valueLength;
                     hasSessionToken = true;
                 }
@@ -592,7 +592,7 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
             {
                 if( pair.valueLength < MAX_EXPIRATION_LEN )
                 {
-                    pCredentials->expiration = pair.value;
+                    pCredentials->pExpiration = pair.value;
                     pCredentials->expirationLength = pair.valueLength;
                     hasExpiration = true;
 
