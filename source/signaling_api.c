@@ -434,16 +434,17 @@ SignalingResult_t Signaling_ParseDescribeSignalingChannelResponse( const char * 
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char * pEndpoint,
-                                                                      size_t endpointLength,
-                                                                      const char * pRoleAlias,
-                                                                      size_t roleAliasLength,
-                                                                      SignalingRequest_t * pRequestBuffer )
+SignalingResult_t Signaling_ConstructFetchTempCredsRequestForAwsIot( const char * pAwsIotEndpoint,
+                                                                     size_t awsIotEndpointLength,
+                                                                     const char * pRoleAlias,
+                                                                     size_t roleAliasLength,
+                                                                     SignalingRequest_t * pRequestBuffer )
+
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
-    if( ( pEndpoint == NULL ) ||
+    if( ( pAwsIotEndpoint == NULL ) ||
         ( pRoleAlias == NULL ) ||
         ( pRequestBuffer == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) )
@@ -456,8 +457,8 @@ SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char
         snprintfRetVal = snprintf( pRequestBuffer->pUrl,
                                    pRequestBuffer->urlLength,
                                    "https://%.*s/role-aliases/%.*s/credentials",
-                                   ( int ) endpointLength,
-                                   pEndpoint,
+                                   ( int ) awsIotEndpointLength,
+                                   pAwsIotEndpoint,
                                    ( int ) roleAliasLength,
                                    pRoleAlias );
 
@@ -475,9 +476,9 @@ SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char
 
 /*-----------------------------------------------------------*/
 
-SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char * pMessage,
-                                                                    size_t messageLength,
-                                                                    SignalingCredential_t * pCredentials )
+SignalingResult_t Signaling_ParseFetchTempCredsResponseFromAwsIot( const char * pMessage,
+                                                                   size_t messageLength,
+                                                                   SignalingCredential_t * pCredentials )
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     JSONStatus_t jsonResult;
@@ -486,10 +487,6 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
     const char * pCredentialsBuffer = NULL;
     size_t credentialsBufferLength;
     size_t credentialsStart = 0, credentialsNext = 0;
-    bool hasAccessKeyId = false;
-    bool hasSecretKey = false;
-    bool hasSessionToken = false;
-    bool hasExpiration = false;
 
     if( ( pMessage == NULL ) ||
         ( pCredentials == NULL ) )
@@ -544,11 +541,10 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                          "accessKeyId",
                          pair.keyLength ) == 0 )
             {
-                if( pair.valueLength < MAX_ACCESS_KEY_LEN )
+                if( pair.valueLength < ACCESS_KEY_MAX_LEN )
                 {
                     pCredentials->pAccessKeyId = pair.value;
                     pCredentials->accessKeyIdLength = pair.valueLength;
-                    hasAccessKeyId = true;
                 }
                 else
                 {
@@ -560,11 +556,10 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                               "secretAccessKey",
                               pair.keyLength ) == 0 )
             {
-                if( pair.valueLength < MAX_SECRET_KEY_LEN )
+                if( pair.valueLength < SECRET_ACCESS_KEY_MAX_LEN )
                 {
                     pCredentials->pSecretAccessKey = pair.value;
                     pCredentials->secretAccessKeyLength = pair.valueLength;
-                    hasSecretKey = true;
                 }
                 else
                 {
@@ -575,11 +570,10 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                               "sessionToken",
                               pair.keyLength ) == 0 )
             {
-                if( pair.valueLength < MAX_SESSION_TOKEN_LEN )
+                if( pair.valueLength < SESSION_TOKEN_MAX_LEN )
                 {
                     pCredentials->pSessionToken = pair.value;
                     pCredentials->sessionTokenLength = pair.valueLength;
-                    hasSessionToken = true;
                 }
                 else
                 {
@@ -590,12 +584,10 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
                               "expiration",
                               pair.keyLength ) == 0 )
             {
-                if( pair.valueLength < MAX_EXPIRATION_LEN )
+                if( pair.valueLength < EXPIRATION_MAX_LEN )
                 {
                     pCredentials->pExpiration = pair.value;
                     pCredentials->expirationLength = pair.valueLength;
-                    hasExpiration = true;
-
                 }
                 else
                 {
@@ -616,7 +608,11 @@ SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char *
         }
     }
 
-    if( ( result == SIGNALING_RESULT_OK ) && ( !hasAccessKeyId || !hasSecretKey || !hasSessionToken || !hasExpiration ) )
+    if( ( result == SIGNALING_RESULT_OK ) &&
+        ( ( pCredentials->pAccessKeyId == NULL ) ||
+          ( pCredentials->pSecretAccessKey == NULL ) ||
+          ( pCredentials->pSessionToken == NULL ) ||
+          ( pCredentials->pExpiration == NULL ) ) )
     {
         result = SIGNALING_RESULT_UNEXPECTED_RESPONSE;
     }
@@ -1703,7 +1699,7 @@ SignalingResult_t Signaling_ParseWssRecvMessage( const char * pMessage,
             if( pMessage[ messageLength - 1 ] == '\0' )
                 {
                     messageLength--;
-                }      
+                }
         }
 
         jsonResult = JSON_Validate( pMessage, messageLength );

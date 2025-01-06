@@ -20,22 +20,22 @@
 /**
  * Maximum length of a Access Key.
  */
-#define MAX_ACCESS_KEY_LEN ( 128 )
+#define ACCESS_KEY_MAX_LEN ( 128 )
 
 /**
  * Maximum length of a Secret Access Key.
  */
-#define MAX_SECRET_KEY_LEN ( 128 )
+#define SECRET_ACCESS_KEY_MAX_LEN ( 128 )
 
 /**
  * Maximum length of a Session Token.
  */
-#define MAX_SESSION_TOKEN_LEN ( 2048 ) 
+#define SESSION_TOKEN_MAX_LEN ( 2048 )
 
 /**
  * Maximum length of a Expiration.
  */
-#define MAX_EXPIRATION_LEN ( 128 )  
+#define EXPIRATION_MAX_LEN ( 128 )
 
 /*-----------------------------------------------------------*/
 
@@ -187,22 +187,21 @@ typedef struct SignalingChannelArn
 
 /**
  * @ingroup signaling_enum_types
- * @brief Basic format of the Session Token Credentials
+ * @brief A structure to represent credentials used to accesss KVS.
  */
 typedef struct SignalingCredential
 {
-    const char* pAccessKeyId;
+    const char * pAccessKeyId;
     size_t accessKeyIdLength;
 
-    const char* pSecretAccessKey;
+    const char * pSecretAccessKey;
     size_t secretAccessKeyLength;
 
-    const char* pSessionToken;
+    const char * pSessionToken;
     size_t sessionTokenLength;
 
-    const char* pExpiration;
+    const char * pExpiration;
     size_t expirationLength;
-
 } SignalingCredential_t;
 
 /**

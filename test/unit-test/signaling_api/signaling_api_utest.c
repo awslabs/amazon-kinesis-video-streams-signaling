@@ -664,9 +664,9 @@ void test_signaling_ParseDescribeSignalingChannelResponse( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Construct Session Token Credentials Request fail functionality for Bad Parameters.
+ * @brief Validate Signaling Construct Fetch Temporary Credentials Request fail functionality for Bad Parameters.
  */
-void test_signaling_ConstructFetchTemporaryCredentialRequest_BadParams( void )
+void test_signaling_ConstructFetchTempCredsRequestForAwsIot_BadParams( void )
 {
     const char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
     size_t endpointLength = strlen( pEndpoint );
@@ -675,54 +675,51 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest_BadParams( void )
     SignalingRequest_t requestBuffer = { 0 };
     SignalingResult_t result;
 
-
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( NULL,
-                                                                 endpointLength,
-                                                                 ( pRoleAlias ),
-                                                                 roleAliasLength,
-                                                                 &( requestBuffer ) );
-
-    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
-                       result );
-
-
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
-                                                                 endpointLength,
-                                                                 NULL,
-                                                                 roleAliasLength,
-                                                                 &( requestBuffer ) );
+    result = Signaling_ConstructFetchTempCredsRequestForAwsIot( NULL,
+                                                                endpointLength,
+                                                                pRoleAlias,
+                                                                roleAliasLength,
+                                                                &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
+    result = Signaling_ConstructFetchTempCredsRequestForAwsIot( pEndpoint,
+                                                                endpointLength,
+                                                                NULL,
+                                                                roleAliasLength,
+                                                                &( requestBuffer ) );
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
-                                                                 endpointLength,
-                                                                 ( pRoleAlias ),
-                                                                 roleAliasLength,
-                                                                 NULL );
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    result = Signaling_ConstructFetchTempCredsRequestForAwsIot( pEndpoint,
+                                                                endpointLength,
+                                                                pRoleAlias,
+                                                                roleAliasLength,
+                                                                NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
     requestBuffer.pUrl = NULL;
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
-                                                                 endpointLength,
-                                                                 ( pRoleAlias ),
-                                                                 roleAliasLength,
-                                                                 &( requestBuffer ) );
+
+    result = Signaling_ConstructFetchTempCredsRequestForAwsIot( pEndpoint,
+                                                                endpointLength,
+                                                                pRoleAlias,
+                                                                roleAliasLength,
+                                                                &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
-
 }
 
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Construct Describe Media Storage Config Request functionality.
+ * @brief Validate Signaling Construct Fetch Temporary Credentials Request functionality.
  */
-void test_signaling_ConstructFetchTemporaryCredentialRequest_UrlOutOfMemory( void )
+void test_signaling_ConstructFetchTempCredsRequestForAwsIot_UrlOutOfMemory( void )
 {
     const char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
     size_t endpointLength = strlen( pEndpoint );
@@ -735,11 +732,11 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest_UrlOutOfMemory( voi
     requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
-                                                                 endpointLength,
-                                                                 ( pRoleAlias ),
-                                                                 roleAliasLength,
-                                                                 &( requestBuffer ) );
+    result = Signaling_ConstructFetchTempCredsRequestForAwsIot( pEndpoint,
+                                                                endpointLength,
+                                                                pRoleAlias,
+                                                                roleAliasLength,
+                                                                &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OUT_OF_MEMORY,
                        result );
@@ -748,9 +745,9 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest_UrlOutOfMemory( voi
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Construct Session Token Credentials Request functionality.
+ * @brief Validate Signaling Construct Fetch Temporary Credentials Request functionality.
  */
-void test_signaling_ConstructFetchTemporaryCredentialRequest( void )
+void test_signaling_ConstructFetchTempCredsRequestForAwsIot( void )
 {
     const char * pEndpoint = "abcdef.credentials.iot.us-west-2.amazonaws.com";
     size_t endpointLength = strlen( pEndpoint );
@@ -764,11 +761,11 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest( void )
     requestBuffer.pUrl = &( urlBuffer[ 0 ] );
     requestBuffer.urlLength = sizeof( urlBuffer );
 
-    result = Signaling_ConstructFetchTemporaryCredentialRequest( ( pEndpoint ),
-                                                                 endpointLength,
-                                                                 ( pRoleAlias ),
-                                                                 roleAliasLength,
-                                                                 &( requestBuffer ) );
+    result = Signaling_ConstructFetchTempCredsRequestForAwsIot( pEndpoint,
+                                                                endpointLength,
+                                                                pRoleAlias,
+                                                                roleAliasLength,
+                                                                &( requestBuffer ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
@@ -782,25 +779,25 @@ void test_signaling_ConstructFetchTemporaryCredentialRequest( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Session Token Credentials fail functionality for Bad Parameters.
+ * @brief Validate Signaling Parse Temporary Credentials fail functionality for Bad Parameters.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_BadParams( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_BadParams( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage = "Valid-Message";
     size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( NULL,
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( NULL,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               NULL );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              NULL );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
@@ -809,30 +806,28 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_BadParams( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Session Token Credentials functionality.
+ * @brief Validate Signaling ParseTemporary Credentials functionality.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_InvalidJson( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_InvalidJson( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
-    const char * pMessage = "{\"credentials\": {";  /* Missing closing brace. */
+    const char * pMessage = "{\"credentials\": {"; /* Missing closing brace. */
     size_t messageLength = sizeof( pMessage );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
-
-    /* <--------------------------------------------------------------------> */
 
     const char * pMessage2 = "{}"; /* Empty JSON. */
     size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage2,
-                                                               messageLength2,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage2,
+                                                              messageLength2,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_INVALID_JSON,
                        result );
@@ -841,9 +836,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_InvalidJson( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Describe Response functionality for Unexpected Response.
+ * @brief Validate Signaling Parse Temporary Credentials functionality for Unexpected Response.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_UnexpectedResponse( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -858,14 +853,12 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
     "}";
     size_t messageLength = strlen( pMessage );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
-
-    /* <--------------------------------------------------------------------> */
 
     const char * pMessage2 =
     "{"
@@ -876,14 +869,12 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
     "}";
     size_t messageLength2 = strlen( pMessage2 );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage2,
-                                                               messageLength2,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage2,
+                                                              messageLength2,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
-
-    /* <--------------------------------------------------------------------> */
 
     const char * pMessage3 =
     "{"
@@ -891,9 +882,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
     "}";
     size_t messageLength3 = strlen( pMessage3 );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage3,
-                                                               messageLength3,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage3,
+                                                              messageLength3,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -902,13 +893,13 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_UnexpectedResponse( v
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Session Token Response functionality for too long Access Key.
+ * @brief Validate Signaling Parse Temporary Credentials functionality for too long Access Key.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_AccessKeyTooLong( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_AccessKeyTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
-    char longAccessKey[ MAX_ACCESS_KEY_LEN + 10 ];
+    char longAccessKey[ ACCESS_KEY_MAX_LEN + 10 ];
     char message[ 1000 ];
 
     memset( &( longAccessKey[ 0 ] ),
@@ -927,9 +918,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_AccessKeyTooLong( voi
                longAccessKey );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( &( message[ 0 ] ),
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE,
                        result );
@@ -938,13 +929,13 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_AccessKeyTooLong( voi
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Session Token Response functionality for too long Secret Access Key.
+ * @brief Validate Signaling Parse Temporary Credentials functionality for too long Secret Access Key.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_SecretAccessKeyTooLong( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_SecretAccessKeyTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
-    char longSecretAccessKey[ MAX_SECRET_KEY_LEN + 10 ];
+    char longSecretAccessKey[ SECRET_ACCESS_KEY_MAX_LEN + 10 ];
     char message[ 1000 ];
 
     memset( &( longSecretAccessKey[ 0 ] ),
@@ -964,9 +955,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_SecretAccessKeyTooLon
                longSecretAccessKey );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( &( message[ 0 ] ),
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE,
                        result );
@@ -975,13 +966,13 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_SecretAccessKeyTooLon
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Session Token Response functionality for too long Session Token.
+ * @brief Validate Signaling Parse Temporary Credentials functionality for too long Session Token.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_SessionTokenTooLong( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_SessionTokenTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
-    char longSessionToken[ MAX_SESSION_TOKEN_LEN + 10 ];
+    char longSessionToken[ SESSION_TOKEN_MAX_LEN + 10 ];
     char message[ 3000 ];
 
     memset( &( longSessionToken[ 0 ] ),
@@ -1002,9 +993,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_SessionTokenTooLong( 
                longSessionToken );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( &( message[ 0 ] ),
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE,
                        result );
@@ -1013,13 +1004,13 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_SessionTokenTooLong( 
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Session Token Response functionality for too long Expiration.
+ * @brief Validate Signaling Parse Temporary Credentials functionality for too long Expiration.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_ExpirationTooLong( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_ExpirationTooLong( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
-    char longExpiration[ MAX_EXPIRATION_LEN + 10 ];
+    char longExpiration[ EXPIRATION_MAX_LEN + 10 ];
     char message[ 1000 ];
 
     memset( &( longExpiration[ 0 ] ),
@@ -1041,9 +1032,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_ExpirationTooLong( vo
                longExpiration );
     size_t messageLength = strlen( message );
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( &( message[ 0 ] ),
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( &( message[ 0 ] ),
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_EXPIRATION_LENGTH_TOO_LARGE,
                        result );
@@ -1052,16 +1043,16 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_ExpirationTooLong( vo
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ * @brief Validate Signaling Parse Temporary Credentials Response functionality.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_NoAccessKey( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_NoAccessKey( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage =
     "{"
         "\"credentials\":"
-        "{"                                                     /* No Access Key */
+        "{" /* No Access Key. */
             "\"secretAccessKey\": \"test-e/I5Zjd72kMzF/Ys20Le9wyxH3\","
             "\"sessionToken\": \"IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=\","
             "\"expiration\": \"2024-12-23T18:26:52Z\","
@@ -1069,9 +1060,10 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoAccessKey( void )
         "}"
     "}";
     size_t messageLength = strlen( pMessage );
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1080,16 +1072,16 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoAccessKey( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ * @brief Validate Signaling Parse Temporary Credentials Response functionality.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSecretAccessKey( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_NoSecretAccessKey( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage =
     "{"
         "\"credentials\":"
-        "{"                                                     /* No SecretAccess Key */
+        "{" /* No Secret Access Key. */
             "\"accessKeyId\": \"ASIASWNFWKDLG25\","
             "\"sessionToken\": \"IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=\","
             "\"expiration\": \"2024-12-23T18:26:52Z\","
@@ -1097,9 +1089,10 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSecretAccessKey( vo
         "}"
     "}";
     size_t messageLength = strlen( pMessage );
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1108,16 +1101,16 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSecretAccessKey( vo
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ * @brief Validate Signaling Parse Temporary Credentials Response functionality.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSessionToken( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_NoSessionToken( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage =
     "{"
         "\"credentials\":"
-        "{"                                                     /* No Session Token  */
+        "{" /* No Session Token. */
             "\"accessKeyId\": \"ASIASWNFWKDLG25\","
             "\"secretAccessKey\": \"test-e/I5Zjd72kMzF/Ys20Le9wyxH3\","
             "\"expiration\": \"2024-12-23T18:26:52Z\","
@@ -1125,9 +1118,10 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSessionToken( void 
         "}"
     "}";
     size_t messageLength = strlen( pMessage );
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1136,16 +1130,16 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoSessionToken( void 
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ * @brief Validate Signaling Parse Temporary Credentials Response functionality.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse_NoExpiration( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot_NoExpiration( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
     const char * pMessage =
     "{"
         "\"credentials\":"
-        "{"                                                     /* No Expiration  */
+        "{" /* No Expiration. */
             "\"accessKeyId\": \"ASIASWNFWKDLG25\","
             "\"secretAccessKey\": \"test-e/I5Zjd72kMzF/Ys20Le9wyxH3\","
             "\"sessionToken\": \"IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=\","
@@ -1153,9 +1147,10 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoExpiration( void )
         "}"
     "}";
     size_t messageLength = strlen( pMessage );
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_UNEXPECTED_RESPONSE,
                        result );
@@ -1164,9 +1159,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse_NoExpiration( void )
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Validate Signaling Parse Temporary Credential Response functionality.
+ * @brief Validate Signaling Parse Temporary Credentials Response functionality.
  */
-void test_signaling_ParseFetchTemporaryCredentialsResponse( void )
+void test_signaling_ParseFetchTempCredsResponseFromAwsIot( void )
 {
     SignalingCredential_t credentials;
     SignalingResult_t result;
@@ -1187,9 +1182,9 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse( void )
     const char * pExpectedSessionToken = "IQoJb3JpZ2luX3TT5KsgDCNv//////////wEQABoM4L2LJKaRl/zI1I+48vpNn40TZ5wXfyWtqmqLWVNYHbxLdCOelXF9OnyCzvG6X5CPLQsgU/wT3QQ=";
     const char * pExpectedExpiration = "2024-12-23T18:26:52Z";
 
-    result = Signaling_ParseFetchTemporaryCredentialsResponse( pMessage,
-                                                               messageLength,
-                                                               &( credentials ) );
+    result = Signaling_ParseFetchTempCredsResponseFromAwsIot( pMessage,
+                                                              messageLength,
+                                                              &( credentials ) );
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
@@ -1206,14 +1201,13 @@ void test_signaling_ParseFetchTemporaryCredentialsResponse( void )
     TEST_ASSERT_EQUAL( strlen( pExpectedSessionToken ),
                        credentials.sessionTokenLength );
     TEST_ASSERT_EQUAL_STRING_LEN( pExpectedSessionToken,
-                                  credentials.sessionToken,
+                                  credentials.pSessionToken,
                                   credentials.sessionTokenLength );
     TEST_ASSERT_EQUAL( strlen( pExpectedExpiration ),
                        credentials.expirationLength );
     TEST_ASSERT_EQUAL_STRING_LEN( pExpectedExpiration,
-                                  credentials.expiration,
+                                  credentials.pExpiration,
                                   credentials.expirationLength );
-
 }
 
 /*-----------------------------------------------------------*/

@@ -76,10 +76,11 @@ SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( Signalin
                                                                         SignalingRequest_t * pRequestBuffer );
 
 /**
- * @brief This function is used to construct request to query the Session Token Temporary Credentials.
+ * @brief This function is used to construct request to obtain Temporary Credentials
+ *        from AWS IoT Credential Provider.
  *
- * @param[in] pEndpoint The AWS Endpoint.
- * @param[in] pRoleAlias The Role Alias associated with the Role that is used to authentication.
+ * @param[in] pAwsIotEndpoint The AWS IoT Endpoint.
+ * @param[in] pRoleAlias The Role Alias associated with the Role that is used for authorization.
  * @param[out] pRequestBuffer The output structure includes URI, body buffers, and their sizes.
  *
  * @return Returns one of the following:
@@ -90,30 +91,34 @@ SignalingResult_t Signaling_ConstructDescribeMediaStorageConfigRequest( Signalin
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-iot.html for details.
  */
-SignalingResult_t Signaling_ConstructFetchTemporaryCredentialRequest( const char * pEndpoint,
-                                                                      size_t endpointLength,
-                                                                      const char * pRoleAlias,
-                                                                      size_t roleAliasLength,
-                                                                      SignalingRequest_t * pRequestBuffer );
+SignalingResult_t Signaling_ConstructFetchTempCredsRequestForAwsIot( const char * pAwsIotEndpoint,
+                                                                     size_t awsIotEndpointLength,
+                                                                     const char * pRoleAlias,
+                                                                     size_t roleAliasLength,
+                                                                     SignalingRequest_t * pRequestBuffer );
 
 /**
- * @brief This function is used to parse response of describe media storage configurations.
+ * @brief This function is used to parse AWS IoT Credential Provider response.
  *
- * @param[in] pMessage Raw response from the URL of getting signaling channel endpoints.
- * @param[in] messageLength Length of raw message.
- * @param[out] pCredentials The output structure includes accessKey, SecretAccessKey, SessionToken, Expiration.
+ * @param[in] pMessage Raw response from the AWS IoT Credential Provider.
+ * @param[in] messageLength Length of raw response.
+ * @param[out] pCredentials The output structure includes AccessKey, SecretAccessKey, SessionToken, Expiration.
  *
  * @return Returns one of the following:
  * - #SIGNALING_RESULT_OK, if initialization was performed without error.
  * - #SIGNALING_RESULT_BAD_PARAM, if any mandatory parameters is NULL.
  * - #SIGNALING_RESULT_INVALID_JSON, if raw message is not a valid JSON message.
  * - #SIGNALING_RESULT_UNEXPECTED_RESPONSE, if the message isn't the expected one.
+ * - #SIGNALING_RESULT_ACCESS_KEY_LENGTH_TOO_LARGE, if the access key is too large.
+ * - #SIGNALING_RESULT_SECRET_ACCESS_KEY_LENGTH_TOO_LARGE, if the secret access key is too large.
+ * - #SIGNALING_RESULT_SESSION_TOKEN_LENGTH_TOO_LARGE, if the session token is too large.
+ * - #SIGNALING_RESULT_EXPIRATION_LENGTH_TOO_LARGE, the expiration is too large.
  *
  * @note Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/how-iot.html for details.
  */
-SignalingResult_t Signaling_ParseFetchTemporaryCredentialsResponse( const char * pMessage,
-                                                                    size_t messageLength,
-                                                                    SignalingCredential_t * pCredentials );
+SignalingResult_t Signaling_ParseFetchTempCredsResponseFromAwsIot( const char * pMessage,
+                                                                   size_t messageLength,
+                                                                   SignalingCredential_t * pCredentials );
 
 /**
  * @brief This function is used to parse response of describe media storage configurations.
