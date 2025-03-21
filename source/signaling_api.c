@@ -837,7 +837,7 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
                                    ( int ) pCreateSignalingChannelRequestInfo->channelName.channelNameLength,
                                    pCreateSignalingChannelRequestInfo->channelName.pChannelName,
                                    ( pCreateSignalingChannelRequestInfo->channelType == SIGNALING_TYPE_CHANNEL_SINGLE_MASTER ) ? "SINGLE_MASTER" : "UNKOWN",
-                                   pCreateSignalingChannelRequestInfo->messageTtlSeconds );
+                                   ( unsigned int ) pCreateSignalingChannelRequestInfo->messageTtlSeconds );
 
         result = InterpretSnprintfReturnValue( snprintfRetVal, remainingLength );
 
