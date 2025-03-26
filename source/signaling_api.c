@@ -1169,6 +1169,8 @@ SignalingResult_t Signaling_ParseGetSignalingChannelEndpointResponse( const char
 
         if( jsonResult == JSONSuccess )
         {
+            printf( "Key: %.*s\n", ( int ) pair.keyLength, pair.key );
+            printf("pair.jsonType: %d", pair.jsonType);
             if( ( pair.jsonType != JSONArray ) ||
                 ( pair.keyLength != strlen( "ResourceEndpointList" ) ) ||
                 ( strncmp( pair.key, "ResourceEndpointList", pair.keyLength ) != 0 ) )
@@ -1391,6 +1393,16 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
 
+    printf("all parameters to construct request: %p,%p,%p,%p,%s,%s,%s\n",
+        pWebrtcEndpoint,
+        pWebrtcEndpoint->pEndpoint,
+        pRequestBuffer,
+        pJoinStorageSessionRequestInfo,
+        pRequestBuffer->pUrl,
+        pRequestBuffer->pBody,
+        pJoinStorageSessionRequestInfo->channelArn.pChannelArn);
+
+
     if( ( pWebrtcEndpoint == NULL ) ||
         ( pWebrtcEndpoint->pEndpoint == NULL ) ||
         ( pRequestBuffer == NULL ) ||
@@ -1453,6 +1465,63 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
     }
 
     return result;
+}
+
+
+/*-----------------------------------------------------------*/
+
+SignalingResult_t Signaling_ParseJoinStorageSessionResponse(const char* pMessage,
+    size_t messageLength,
+    JoinStorageSessionResponse_t* pJoinStorageSessionResponse)
+{
+SignalingResult_t result = SIGNALING_RESULT_OK;
+// JSONStatus_t jsonResult;
+// size_t start = 0, next = 0;
+// JSONPair_t pair = { 0 };
+
+// printf("pMessage: %s pJoinStorageSessionResponse %x\n", pMessage, pJoinStorageSessionResponse);
+// if ((pMessage == NULL) || (pJoinStorageSessionResponse == NULL))
+// {
+// result = SIGNALING_RESULT_BAD_PARAM;
+// }
+
+// if (result == SIGNALING_RESULT_OK)
+// {
+// jsonResult = JSON_Validate(pMessage, messageLength);
+// printf("jsonResult: %d\n", jsonResult);
+// if (jsonResult != JSONSuccess)
+// {
+// result = SIGNALING_RESULT_INVALID_JSON;
+// }
+// }
+
+// if (result == SIGNALING_RESULT_OK)
+// {
+// memset(pJoinStorageSessionResponse, 0, sizeof(JoinStorageSessionResponse_t));
+
+// jsonResult = JSON_Iterate(pMessage, messageLength, &start, &next, &pair);
+
+// while (jsonResult == JSONSuccess)
+// {
+// if (strncmp(pair.key, "storageStatus", pair.keyLength) == 0)
+// {
+// pJoinStorageSessionResponse->storageStatus = (strncmp(pair.value, "true", pair.valueLength) == 0) ? 1 : 0;
+// }
+// else if (strncmp(pair.key, "storageStreamArn", pair.keyLength) == 0)
+// {
+// pJoinStorageSessionResponse->pStorageStreamArn = pair.value;
+// pJoinStorageSessionResponse->storageStreamArnLength = pair.valueLength;
+// }
+
+// jsonResult = JSON_Iterate(pMessage, messageLength, &start, &next, &pair);
+// }
+// }
+
+// if(messageLength == 0)
+// {
+// result = SIGNALING_RESULT_OK;
+// }
+return result;
 }
 
 /*-----------------------------------------------------------*/
@@ -1597,10 +1666,16 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
     size_t remainingLength = *pBufferLength;
     size_t currentIndex = 0;
 
+    
+    printf("Construct pWssSendMessage: %x\n", pWssSendMessage);
+    printf("Construvt pBuffer: %x\n", pBuffer);
+    printf("Construct pBufferLength: %d\n", *pBufferLength);
+    printf("Construct pWssSendMessage->pBase64EncodedMessage: %s\n", pWssSendMessage->pBase64EncodedMessage);
+    printf("Construct pWssSendMessage->pRecipientClientId: %p\n", pWssSendMessage->pRecipientClientId);
+
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
-        ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
-        ( pWssSendMessage->pRecipientClientId == NULL ) )
+        ( pWssSendMessage->pBase64EncodedMessage == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }

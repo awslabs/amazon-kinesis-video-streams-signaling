@@ -341,6 +341,19 @@ typedef struct JoinStorageSessionRequestInfo
 
 /**
  * @ingroup signaling_enum_types
+ * @brief The structure of JoinStorageSession response.
+ *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_webrtc_JoinStorageSession.html for more detail.
+ */
+typedef struct JoinStorageSessionResponse
+{
+    SignalingIceServer_t * pIceServersList;
+    size_t IceServersCount;
+    uint8_t storageStatus;
+    const char* pStorageStreamArn;
+    size_t storageStreamArnLength;
+} JoinStorageSessionResponse_t;
+/**
+ * @ingroup signaling_enum_types
  * @brief The structure of DeleteSignalingChannel request.
  *        Refer to https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_DeleteSignalingChannel.html for more detail.
  */

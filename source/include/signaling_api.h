@@ -280,7 +280,9 @@ SignalingResult_t Signaling_ParseGetIceServerConfigResponse( const char * pMessa
 SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannelEndpoint_t * pWebrtcEndpoint,
                                                                 JoinStorageSessionRequestInfo_t * pJoinStorageSessionRequestInfo,
                                                                 SignalingRequest_t * pRequestBuffer );
-
+SignalingResult_t Signaling_ParseJoinStorageSessionResponse(const char* pMessage,
+    size_t messageLength,
+    JoinStorageSessionResponse_t* pJoinStorageSessionResponse);
 /**
  * @brief This function is used to construct request to delete signaling channel.
  *
