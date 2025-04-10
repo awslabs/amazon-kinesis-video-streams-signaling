@@ -1600,8 +1600,8 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
-        ( pWssSendMessage->messageType != SIGNALING_TYPE_MESSAGE_SDP_ANSWER && 
-          pWssSendMessage->pRecipientClientId == NULL ) )
+        ( ( pWssSendMessage->messageType != SIGNALING_TYPE_MESSAGE_SDP_ANSWER ) && 
+          ( pWssSendMessage->pRecipientClientId == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
