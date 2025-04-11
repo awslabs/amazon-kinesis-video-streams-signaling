@@ -4597,6 +4597,7 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     wssSendMessage.pBase64EncodedMessage = "TestMessage";
     wssSendMessage.base64EncodedMessageLength = strlen( wssSendMessage.pBase64EncodedMessage );
     wssSendMessage.pRecipientClientId = NULL;
+    wssSendMessage.recipientClientIdLength = 100;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
                                             &( messageBuffer[ 0 ] ),
@@ -4604,6 +4605,46 @@ void test_signaling_ConstructWssMessage_BadParams( void )
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Construct Web-Socket Message functionality for Null Client ID and Zero Client Length.
+ */
+void test_signaling_ConstructWssMessage_NullClientID_ZeroClientLength( void )
+{
+    WssSendMessage_t wssSendMessage = { 0 };
+    SignalingResult_t result;
+    char messageBuffer[ 300 ];
+    size_t messageBufferLength = sizeof( messageBuffer );
+    const char * pExpectedMessage = 
+    "{"
+        "\"action\":\"ICE_CANDIDATE\","
+        "\"RecipientClientId\":\"\","
+        "\"MessagePayload\":\"base64encodedmessage\","
+        "\"CorrelationId\":\"TestCorrelationId\""
+    "}";
+   
+    wssSendMessage.messageType = SIGNALING_TYPE_MESSAGE_ICE_CANDIDATE;
+    wssSendMessage.pBase64EncodedMessage = "base64encodedmessage";
+    wssSendMessage.base64EncodedMessageLength = strlen( wssSendMessage.pBase64EncodedMessage );
+    wssSendMessage.pRecipientClientId = NULL;
+    wssSendMessage.recipientClientIdLength = 0;
+    wssSendMessage.pCorrelationId = "TestCorrelationId";
+    wssSendMessage.correlationIdLength = strlen( wssSendMessage.pCorrelationId );
+    
+    result = Signaling_ConstructWssMessage( &( wssSendMessage ),
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+                       result );
+    TEST_ASSERT_EQUAL( strlen( pExpectedMessage ),
+                       messageBufferLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( pExpectedMessage,
+                                  &( messageBuffer [ 0 ] ),
+                                  messageBufferLength );
 }
 
 /*-----------------------------------------------------------*/

@@ -1600,7 +1600,8 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
-        ( pWssSendMessage->pRecipientClientId == NULL ) )
+        ( ( pWssSendMessage->recipientClientIdLength != 0 ) && 
+          ( pWssSendMessage->pRecipientClientId == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
