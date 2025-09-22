@@ -322,7 +322,7 @@ typedef struct GetSignalingChannelEndpointRequestInfo
 typedef struct GetIceServerConfigRequestInfo
 {
     SignalingChannelArn_t channelArn;
-    char * pClientId;
+    const char * pClientId;
     size_t clientIdLength;
 } GetIceServerConfigRequestInfo_t;
 
@@ -335,7 +335,7 @@ typedef struct JoinStorageSessionRequestInfo
 {
     SignalingChannelArn_t channelArn;
     SignalingRole_t role;
-    char * pClientId;
+    const char * pClientId;
     size_t clientIdLength;
 } JoinStorageSessionRequestInfo_t;
 
