@@ -1606,11 +1606,12 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
-    size_t remainingLength = *pBufferLength;
+    size_t remainingLength = 0;
     size_t currentIndex = 0;
 
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
+        ( pBufferLength == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
         ( ( pWssSendMessage->recipientClientIdLength != 0 ) && 
           ( pWssSendMessage->pRecipientClientId == NULL ) ) ||
@@ -1622,6 +1623,7 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
 
     if( result == SIGNALING_RESULT_OK )
     {
+        remainingLength = *pBufferLength;
         snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                    remainingLength,
                                    "{"

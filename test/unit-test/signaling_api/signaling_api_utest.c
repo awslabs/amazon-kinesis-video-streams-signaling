@@ -1779,6 +1779,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
+    createSignalingChannelRequestInfo.channelName.pChannelName = "Test";
+    createSignalingChannelRequestInfo.channelName.channelNameLength = 4;
     createSignalingChannelRequestInfo.numTags = 1;
     createSignalingChannelRequestInfo.pTags = NULL;
 
@@ -3372,6 +3374,8 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
+    iceServerConfigRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123";
+    iceServerConfigRequestInfo.channelArn.channelArnLength = strlen( iceServerConfigRequestInfo.channelArn.pChannelArn );
     iceServerConfigRequestInfo.pClientId = NULL;
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
@@ -3926,6 +3930,20 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
     joinStorageSessionRequestInfo.channelArn.pChannelArn = NULL;
+
+    result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
+    joinStorageSessionRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123";
+    joinStorageSessionRequestInfo.channelArn.channelArnLength = strlen( joinStorageSessionRequestInfo.channelArn.pChannelArn );
+    joinStorageSessionRequestInfo.role = SIGNALING_ROLE_VIEWER;
+    joinStorageSessionRequestInfo.pClientId = NULL;
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
                                                            &( joinStorageSessionRequestInfo ),
@@ -4686,6 +4704,15 @@ void test_signaling_ConstructWssMessage_BadParams( void )
 
     /* <--------------------------------------------------------------------> */
 
+    result = Signaling_ConstructWssMessage( &( wssSendMessage ),
+                                            &( messageBuffer[ 0 ] ),
+                                            NULL );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
     wssSendMessage.pBase64EncodedMessage = NULL;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
@@ -4701,6 +4728,20 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     wssSendMessage.base64EncodedMessageLength = strlen( wssSendMessage.pBase64EncodedMessage );
     wssSendMessage.pRecipientClientId = NULL;
     wssSendMessage.recipientClientIdLength = 100;
+
+    result = Signaling_ConstructWssMessage( &( wssSendMessage ),
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
+    wssSendMessage.pRecipientClientId = "TestClient";
+    wssSendMessage.recipientClientIdLength = strlen( wssSendMessage.pRecipientClientId );
+    wssSendMessage.correlationIdLength = 10;
+    wssSendMessage.pCorrelationId = NULL;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
                                             &( messageBuffer[ 0 ] ),
