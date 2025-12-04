@@ -1613,7 +1613,9 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
         ( pBuffer == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
         ( ( pWssSendMessage->recipientClientIdLength != 0 ) && 
-          ( pWssSendMessage->pRecipientClientId == NULL ) ) )
+          ( pWssSendMessage->pRecipientClientId == NULL ) ) ||
+        ( ( pWssSendMessage->correlationIdLength > 0 ) &&
+          ( pWssSendMessage->pCorrelationId == NULL ) ))
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1643,8 +1645,7 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
 
     /* Append correlation ID. */
     if( ( result == SIGNALING_RESULT_OK ) &&
-        ( pWssSendMessage->correlationIdLength > 0 ) &&
-        ( pWssSendMessage->pCorrelationId != NULL ) )
+        ( pWssSendMessage->correlationIdLength > 0 ) )
     {
         snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                    remainingLength,
