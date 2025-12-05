@@ -3744,6 +3744,41 @@ void test_signaling_ParseGetIceServerConfigResponse_Empty( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Test ParseUris loop exits when urisNum reaches max limit.
+ */
+void test_signaling_ParseGetIceServerConfigResponse_MaxUris( void )
+{
+    SignalingIceServer_t iceServers[ 1 ];
+    size_t numIceServers = 1;
+    SignalingResult_t result;
+    const char * pMessage =
+    "{"
+        "\"IceServerList\":"
+        "["
+            "{"
+                "\"Password\": \"password123\","
+                "\"Ttl\": 300,"
+                "\"Uris\": [\"turn:1.com\", \"turn:2.com\", \"turn:3.com\", \"turn:4.com\", \"turn:5.com\"],"
+                "\"Username\": \"username123\""
+            "}"
+        "]"
+    "}";
+    size_t messageLength = strlen( pMessage );
+
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+                       result );
+    TEST_ASSERT_EQUAL( SIGNALING_ICE_SERVER_MAX_URIS,
+                       iceServers[ 0 ].urisNum );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Validate Signaling Construct Join Storage Session Request fail functionality for Bad Parameters.
  */
 void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
