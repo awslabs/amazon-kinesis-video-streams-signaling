@@ -56,6 +56,8 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
+    channelName.pChannelName = "Test";
+
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
                                                                  &( channelName ),
                                                                  NULL );
@@ -63,6 +65,18 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
+    channelName.pChannelName = NULL;
+    requestBuffer.pUrl = "url";
+    requestBuffer.pBody = "body";
+
+    result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
+                                                                 &( channelName ),
+                                                                 &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    channelName.pChannelName = "Test";
     requestBuffer.pUrl = NULL;
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
@@ -72,8 +86,7 @@ void test_signaling_ConstructDescribeSignalingChannelRequest_BadParams( void )
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
                        result );
 
-    requestBuffer.pUrl = "https://kinesisvideo.cn-east-1.amazonaws.com.cn/describeSignalingChannel";
-    requestBuffer.urlLength = strlen( requestBuffer.pUrl );
+    requestBuffer.pUrl = "url";
     requestBuffer.pBody = NULL;
 
     result = Signaling_ConstructDescribeSignalingChannelRequest( &( awsRegion ),
@@ -1766,6 +1779,8 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
+    createSignalingChannelRequestInfo.channelName.pChannelName = "Test";
+    createSignalingChannelRequestInfo.channelName.channelNameLength = 4;
     createSignalingChannelRequestInfo.numTags = 1;
     createSignalingChannelRequestInfo.pTags = NULL;
 
@@ -1778,6 +1793,84 @@ void test_signaling_ConstructCreateSignalingChannelRequest_BadParams( void )
 
     createSignalingChannelRequestInfo.pTags = &( tags[ 0 ] );
     createSignalingChannelRequestInfo.channelName.channelNameLength = SIGNALING_CHANNEL_NAME_MAX_LEN + 1;
+
+    result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    createSignalingChannelRequestInfo.channelName.channelNameLength = 10;
+    createSignalingChannelRequestInfo.channelName.pChannelName = NULL;
+
+    result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    createSignalingChannelRequestInfo.channelName.pChannelName = "Test";
+    createSignalingChannelRequestInfo.numTags = 0;
+    createSignalingChannelRequestInfo.channelName.channelNameLength = SIGNALING_CHANNEL_NAME_MAX_LEN;
+
+    result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
+ * @brief Validate Signaling Construct Channel Request fail functionality for NULL tag name/value.
+ */
+void test_signaling_ConstructCreateSignalingChannelRequest_TagsNullParams( void )
+{
+    SignalingAwsRegion_t awsRegion = { 0 };
+    CreateSignalingChannelRequestInfo_t createSignalingChannelRequestInfo = { 0 };
+    SignalingTag_t tags[ 1 ] = { 0 };
+    SignalingRequest_t requestBuffer = { 0 };
+    SignalingResult_t result;
+    char urlBuffer[ 500 ];
+    char bodyBuffer[ 1000 ];
+
+    awsRegion.pAwsRegion = "us-east-1";
+    awsRegion.awsRegionLength = strlen( awsRegion.pAwsRegion );
+
+    createSignalingChannelRequestInfo.channelName.pChannelName = "Test";
+    createSignalingChannelRequestInfo.channelName.channelNameLength = 4;
+    createSignalingChannelRequestInfo.channelType = SIGNALING_TYPE_CHANNEL_SINGLE_MASTER;
+    createSignalingChannelRequestInfo.messageTtlSeconds = 60;
+    createSignalingChannelRequestInfo.numTags = 1;
+    createSignalingChannelRequestInfo.pTags = &( tags[ 0 ] );
+
+    requestBuffer.pUrl = &( urlBuffer[ 0 ] );
+    requestBuffer.urlLength = sizeof( urlBuffer );
+    requestBuffer.pBody = &( bodyBuffer[ 0 ] );
+    requestBuffer.bodyLength = sizeof( bodyBuffer );
+
+    tags[ 0 ].pName = NULL;
+    tags[ 0 ].nameLength = 0;
+    tags[ 0 ].pValue = "Value1";
+    tags[ 0 ].valueLength = 6;
+
+    result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
+                                                               &( createSignalingChannelRequestInfo ),
+                                                               &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    requestBuffer.urlLength = sizeof( urlBuffer );
+    requestBuffer.bodyLength = sizeof( bodyBuffer );
+    tags[ 0 ].pName = "Tag1";
+    tags[ 0 ].nameLength = 4;
+    tags[ 0 ].pValue = NULL;
+    tags[ 0 ].valueLength = 0;
 
     result = Signaling_ConstructCreateSignalingChannelRequest( &( awsRegion ),
                                                                &( createSignalingChannelRequestInfo ),
@@ -3281,7 +3374,21 @@ void test_signaling_ConstructGetIceServerConfigRequest_BadParams( void )
 
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
+    iceServerConfigRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123";
+    iceServerConfigRequestInfo.channelArn.channelArnLength = strlen( iceServerConfigRequestInfo.channelArn.pChannelArn );
     iceServerConfigRequestInfo.pClientId = NULL;
+
+    result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
+                                                           &( iceServerConfigRequestInfo ),
+                                                           &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
+    iceServerConfigRequestInfo.pClientId = "TestClient";
+    iceServerConfigRequestInfo.channelArn.pChannelArn = NULL;
 
     result = Signaling_ConstructGetIceServerConfigRequest( &( endpoint ),
                                                            &( iceServerConfigRequestInfo ),
@@ -3823,6 +3930,20 @@ void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )
     requestBuffer.pBody = "{\"ChannelName\":\"Test-Channel-China\"}";
     requestBuffer.bodyLength = strlen( requestBuffer.pBody );
     joinStorageSessionRequestInfo.channelArn.pChannelArn = NULL;
+
+    result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
+                                                           &( joinStorageSessionRequestInfo ),
+                                                           &( requestBuffer ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
+    joinStorageSessionRequestInfo.channelArn.pChannelArn = "arn:aws:kinesisvideo:us-east-1:123456789012:channel/test-channel/1234567890123";
+    joinStorageSessionRequestInfo.channelArn.channelArnLength = strlen( joinStorageSessionRequestInfo.channelArn.pChannelArn );
+    joinStorageSessionRequestInfo.role = SIGNALING_ROLE_VIEWER;
+    joinStorageSessionRequestInfo.pClientId = NULL;
 
     result = Signaling_ConstructJoinStorageSessionRequest( &( webrtcEndpoint ),
                                                            &( joinStorageSessionRequestInfo ),
@@ -4583,6 +4704,15 @@ void test_signaling_ConstructWssMessage_BadParams( void )
 
     /* <--------------------------------------------------------------------> */
 
+    result = Signaling_ConstructWssMessage( &( wssSendMessage ),
+                                            &( messageBuffer[ 0 ] ),
+                                            NULL );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
     wssSendMessage.pBase64EncodedMessage = NULL;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
@@ -4598,6 +4728,20 @@ void test_signaling_ConstructWssMessage_BadParams( void )
     wssSendMessage.base64EncodedMessageLength = strlen( wssSendMessage.pBase64EncodedMessage );
     wssSendMessage.pRecipientClientId = NULL;
     wssSendMessage.recipientClientIdLength = 100;
+
+    result = Signaling_ConstructWssMessage( &( wssSendMessage ),
+                                            &( messageBuffer[ 0 ] ),
+                                            &( messageBufferLength ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_BAD_PARAM,
+                       result );
+
+    /* <--------------------------------------------------------------------> */
+
+    wssSendMessage.pRecipientClientId = "TestClient";
+    wssSendMessage.recipientClientIdLength = strlen( wssSendMessage.pRecipientClientId );
+    wssSendMessage.correlationIdLength = 10;
+    wssSendMessage.pCorrelationId = NULL;
 
     result = Signaling_ConstructWssMessage( &( wssSendMessage ),
                                             &( messageBuffer[ 0 ] ),
@@ -5354,3 +5498,4 @@ void test_signaling_ParseWssRecvMessage_Empty( void )
 }
 
 /*-----------------------------------------------------------*/
+

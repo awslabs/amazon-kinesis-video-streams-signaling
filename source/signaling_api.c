@@ -214,6 +214,7 @@ SignalingResult_t Signaling_ConstructDescribeSignalingChannelRequest( SignalingA
     if( ( pAwsRegion == NULL ) ||
         ( pAwsRegion->pAwsRegion == NULL ) ||
         ( pChannelName == NULL ) ||
+        ( pChannelName->pChannelName == NULL ) ||
         ( pRequestBuffer == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) )
@@ -788,6 +789,7 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
         ( pCreateSignalingChannelRequestInfo == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
+        ( pCreateSignalingChannelRequestInfo->channelName.pChannelName == NULL ) ||
         ( ( pCreateSignalingChannelRequestInfo->numTags > 0 ) && ( pCreateSignalingChannelRequestInfo->pTags == NULL ) ) ||
         ( pCreateSignalingChannelRequestInfo->channelName.channelNameLength >= SIGNALING_CHANNEL_NAME_MAX_LEN ) )
     {
@@ -868,6 +870,13 @@ SignalingResult_t Signaling_ConstructCreateSignalingChannelRequest( SignalingAws
 
         for( i = 0; ( i < pCreateSignalingChannelRequestInfo->numTags ) && ( result == SIGNALING_RESULT_OK ); i++ )
         {
+            if( ( pCreateSignalingChannelRequestInfo->pTags[ i ].pName == NULL ) ||
+                ( pCreateSignalingChannelRequestInfo->pTags[ i ].pValue == NULL ) )
+            {
+                result = SIGNALING_RESULT_BAD_PARAM;
+                break;
+            }
+
             if( i == 0 )
             {
                 snprintfRetVal = snprintf( &( pRequestBuffer->pBody[ currentIndex ] ),
@@ -1271,6 +1280,7 @@ SignalingResult_t Signaling_ConstructGetIceServerConfigRequest( SignalingChannel
         ( pGetIceServerConfigRequestInfo == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
+        ( pGetIceServerConfigRequestInfo->channelArn.pChannelArn == NULL ) ||
         ( pGetIceServerConfigRequestInfo->pClientId == NULL ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
@@ -1397,7 +1407,9 @@ SignalingResult_t Signaling_ConstructJoinStorageSessionRequest( SignalingChannel
         ( pJoinStorageSessionRequestInfo == NULL ) ||
         ( pRequestBuffer->pUrl == NULL ) ||
         ( pRequestBuffer->pBody == NULL ) ||
-        ( pJoinStorageSessionRequestInfo->channelArn.pChannelArn == NULL ) )
+        ( pJoinStorageSessionRequestInfo->channelArn.pChannelArn == NULL ) ||
+        ( ( pJoinStorageSessionRequestInfo->role != SIGNALING_ROLE_MASTER ) &&
+          ( pJoinStorageSessionRequestInfo->pClientId == NULL ) ) )
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
@@ -1594,20 +1606,24 @@ SignalingResult_t Signaling_ConstructWssMessage( WssSendMessage_t * pWssSendMess
 {
     SignalingResult_t result = SIGNALING_RESULT_OK;
     int snprintfRetVal = 0;
-    size_t remainingLength = *pBufferLength;
+    size_t remainingLength = 0;
     size_t currentIndex = 0;
 
     if( ( pWssSendMessage == NULL ) ||
         ( pBuffer == NULL ) ||
+        ( pBufferLength == NULL ) ||
         ( pWssSendMessage->pBase64EncodedMessage == NULL ) ||
         ( ( pWssSendMessage->recipientClientIdLength != 0 ) && 
-          ( pWssSendMessage->pRecipientClientId == NULL ) ) )
+          ( pWssSendMessage->pRecipientClientId == NULL ) ) ||
+        ( ( pWssSendMessage->correlationIdLength > 0 ) &&
+          ( pWssSendMessage->pCorrelationId == NULL ) ))
     {
         result = SIGNALING_RESULT_BAD_PARAM;
     }
 
     if( result == SIGNALING_RESULT_OK )
     {
+        remainingLength = *pBufferLength;
         snprintfRetVal = snprintf( &( pBuffer[ currentIndex ] ),
                                    remainingLength,
                                    "{"
