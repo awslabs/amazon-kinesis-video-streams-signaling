@@ -3772,8 +3772,42 @@ void test_signaling_ParseGetIceServerConfigResponse_MaxUris( void )
 
     TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
                        result );
+    TEST_ASSERT_EQUAL( 1,
+                       numIceServers );
+    TEST_ASSERT_EQUAL( strlen( "password123" ),
+                       iceServers[ 0 ].passwordLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "password123",
+                                  iceServers[ 0 ].pPassword,
+                                  iceServers[ 0 ].passwordLength );
+    TEST_ASSERT_EQUAL( 300,
+                       iceServers[ 0 ].messageTtlSeconds );
     TEST_ASSERT_EQUAL( SIGNALING_ICE_SERVER_MAX_URIS,
                        iceServers[ 0 ].urisNum );
+    TEST_ASSERT_EQUAL( strlen( "turn:1.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:1.com",
+                                  iceServers[ 0 ].pUris[ 0 ],
+                                  iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL( strlen( "turn:2.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:2.com",
+                                  iceServers[ 0 ].pUris[ 1 ],
+                                  iceServers[ 0 ].urisLength[ 1 ] );
+    TEST_ASSERT_EQUAL( strlen( "turn:3.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:3.com",
+                                  iceServers[ 0 ].pUris[ 2 ],
+                                  iceServers[ 0 ].urisLength[ 2 ] );
+    TEST_ASSERT_EQUAL( strlen( "turn:4.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:4.com",
+                                  iceServers[ 0 ].pUris[ 3 ],
+                                  iceServers[ 0 ].urisLength[ 3 ] );
+    TEST_ASSERT_EQUAL( strlen( "username123" ),
+                       iceServers[ 0 ].userNameLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "username123",
+                                  iceServers[ 0 ].pUserName,
+                                  iceServers[ 0 ].userNameLength );
 }
 
 /*-----------------------------------------------------------*/
