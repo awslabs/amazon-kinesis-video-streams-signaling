@@ -3851,6 +3851,75 @@ void test_signaling_ParseGetIceServerConfigResponse_Empty( void )
 /*-----------------------------------------------------------*/
 
 /**
+ * @brief Test ParseUris loop exits when urisNum reaches max limit.
+ */
+void test_signaling_ParseGetIceServerConfigResponse_MaxUris( void )
+{
+    SignalingIceServer_t iceServers[ 1 ];
+    size_t numIceServers = 1;
+    SignalingResult_t result;
+    const char * pMessage =
+    "{"
+        "\"IceServerList\":"
+        "["
+            "{"
+                "\"Password\": \"password123\","
+                "\"Ttl\": 300,"
+                "\"Uris\": [\"turn:1.com\", \"turn:2.com\", \"turn:3.com\", \"turn:4.com\", \"turn:5.com\"],"
+                "\"Username\": \"username123\""
+            "}"
+        "]"
+    "}";
+    size_t messageLength = strlen( pMessage );
+
+    result = Signaling_ParseGetIceServerConfigResponse( pMessage,
+                                                        messageLength,
+                                                        &( iceServers[ 0 ] ),
+                                                        &( numIceServers ) );
+
+    TEST_ASSERT_EQUAL( SIGNALING_RESULT_OK,
+                       result );
+    TEST_ASSERT_EQUAL( 1,
+                       numIceServers );
+    TEST_ASSERT_EQUAL( strlen( "password123" ),
+                       iceServers[ 0 ].passwordLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "password123",
+                                  iceServers[ 0 ].pPassword,
+                                  iceServers[ 0 ].passwordLength );
+    TEST_ASSERT_EQUAL( 300,
+                       iceServers[ 0 ].messageTtlSeconds );
+    TEST_ASSERT_EQUAL( SIGNALING_ICE_SERVER_MAX_URIS,
+                       iceServers[ 0 ].urisNum );
+    TEST_ASSERT_EQUAL( strlen( "turn:1.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:1.com",
+                                  iceServers[ 0 ].pUris[ 0 ],
+                                  iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL( strlen( "turn:2.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:2.com",
+                                  iceServers[ 0 ].pUris[ 1 ],
+                                  iceServers[ 0 ].urisLength[ 1 ] );
+    TEST_ASSERT_EQUAL( strlen( "turn:3.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:3.com",
+                                  iceServers[ 0 ].pUris[ 2 ],
+                                  iceServers[ 0 ].urisLength[ 2 ] );
+    TEST_ASSERT_EQUAL( strlen( "turn:4.com" ),
+                       iceServers[ 0 ].urisLength[ 0 ] );
+    TEST_ASSERT_EQUAL_STRING_LEN( "turn:4.com",
+                                  iceServers[ 0 ].pUris[ 3 ],
+                                  iceServers[ 0 ].urisLength[ 3 ] );
+    TEST_ASSERT_EQUAL( strlen( "username123" ),
+                       iceServers[ 0 ].userNameLength );
+    TEST_ASSERT_EQUAL_STRING_LEN( "username123",
+                                  iceServers[ 0 ].pUserName,
+                                  iceServers[ 0 ].userNameLength );
+}
+
+/*-----------------------------------------------------------*/
+
+/**
  * @brief Validate Signaling Construct Join Storage Session Request fail functionality for Bad Parameters.
  */
 void test_signaling_ConstructJoinStorageSessionRequest_BadParams( void )

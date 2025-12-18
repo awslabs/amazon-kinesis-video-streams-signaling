@@ -100,7 +100,7 @@ static void ParseUris( const char * pUris,
 
     jsonResult = JSON_Iterate( pUris, urisLength, &( start ), &( next ), &( pair ) );
 
-    while( jsonResult == JSONSuccess )
+    while( ( jsonResult == JSONSuccess ) && ( pIceServer->urisNum < SIGNALING_ICE_SERVER_MAX_URIS ) )
     {
         pIceServer->pUris[ pIceServer->urisNum ] = pair.value;
         pIceServer->urisLength[ pIceServer->urisNum ] = pair.valueLength;
